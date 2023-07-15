@@ -56,6 +56,17 @@ db_schema:
       type: datetime
       admin_ui: {order: 7, width: 200}
     title: Users
+  sheets:
+    client: full
+    server: full
+    columns:
+    - name: sheet_id
+      admin_ui: {order: 0, width: 200}
+      type: string
+    - name: sheet_name
+      admin_ui: {order: 1, width: 200}
+      type: string
+    title: sheets
 secrets:
   smartsheetsKey:
     value: {UZ77GC6XSOFJWHZW: d8igp1JrC9z+JnxQOmMhHyU1OAf4QVkjLl9K7LuQljR30QXG+Tcq/T8+P5JScn/T9bwJ1hvgzl7yYlr0KhBF6rGh/cQycPDCaes+eBBeZFbW8jJnZzoRu7rCaRNQYBMaHQCehqOPK2yTPnk4sn9gak2vYljCrdgIi1av2fDBYCMUhwL7}

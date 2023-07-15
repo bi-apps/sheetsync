@@ -5,9 +5,15 @@ container:
   event_bindings: {show: form_show}
 components:
 - type: ColumnPanel
-  properties: {}
+  properties: {col_widths: '{}'}
   name: content_panel
   layout_properties: {slot: default}
+  components:
+  - type: RepeatingPanel
+    properties: {item_template: indexPage.ItemTemplate3}
+    name: repeating_panel_1
+    layout_properties: {grid_position: 'QJLONS,EPMJCU'}
+    data_bindings: []
 - type: FlowPanel
   properties: {}
   name: navbar_links

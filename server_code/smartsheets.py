@@ -26,12 +26,15 @@ import anvil.secrets
 #
 @anvil.server.callable
 def smartApi():
-  apiKey = anvil.secrets.get_secret('smartsheetsKey')
-  smart = smartsheet.Smartsheet(apiKey)             # Create a Smartsheet client 
-  
-  response = smart.Sheets.list_sheets()       # Call the list_sheets() function and store the response object
-  sheetId = response.data          # Get the ID of the first sheet in the response
-  # sheet = smart.Sheets.get_sheet(sheetId)     # Load the sheet by using its ID
-  
-  # print(f"The sheet {sheet.name} has {sheet.total_row_count} rows")   # Print information about the sheet
-  return str(sheetId)
+  smart = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))             
+  response = smart.Sheets.list_sheets()
+  sheets = response.data   
+  print(sheets[0])
+  for sheet in sheets:
+    try:
+      sheet_id = str(sheet.id)
+      sheet_name = sheet.name
+      print(f"Adding row: ID={sheet_id}, Name={sheet_name}")
+      app_tables.sheets.add_row(sheet_id=sheet_id,sheet_name=sheet_name)
+    except Exception as e:
+      print(f"Error when adding row: {e}")
