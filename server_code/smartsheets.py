@@ -10,12 +10,61 @@ import anvil.server
 import smartsheet
 import anvil.secrets
 import math
+import uuid
+import requests
+import anvil.http
+
 
 
 # smartsheets clieent ID's
 
 # client id = "bhpzjjue0q7imkv65ri"
 # appSecret = "f8h8fsqzb1dh1dbiyne"
+
+@anvil.server.callable
+def get_auth_url():
+    client_id = anvil.secrets.get_secret('smartsheetAppClientId') # Save your client id in secrets
+    state = uuid.uuid4()
+    scope = 'READ_SHEETS WRITE_SHEETS'
+    auth_url = f"https://app.smartsheet.com/b/authorize?response_type=code&client_id={client_id}&scope={scope}&state={state}"
+    
+    return auth_url
+  
+@anvil.server.http_endpoint("/oauth_callback")
+def oauth_callback(**kwargs):
+    try:
+        # Potentially error-throwing code here
+        code = kwargs.get('code')
+        if not code:
+            raise Exception("No code in URL parameters")
+
+        client_id = anvil.secrets.get_secret('smartsheetAppClientId')
+        client_secret = anvil.secrets.get_secret('smartsheetAppClientSecret')
+        data = {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'client_id': client_id,
+            'client_secret': client_secret,
+        }
+        response = requests.post('https://api.smartsheet.com/2.0/token', data=data)
+        response.raise_for_status()
+        access_token = response.json()['access_token']
+        refresh_token = response.json()['refresh_token']
+
+        # Save the tokens
+        anvil.tables.app_tables.auth_data.delete_all_rows()
+        anvil.tables.app_tables.auth_data.add_row(access_token=access_token, refresh_token=refresh_token)
+
+    except Exception as e:
+        # Log the error and then redirect
+        print(f"Error during OAuth callback: {e}")
+        authenticated = False  
+        return anvil.server.HttpResponse(status=302, headers={'Location': f'https://uz77gc6xsofjwhzw.anvil.app/752S2LMMMJ6U2I2NJVGEN4VM?authenticated={authenticated}'})
+    
+    finally:
+        # Always redirect, even if there was an error
+        authenticated = True  
+        return anvil.server.HttpResponse(status=302, headers={'Location': f'https://uz77gc6xsofjwhzw.anvil.app/752S2LMMMJ6U2I2NJVGEN4VM?authenticated={authenticated}'})
 
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.

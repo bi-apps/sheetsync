@@ -56,18 +56,35 @@ components:
   layout_properties: {slot: default}
   components:
   - type: FlowPanel
-    properties: {}
+    properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
+      foreground: '', visible: true, spacing_above: small, spacing_below: small, background: ''}
     name: flow_panel_1
-    layout_properties: {grid_position: 'LGIMTZ,DKGRAZ'}
+    layout_properties: {grid_position: 'VMFCJF,VAPCUO'}
     components:
-    - type: Label
-      properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-        visible: true, text: 'Total Availbile Sheets Connected :', font_size: null,
+    - type: Button
+      properties: {role: primary-color, align: center, tooltip: '', border: '', enabled: true,
+        foreground: '', visible: true, text: Connect to smartsheets..., font_size: null,
         font: '', spacing_above: small, icon_align: left, spacing_below: small, italic: false,
-        background: '', bold: false, underline: false, icon: ''}
-      name: label_2
+        background: '', bold: false, underline: false, icon: 'fa:link'}
+      name: connectSmartsheetBtn
       layout_properties: {}
-    - type: Label
-      properties: {}
-      name: totCheetCount
-      layout_properties: {}
+      event_bindings: {click: connectSmartsheetBtn_click}
+  - type: ColumnPanel
+    properties: {col_widths: '{}'}
+    name: column_panel_3
+    layout_properties: {grid_position: 'ZWZOLS,YNYJYD'}
+    components:
+    - type: FlowPanel
+      properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
+        foreground: '', visible: true, spacing_above: small, spacing_below: small,
+        background: ''}
+      name: flow_panel_2
+      layout_properties: {grid_position: 'NVNHQH,XIPQZK'}
+      components:
+      - type: RichText
+        properties: {role: null, align: left, tooltip: '', enable_slots: true, border: '',
+          foreground: '', visible: true, font_size: null, content: '{{authenticated}}',
+          font: '', spacing_above: small, spacing_below: small, data: null, background: '',
+          format: markdown}
+        name: authText
+        layout_properties: {}
