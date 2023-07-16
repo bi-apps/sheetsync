@@ -21,6 +21,12 @@ import anvil.http
 # client id = "bhpzjjue0q7imkv65ri"
 # appSecret = "f8h8fsqzb1dh1dbiyne"
 
+def getSmartsheetClient(userId):
+  access_token = app_tables.auth_data.get(user=userId)['access_token']
+  # client = smartsheet.Smartsheet(access_token)
+  client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
+  return client
+
 @anvil.server.callable
 def get_auth_url():
     client_id = anvil.secrets.get_secret('smartsheetAppClientId') # Save your client id in secrets
@@ -51,9 +57,15 @@ def oauth_callback(**kwargs):
         access_token = response.json()['access_token']
         refresh_token = response.json()['refresh_token']
 
+        user_row = anvil.users.get_user()
+        user = 'userId'
+      
         # Save the tokens
         anvil.tables.app_tables.auth_data.delete_all_rows()
-        anvil.tables.app_tables.auth_data.add_row(access_token=access_token, refresh_token=refresh_token)
+        anvil.tables.app_tables.auth_data.add_row(access_token=access_token, refresh_token=refresh_token, authenticated=True, user="userId")
+      
+        getSheetsCount(user)
+        getSheetData(user)
 
     except Exception as e:
         # Log the error and then redirect
@@ -63,8 +75,60 @@ def oauth_callback(**kwargs):
     
     finally:
         # Always redirect, even if there was an error
-        authenticated = True  
-        return anvil.server.HttpResponse(status=302, headers={'Location': f'https://uz77gc6xsofjwhzw.anvil.app/752S2LMMMJ6U2I2NJVGEN4VM?authenticated={authenticated}'})
+        return anvil.server.HttpResponse(status=302, headers={'Location': 'https://uz77gc6xsofjwhzw.anvil.app/752S2LMMMJ6U2I2NJVGEN4VM'})
+      
+@anvil.server.callable
+def check_auth_status(user):
+      user_auth_data = tables.app_tables.auth_data.get(user=user)
+      
+      if user_auth_data is not None:
+        authenticated = True
+        return authenticated
+        
+      authenticated = False
+      return authenticated
+
+@anvil.server.callable
+def getSheetsCount(userId):
+    client = getSmartsheetClient(userId)
+    # Call smartsheets API and retrive all sheets
+    response = client.Sheets.list_sheets(include_all=True)
+    # Get total sheet count from response
+    total_count = response.total_count 
+  
+    # Get User sheet count, and if the count is the same don't update it, else update it
+    getUserAuthData = tables.app_tables.auth_data.get(user=userId)
+    if getUserAuthData['totalSheetsInAccount'] is not total_count:
+      print('updated')
+      getUserAuthData.update(totalSheetsInAccount=total_count)
+
+    # Get all Sheet Names and Data Require
+  
+    # Return total count to calling client side code
+    return
+
+def getSheetData(userId):
+    client = getSmartsheetClient(userId)
+    response = client.Sheets.list_sheets(include_all=True)
+    responseData = response.data
+
+    for sheet in responseData:
+        existing_sheet = tables.app_tables.sheets.get(sheet_id=str(sheet.id))
+
+        if existing_sheet is not None:
+            if existing_sheet['sheet_name'] != sheet.name:
+                # Update the sheet name if it is different
+                existing_sheet['sheet_name'] = sheet.name
+                existing_sheet.save()
+        else:
+            # Add a new row if the sheet does not exist in the table
+            tables.app_tables.sheets.add_row(
+                sheet_id=str(sheet.id),
+                sheet_name=sheet.name,
+                user=userId
+            )
+
+  
 
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
@@ -78,69 +142,3 @@ def oauth_callback(**kwargs):
 #   print("Hello, " + name + "!")
 #   return 42
 #
-@anvil.server.callable
-def smartApi():
-    # Initiate the Smartsheet client
-  smart = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
-  
-  # Set your desired page size
-  page_size = 100
-  # Get the total count of sheets
-  total_count = smart.Sheets.list_sheets(page_size=1).total_count
-  # Calculate the number of pages
-  pages = math.ceil(total_count / page_size)
-  
-  all_sheet_names = []
-  
-  # Loop through all pages
-  for page_number in range(1, pages + 1):
-    # Fetch the page of results
-    response = smart.Sheets.list_sheets(page_size=page_size, page_number=page_number)
-    # Extract the data from the response
-    sheets = response.data
-
-    # Extract the names and add them to the list
-    for sheet in sheets:
-      all_sheet_names.append(sheet.name)
-    
-  return all_sheet_names
-  
-  # smart = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))             
-  # response = smart.Sheets.list_sheets()
-  # sheets = response.data   
-  # print(sheets[0])
-  # for sheet in sheets:
-  #   try:
-  #     sheet_id = str(sheet.id)
-  #     sheet_name = sheet.name
-  #     print(f"Adding row: ID={sheet_id}, Name={sheet_name}")
-  #     app_tables.sheets.add_row(sheet_id=sheet_id,sheet_name=sheet_name)
-  #   except Exception as e:
-  #     print(f"Error when adding row: {e}")
-
-@anvil.server.callable
-def getSheets():
-    # Initiate the Smartsheet client
-  smart = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
-  
-  # Set your desired page size
-  page_size = 100
-  # Get the total count of sheets
-  total_count = smart.Sheets.list_sheets(page_size=1).total_count
-  # Calculate the number of pages
-  pages = math.ceil(total_count / page_size)
-  
-  all_sheet_names = []
-  
-  # Loop through all pages
-  for page_number in range(1, pages + 1):
-    # Fetch the page of results
-    response = smart.Sheets.list_sheets(page_size=page_size, page_number=page_number)
-    # Extract the data from the response
-    sheets = response.data
-
-    # Extract the names and add them to the list
-    for sheet in sheets:
-      all_sheet_names.append(sheet.name)
-    
-  return len(all_sheet_names)

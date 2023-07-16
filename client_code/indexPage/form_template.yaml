@@ -55,6 +55,13 @@ components:
   name: column_panel_2
   layout_properties: {slot: default}
   components:
+  - type: Label
+    properties: {role: headline, align: center, tooltip: '', border: '', foreground: '',
+      visible: true, text: '', font_size: 45, font: '', spacing_above: large, icon_align: left,
+      spacing_below: large, italic: false, background: '', bold: true, underline: false,
+      icon: ''}
+    name: headLine
+    layout_properties: {grid_position: 'NYWQJW,IQHBRC'}
   - type: FlowPanel
     properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
       foreground: '', visible: true, spacing_above: small, spacing_below: small, background: ''}
@@ -62,26 +69,104 @@ components:
     layout_properties: {grid_position: 'VMFCJF,VAPCUO'}
     components:
     - type: Button
-      properties: {role: primary-color, align: center, tooltip: '', border: '', enabled: true,
+      properties: {role: primary-color, align: full, tooltip: '', border: '', enabled: true,
         foreground: '', visible: true, text: Connect to smartsheets..., font_size: null,
         font: '', spacing_above: small, icon_align: left, spacing_below: small, italic: false,
         background: '', bold: false, underline: false, icon: 'fa:link'}
       name: connectSmartsheetBtn
-      layout_properties: {}
+      layout_properties: {width: 415.408}
       event_bindings: {click: connectSmartsheetBtn_click}
   - type: ColumnPanel
     properties: {col_widths: '{}'}
-    name: column_panel_3
-    layout_properties: {grid_position: 'ZWZOLS,YNYJYD'}
+    name: totalSheetsColum
+    layout_properties: {grid_position: 'ZMSCPK,YQDGPS'}
     components:
     - type: FlowPanel
       properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
         foreground: '', visible: true, spacing_above: small, spacing_below: small,
         background: ''}
-      name: flow_panel_2
-      layout_properties: {grid_position: 'NVNHQH,XIPQZK'}
+      name: totalSheetsFlowPanel
+      layout_properties: {grid_position: 'BZZIEO,YUCBWE'}
       components:
       - type: Label
-        properties: {}
-        name: authText
+        properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
+          visible: true, text: 'Available Sheets : ', font_size: 18, font: '', spacing_above: small,
+          icon_align: left, spacing_below: small, italic: false, background: '', bold: true,
+          underline: false, icon: ''}
+        name: totsheetsLabel
         layout_properties: {}
+      - type: Label
+        properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+          visible: true, text: '', font_size: 18, font: '', spacing_above: small,
+          icon_align: left, spacing_below: small, italic: false, background: '', bold: true,
+          underline: false, icon: ''}
+        name: totCountSheets
+        layout_properties: {}
+        data_bindings: []
+  - type: ColumnPanel
+    properties: {col_widths: '{}'}
+    name: column_panel_3
+    layout_properties: {grid_position: 'TATRAT,AKWQBM'}
+    components:
+    - type: FlowPanel
+      properties: {}
+      name: flow_panel_2
+      layout_properties: {grid_position: 'PVYMFK,LRJFWJ'}
+      components:
+      - type: Label
+        properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+          visible: true, text: 'Search :', font_size: null, font: '', spacing_above: small,
+          icon_align: left, spacing_below: small, italic: false, background: '', bold: false,
+          underline: false, icon: ''}
+        name: searchLabel
+        layout_properties: {}
+      - type: TextBox
+        properties: {role: null, align: left, hide_text: false, tooltip: '', placeholder: Shearch a sheet to setup,
+          border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
+          font: '', spacing_above: small, type: text, spacing_below: small, italic: false,
+          background: '', bold: false, underline: false}
+        name: searchInput
+        layout_properties: {width: 386.375}
+        event_bindings: {change: text_box_1_change}
+  - type: ColumnPanel
+    properties: {col_widths: '{}'}
+    name: datagridColumn
+    layout_properties: {grid_position: 'VRCNAN,JYSGTN'}
+    components:
+    - type: FlowPanel
+      properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
+        foreground: '', visible: true, spacing_above: small, spacing_below: small,
+        background: ''}
+      name: dataGridFlowPanel
+      layout_properties: {grid_position: 'KUQXYA,HJUFXU'}
+      components:
+      - type: DataGrid
+        properties:
+          role: null
+          columns:
+          - {id: MMTIBE, title: Sheet Name, data_key: sheetName, $$hashKey: 'object:75644',
+            expand: false}
+          - {id: IWCJRF, title: Use as Source for Drop Down, data_key: dropDownSource,
+            $$hashKey: 'object:108066', expand: false}
+          auto_header: true
+          tooltip: ''
+          border: ''
+          foreground: ''
+          rows_per_page: 10
+          visible: true
+          wrap_on: mobile
+          show_page_controls: true
+          spacing_above: small
+          spacing_below: small
+          background: ''
+        name: dataGridMain
+        layout_properties: {width: 741.48}
+        components:
+        - type: RepeatingPanel
+          properties: {role: null, tooltip: '', border: '', foreground: '', items: null,
+            visible: true, spacing_above: none, spacing_below: none, item_template: indexPage.RowTemplate7,
+            background: ''}
+          name: dataGridRepeatingPanelMain
+          layout_properties: {pinned: false}
+          data_bindings: []
+        event_bindings: {show: dataGridMain_show}

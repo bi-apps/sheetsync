@@ -66,9 +66,12 @@ db_schema:
     - name: sheet_name
       admin_ui: {order: 1, width: 200}
       type: string
+    - name: user
+      admin_ui: {order: 2, width: 200}
+      type: string
     title: sheets
   auth_data:
-    client: none
+    client: search
     server: full
     columns:
     - name: access_token
@@ -77,6 +80,15 @@ db_schema:
     - name: refresh_token
       admin_ui: {order: 1, width: 200}
       type: string
+    - name: authenticated
+      admin_ui: {order: 2, width: 200}
+      type: bool
+    - name: user
+      admin_ui: {width: 200}
+      type: string
+    - name: totalSheetsInAccount
+      admin_ui: {order: 4, width: 200}
+      type: number
     title: auth_data
 secrets:
   smartsheetsKey:
