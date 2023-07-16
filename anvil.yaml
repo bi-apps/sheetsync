@@ -71,3 +71,9 @@ secrets:
   smartsheetsKey:
     value: {UZ77GC6XSOFJWHZW: d8igp1JrC9z+JnxQOmMhHyU1OAf4QVkjLl9K7LuQljR30QXG+Tcq/T8+P5JScn/T9bwJ1hvgzl7yYlr0KhBF6rGh/cQycPDCaes+eBBeZFbW8jJnZzoRu7rCaRNQYBMaHQCehqOPK2yTPnk4sn9gak2vYljCrdgIi1av2fDBYCMUhwL7}
     type: secret
+  smartsheetAppClientId:
+    value: {UZ77GC6XSOFJWHZW: PsMhcgQ7RdkEgpmU6OLEuOt/ZsIb232hPqx/7SjDpYVNQqBBjXstYhI8qxV02X0B9mllCQS68fuo2DJG6KHLlznPXR1qSaLXsNDH+V9btJQAwPmRc22wtQrLn72dNtOengRCF5gv/SA0Z+8V4cZ/3QsR}
+    type: secret
+  smartsheetAppClientSecret:
+    value: {UZ77GC6XSOFJWHZW: Oz3MgP6vs43AdFdve/K8SoUKGvkErKkUQJVXyqeTOJRVn9cZS8YUqtScW90ILSpFD2U6gSoI6sIg2e0NSA5eZwgR4TNYXPulQSQBOpA1xPVIXGvpWD5BJ7TMdJT8fMt8zy7uiHxnd49rYwXRIrtQDXR6}
+    type: secret

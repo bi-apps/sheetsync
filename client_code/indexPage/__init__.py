@@ -15,13 +15,9 @@ class indexPage(indexPageTemplate):
 
     # Any code you write here will run before the form opens.
 
-  def link_1_click(self, **event_args):
-    """This method is called when the link is clicked"""
-    anvil.users.logout()
-
   def form_show(self, **event_args):
     """This method is called when the HTML panel is shown on the screen"""
-    sheetNames = anvil.server.call('smartApi')
+    self.totCheetCount.text = anvil.server.call('getSheets')
 
 
 

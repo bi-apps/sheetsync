@@ -4,16 +4,6 @@ container:
   properties: {html: '@theme:standard-page.html'}
   event_bindings: {show: form_show}
 components:
-- type: ColumnPanel
-  properties: {col_widths: '{}'}
-  name: content_panel
-  layout_properties: {slot: default}
-  components:
-  - type: RepeatingPanel
-    properties: {item_template: indexPage.ItemTemplate3}
-    name: repeating_panel_1
-    layout_properties: {grid_position: 'QJLONS,EPMJCU'}
-    data_bindings: []
 - type: FlowPanel
   properties: {}
   name: navbar_links
@@ -26,7 +16,7 @@ components:
       italic: false, background: '', bold: false, underline: false, icon: 'fa:lock'}
     name: link_1
     layout_properties: {}
-    event_bindings: {click: link_1_click}
+    event_bindings: {}
 - type: Label
   properties: {role: headline, align: left, tooltip: '', border: '', foreground: '',
     visible: true, text: SheetSync, font_size: null, font: '', spacing_above: small,
@@ -60,3 +50,24 @@ components:
       background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:check'}
     name: button_1
     layout_properties: {grid_position: 'FVDDUC,QWJPQG'}
+- type: ColumnPanel
+  properties: {col_widths: '{}'}
+  name: column_panel_2
+  layout_properties: {slot: default}
+  components:
+  - type: FlowPanel
+    properties: {}
+    name: flow_panel_1
+    layout_properties: {grid_position: 'LGIMTZ,DKGRAZ'}
+    components:
+    - type: Label
+      properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+        visible: true, text: 'Total Availbile Sheets Connected :', font_size: null,
+        font: '', spacing_above: small, icon_align: left, spacing_below: small, italic: false,
+        background: '', bold: false, underline: false, icon: ''}
+      name: label_2
+      layout_properties: {}
+    - type: Label
+      properties: {}
+      name: totCheetCount
+      layout_properties: {}
