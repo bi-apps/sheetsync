@@ -127,7 +127,7 @@ components:
           background: '', bold: false, underline: false}
         name: searchInput
         layout_properties: {width: 386.375}
-        event_bindings: {change: text_box_1_change}
+        event_bindings: {change: searchInputChange}
   - type: ColumnPanel
     properties: {col_widths: '{}'}
     name: datagridColumn

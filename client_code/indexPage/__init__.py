@@ -60,7 +60,8 @@ class indexPage(indexPageTemplate):
     """This method is called when the data grid is shown on the screen"""
     self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search()
 
-  def text_box_1_change(self, **event_args):
+
+  def searchInputChange(self, **event_args):
     """This method is called when the text in this text box is edited"""
     allItems = self.dataGridRepeatingPanelMain.items
     search_string = self.searchInput.text.lower()
@@ -71,6 +72,7 @@ class indexPage(indexPageTemplate):
     else:
         filtered_items = allItems
         self.dataGridRepeatingPanelMain.items = filtered_items
+
 
     
 
