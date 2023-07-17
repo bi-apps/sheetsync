@@ -17,14 +17,15 @@ services:
   client_config: {}
   server_config: {}
 startup: {type: form, module: indexPage}
-package_name: Material_Design_2
+package_name: SheetSync
 allow_embedding: false
-name: Material Design 2
+name: SheetSync
 runtime_options:
   version: 2
   client_version: '3'
   server_version: python3-sandbox
   server_spec: {base: python310-standard}
+metadata: {logo_img: 'asset:189663.png'}
 startup_form: null
 db_schema:
   users:
@@ -55,6 +56,18 @@ db_schema:
     - name: signed_up
       type: datetime
       admin_ui: {order: 7, width: 200}
+    - name: access_token
+      admin_ui: {order: 8, width: 200}
+      type: string
+    - name: refresh_token
+      admin_ui: {order: 9, width: 200}
+      type: string
+    - name: authenticated_to_smartsheets
+      admin_ui: {order: 10, width: 200}
+      type: bool
+    - name: totalSheetsInAccount
+      admin_ui: {order: 11, width: 200}
+      type: number
     title: Users
   sheets:
     client: full

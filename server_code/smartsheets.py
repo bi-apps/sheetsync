@@ -61,7 +61,7 @@ def oauth_callback(**kwargs):
         user = 'userId'
       
         # Save the tokens
-        anvil.tables.app_tables.auth_data.delete_all_rows()
+        # anvil.tables.app_tables.auth_data.delete_all_rows()
         anvil.tables.app_tables.auth_data.add_row(access_token=access_token, refresh_token=refresh_token, authenticated=True, user="userId")
       
         getSheetsCount(user)
