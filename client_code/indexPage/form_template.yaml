@@ -105,34 +105,29 @@ components:
         data_bindings: []
   - type: ColumnPanel
     properties: {col_widths: '{}'}
-    name: column_panel_3
-    layout_properties: {grid_position: 'TATRAT,AKWQBM'}
+    name: datagridColumn
+    layout_properties: {grid_position: 'VRCNAN,JYSGTN'}
     components:
     - type: FlowPanel
       properties: {}
-      name: flow_panel_2
-      layout_properties: {grid_position: 'PVYMFK,LRJFWJ'}
+      name: flow_panel_3
+      layout_properties: {grid_position: 'XUAZKI,AJEPKG'}
       components:
       - type: Label
-        properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-          visible: true, text: 'Search :', font_size: null, font: '', spacing_above: small,
-          icon_align: left, spacing_below: small, italic: false, background: '', bold: false,
-          underline: false, icon: ''}
+        properties: {role: input-prompt, align: center, tooltip: '', border: '', foreground: '',
+          visible: true, text: 'Search Sheets :', font_size: null, font: '', spacing_above: small,
+          icon_align: left, spacing_below: small, italic: false, background: '', bold: true,
+          underline: false, icon: 'fa:search'}
         name: searchLabel
         layout_properties: {}
       - type: TextBox
-        properties: {role: null, align: left, hide_text: false, tooltip: '', placeholder: Shearch a sheet to setup,
+        properties: {role: dense, align: left, hide_text: false, tooltip: '', placeholder: Shearch a sheet to setup,
           border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
           font: '', spacing_above: small, type: text, spacing_below: small, italic: false,
           background: '', bold: false, underline: false}
         name: searchInput
-        layout_properties: {width: 386.375}
+        layout_properties: {width: 406.375}
         event_bindings: {change: searchInputChange}
-  - type: ColumnPanel
-    properties: {col_widths: '{}'}
-    name: datagridColumn
-    layout_properties: {grid_position: 'VRCNAN,JYSGTN'}
-    components:
     - type: FlowPanel
       properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
         foreground: '', visible: true, spacing_above: small, spacing_below: small,

@@ -58,20 +58,13 @@ class indexPage(indexPageTemplate):
 
   def dataGridMain_show(self, **event_args):
     """This method is called when the data grid is shown on the screen"""
-    self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search()
+    self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search(user='userId')
 
 
   def searchInputChange(self, **event_args):
-    """This method is called when the text in this text box is edited"""
-    allItems = self.dataGridRepeatingPanelMain.items
-    search_string = self.searchInput.text.lower()
-    
-    if len(search_string) > 2:
-        filtered_items = [item for item in self.dataGridRepeatingPanelMain.items if search_string in item['sheet_name'].lower()]
-        self.dataGridRepeatingPanelMain.items = filtered_items
-    else:
-        filtered_items = allItems
-        self.dataGridRepeatingPanelMain.items = filtered_items
+      """This method is called when the text in this text box is edited"""
+      search_string = self.searchInput.text.lower()
+      self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search(sheet_name=q.ilike('%' + search_string + '%'))
 
 
     
