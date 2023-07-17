@@ -24,6 +24,7 @@ class homePage(homePageTemplate):
 
   def primary_color_1_click(self, **event_args):
     """This method is called when the button is clicked"""
+    user
     anvil.users.login_with_form()
 
   def primary_color_2_click(self, **event_args):
