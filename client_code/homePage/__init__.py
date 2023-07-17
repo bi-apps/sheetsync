@@ -22,13 +22,22 @@ class homePage(homePageTemplate):
 
     # Any code you write here will run before the form opens.
 
-  def primary_color_1_click(self, **event_args):
+  def signIn_user_click_event(self, **event_args):
     """This method is called when the button is clicked"""
-    user
-    anvil.users.login_with_form()
+    user = anvil.users.get_user()
+    if user:
+      open_form('indexPage')
+    else:
+      anvil.users.login_with_form(show_signup_option=False, allow_cancel=True, remember_by_default=True)
+    return
 
-  def primary_color_2_click(self, **event_args):
+  def signup_user_click_event(self, **event_args):
     """This method is called when the button is clicked"""
-    anvil.users.signup_with_form()
+    anvil.users.signup_with_form(allow_cancel=True)
+    return
+
+
+
+
 
 

@@ -13,29 +13,83 @@ import math
 import uuid
 import requests
 import anvil.http
+import base64
+from cryptography.fernet import Fernet
 
-
-
-# smartsheets clieent ID's
-
-# client id = "bhpzjjue0q7imkv65ri"
-# appSecret = "f8h8fsqzb1dh1dbiyne"
-
+# Start Server Code
 def getSmartsheetClient(userId):
   access_token = app_tables.auth_data.get(user=userId)['access_token']
   # client = smartsheet.Smartsheet(access_token)
   client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
   return client
 
+# Handel Encryption and Encryption Keys
+
+def create_user_encryption_key(user):
+    # Generate a new encryption key
+    encryption_key = Fernet.generate_key()
+
+    # Convert the encryption key to a base64-encoded string
+    encoded_key = base64.urlsafe_b64encode(encryption_key).decode()
+
+    # Add user encryption key to users table
+   
+    print(f'User Encryption Created Key: {encryption_key}')
+    return encryption_key
+
+def get_user_encryption_key(user):
+    # Retrieve the encryption key for the current user
+    secret_name = f"user_encryption_key_{user['email']}"
+    encoded_key = anvil.secrets.get_secret(secret_name)
+
+    # Convert the base64-encoded key to bytes
+    encryption_key = base64.urlsafe_b64decode(encoded_key)
+
+    print(f'User Encryption Retrieved Key: {encryption_key}')
+    return encryption_key
+
+def encrypt_user(user, encryption_key):
+    f = Fernet(encryption_key)
+    encrypted_user = f.encrypt(user.to_json().encode())
+    return base64.urlsafe_b64encode(encrypted_user).decode()
+
+def decrypt_user(encrypted_user, encryption_key):
+    f = Fernet(encryption_key)
+    decoded_user = base64.urlsafe_b64decode(encrypted_user)
+    decrypted_user = f.decrypt(decoded_user).decode()
+    return anvil.users.deserialize_user(decrypted_user)
+
+# End Encryption and Encryption Keys
+
+# End Server Code
+
+# indexPage Line 29
 @anvil.server.callable
-def get_auth_url():
+def check_auth_status(user):
+      # user_auth_data = tables.app_tables.auth_data.get(user=user)
+      user['authenticated_to_smartsheets']
+      if user['authenticated_to_smartsheets'] is not True:
+        authenticated = False
+        return authenticated
+        
+      authenticated = True
+      return authenticated
+
+# indexPage Line 51
+@anvil.server.callable
+def get_auth_url(user):
+  
+    # encryption_key = create_user_encryption_key(user) # Create User Encryption Key and Saves it as i.e user_encryption_key_derickmulder@gmail.com = xxxxxxxxxxxxxxxx
+    encrypted_user_info = encrypt_user(user,create_user_encryption_key(user))
+  
     client_id = anvil.secrets.get_secret('smartsheetAppClientId') # Save your client id in secrets
-    state = uuid.uuid4()
+    state = f"{uuid.uuid4()}_{encrypted_user_info}"
     scope = 'READ_SHEETS WRITE_SHEETS'
     auth_url = f"https://app.smartsheet.com/b/authorize?response_type=code&client_id={client_id}&scope={scope}&state={state}"
-    
+    print(f'URL Link {auth_url}')
     return auth_url
-  
+
+# Catch Get Request back from smartsheets call back URL
 @anvil.server.http_endpoint("/oauth_callback")
 def oauth_callback(**kwargs):
     try:
@@ -43,7 +97,18 @@ def oauth_callback(**kwargs):
         code = kwargs.get('code')
         if not code:
             raise Exception("No code in URL parameters")
-
+          
+        state = kwargs.get('state')
+        print(state)
+        if not state:
+            raise Exception("No User State Returned, Bail!")
+          
+        encrypted_returned_user_info = state.split('_', 1)[1]
+        print(encrypted_returned_user_info)
+      
+        encryptionKey = anvil.secrets.get_secret(f"user_encryption_key_{encrypted_user['email']}")
+        print(encryptionKey)
+      
         client_id = anvil.secrets.get_secret('smartsheetAppClientId')
         client_secret = anvil.secrets.get_secret('smartsheetAppClientSecret')
         data = {
@@ -79,15 +144,7 @@ def oauth_callback(**kwargs):
         # Always redirect, even if there was an error
         return anvil.server.HttpResponse(status=302, headers={'Location': 'https://uz77gc6xsofjwhzw.anvil.app/752S2LMMMJ6U2I2NJVGEN4VM'})
       
-@anvil.server.callable
-def check_auth_status(user):
-      # user_auth_data = tables.app_tables.auth_data.get(user=user)
-      if user_auth_data is not None:
-        authenticated = True
-        return authenticated
-        
-      authenticated = False
-      return authenticated
+
 
 @anvil.server.callable
 def getSheetsCount(userId):

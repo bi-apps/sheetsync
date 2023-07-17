@@ -16,7 +16,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: indexPage}
+startup: {type: form, module: homePage}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
@@ -68,6 +68,18 @@ db_schema:
     - name: totalSheetsInAccount
       admin_ui: {order: 11, width: 200}
       type: number
+    - name: email_confirmation_key
+      admin_ui: {width: 200}
+      type: string
+    - name: encryption_key
+      admin_ui: {order: 13, width: 200}
+      type: string
+    - name: encryption_state
+      admin_ui: {order: 14, width: 200}
+      type: string
+    - name: url_encoded_encryption
+      admin_ui: {order: 15, width: 200}
+      type: string
     title: Users
   sheets:
     client: full
