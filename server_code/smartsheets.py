@@ -58,14 +58,16 @@ def oauth_callback(**kwargs):
         refresh_token = response.json()['refresh_token']
 
         user_row = anvil.users.get_user()
+        print(user_row)
         user = 'userId'
-      
+        
         # Save the tokens
         # anvil.tables.app_tables.auth_data.delete_all_rows()
-        anvil.tables.app_tables.auth_data.add_row(access_token=access_token, refresh_token=refresh_token, authenticated=True, user="userId")
+        user_row.update(access_token=access_token, refresh_token=refresh_token, authenticated_to_smartsheets=True)
+        # anvil.tables.app_tables.auth_data.add_row(access_token=access_token, refresh_token=refresh_token, authenticated=True, user="userId")
       
-        getSheetsCount(user)
-        getSheetData(user)
+        getSheetsCount(user_row)
+        getSheetData(user_row)
 
     except Exception as e:
         # Log the error and then redirect
@@ -79,8 +81,7 @@ def oauth_callback(**kwargs):
       
 @anvil.server.callable
 def check_auth_status(user):
-      user_auth_data = tables.app_tables.auth_data.get(user=user)
-      
+      # user_auth_data = tables.app_tables.auth_data.get(user=user)
       if user_auth_data is not None:
         authenticated = True
         return authenticated
