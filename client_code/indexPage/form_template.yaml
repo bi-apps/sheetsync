@@ -16,7 +16,7 @@ components:
       italic: false, background: '', bold: false, underline: false, icon: 'fa:lock'}
     name: link_1
     layout_properties: {}
-    event_bindings: {}
+    event_bindings: {click: link_1_click}
 - type: Label
   properties: {role: headline, align: left, tooltip: '', border: '', foreground: '',
     visible: true, text: SheetSync, font_size: null, font: '', spacing_above: small,
@@ -140,7 +140,7 @@ components:
           role: null
           columns:
           - {id: MMTIBE, title: Sheet Name, data_key: sheetName, $$hashKey: 'object:75644',
-            expand: false}
+            expand: false, width: '530'}
           - {id: IWCJRF, title: Use as Source for Drop Down, data_key: dropDownSource,
             $$hashKey: 'object:108066', expand: false}
           auto_header: true
@@ -164,4 +164,4 @@ components:
           name: dataGridRepeatingPanelMain
           layout_properties: {pinned: false}
           data_bindings: []
-        event_bindings: {show: dataGridMain_show}
+        event_bindings: {}

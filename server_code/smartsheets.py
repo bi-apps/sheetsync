@@ -17,48 +17,26 @@ import base64
 from cryptography.fernet import Fernet
 
 # Start Server Code
-def getSmartsheetClient(userId):
-  access_token = app_tables.auth_data.get(user=userId)['access_token']
-  # client = smartsheet.Smartsheet(access_token)
-  client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
+
+# Common Smartsheet Client Initiation Code
+def getSmartsheetClient(user):
+  access_token = app_tables.users.get(email=user['email'])['access_token']
+  client = smartsheet.Smartsheet(access_token)
+  # client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
   return client
 
 # Handel Encryption and Encryption Keys
-
 def create_user_encryption_key(user):
     # Generate a new encryption key
-    encryption_key = Fernet.generate_key()
+    user_encryption_key = Fernet.generate_key()
 
     # Convert the encryption key to a base64-encoded string
-    encoded_key = base64.urlsafe_b64encode(encryption_key).decode()
+    encoded_key = base64.urlsafe_b64encode(user_encryption_key).decode()
 
     # Add user encryption key to users table
-   
-    print(f'User Encryption Created Key: {encryption_key}')
-    return encryption_key
-
-def get_user_encryption_key(user):
-    # Retrieve the encryption key for the current user
-    secret_name = f"user_encryption_key_{user['email']}"
-    encoded_key = anvil.secrets.get_secret(secret_name)
-
-    # Convert the base64-encoded key to bytes
-    encryption_key = base64.urlsafe_b64decode(encoded_key)
-
-    print(f'User Encryption Retrieved Key: {encryption_key}')
-    return encryption_key
-
-def encrypt_user(user, encryption_key):
-    f = Fernet(encryption_key)
-    encrypted_user = f.encrypt(user.to_json().encode())
-    return base64.urlsafe_b64encode(encrypted_user).decode()
-
-def decrypt_user(encrypted_user, encryption_key):
-    f = Fernet(encryption_key)
-    decoded_user = base64.urlsafe_b64decode(encrypted_user)
-    decrypted_user = f.decrypt(decoded_user).decode()
-    return anvil.users.deserialize_user(decrypted_user)
-
+    user.update(url_encoded_encryption=encoded_key, encryption_key=str(user_encryption_key))
+    
+    return encoded_key
 # End Encryption and Encryption Keys
 
 # End Server Code
@@ -66,8 +44,6 @@ def decrypt_user(encrypted_user, encryption_key):
 # indexPage Line 29
 @anvil.server.callable
 def check_auth_status(user):
-      # user_auth_data = tables.app_tables.auth_data.get(user=user)
-      user['authenticated_to_smartsheets']
       if user['authenticated_to_smartsheets'] is not True:
         authenticated = False
         return authenticated
@@ -78,12 +54,10 @@ def check_auth_status(user):
 # indexPage Line 51
 @anvil.server.callable
 def get_auth_url(user):
-  
-    # encryption_key = create_user_encryption_key(user) # Create User Encryption Key and Saves it as i.e user_encryption_key_derickmulder@gmail.com = xxxxxxxxxxxxxxxx
-    encrypted_user_info = encrypt_user(user,create_user_encryption_key(user))
-  
+    encoded_state = create_user_encryption_key(user)
     client_id = anvil.secrets.get_secret('smartsheetAppClientId') # Save your client id in secrets
-    state = f"{uuid.uuid4()}_{encrypted_user_info}"
+    state = f"{uuid.uuid4()}_{encoded_state}"
+    user.update(encryption_state=state)
     scope = 'READ_SHEETS WRITE_SHEETS'
     auth_url = f"https://app.smartsheet.com/b/authorize?response_type=code&client_id={client_id}&scope={scope}&state={state}"
     print(f'URL Link {auth_url}')
@@ -99,15 +73,13 @@ def oauth_callback(**kwargs):
             raise Exception("No code in URL parameters")
           
         state = kwargs.get('state')
-        print(state)
         if not state:
             raise Exception("No User State Returned, Bail!")
           
-        encrypted_returned_user_info = state.split('_', 1)[1]
-        print(encrypted_returned_user_info)
-      
-        encryptionKey = anvil.secrets.get_secret(f"user_encryption_key_{encrypted_user['email']}")
-        print(encryptionKey)
+        # Get user based on Encoded Encryption String
+        user = tables.app_tables.users.get(encryption_state=state)
+        
+        
       
         client_id = anvil.secrets.get_secret('smartsheetAppClientId')
         client_secret = anvil.secrets.get_secret('smartsheetAppClientSecret')
@@ -122,17 +94,7 @@ def oauth_callback(**kwargs):
         access_token = response.json()['access_token']
         refresh_token = response.json()['refresh_token']
 
-        user_row = anvil.users.get_user()
-        print(user_row)
-        user = 'userId'
-        
-        # Save the tokens
-        # anvil.tables.app_tables.auth_data.delete_all_rows()
-        user_row.update(access_token=access_token, refresh_token=refresh_token, authenticated_to_smartsheets=True)
-        # anvil.tables.app_tables.auth_data.add_row(access_token=access_token, refresh_token=refresh_token, authenticated=True, user="userId")
-      
-        getSheetsCount(user_row)
-        getSheetData(user_row)
+        user.update(access_token=access_token, refresh_token=refresh_token, authenticated_to_smartsheets=True)
 
     except Exception as e:
         # Log the error and then redirect
@@ -144,29 +106,25 @@ def oauth_callback(**kwargs):
         # Always redirect, even if there was an error
         return anvil.server.HttpResponse(status=302, headers={'Location': 'https://uz77gc6xsofjwhzw.anvil.app/752S2LMMMJ6U2I2NJVGEN4VM'})
       
-
-
 @anvil.server.callable
-def getSheetsCount(userId):
-    client = getSmartsheetClient(userId)
+def getSheetsCount(user):
+    client = getSmartsheetClient(user)
     # Call smartsheets API and retrive all sheets
     response = client.Sheets.list_sheets(include_all=True)
     # Get total sheet count from response
     total_count = response.total_count 
   
     # Get User sheet count, and if the count is the same don't update it, else update it
-    getUserAuthData = tables.app_tables.auth_data.get(user=userId)
-    if getUserAuthData['totalSheetsInAccount'] is not total_count:
-      print('updated')
-      getUserAuthData.update(totalSheetsInAccount=total_count)
+    if user['totalSheetsInAccount'] is not total_count:
+      print('updating Sheet Count')
+      user.update(totalSheetsInAccount=total_count)
+      return True
+      
+    return True
 
-    # Get all Sheet Names and Data Require
-  
-    # Return total count to calling client side code
-    return
-
-def getSheetData(userId):
-    client = getSmartsheetClient(userId)
+@anvil.server.callable
+def getSheetData(user):
+    client = getSmartsheetClient(user)
     response = client.Sheets.list_sheets(include_all=True)
     responseData = response.data
 
@@ -183,9 +141,9 @@ def getSheetData(userId):
             tables.app_tables.sheets.add_row(
                 sheet_id=str(sheet.id),
                 sheet_name=sheet.name,
-                user=userId
+                user=user
             )
-
+    return True
   
 
 # This is a server module. It runs on the Anvil server,

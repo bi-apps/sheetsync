@@ -14,20 +14,34 @@ class indexPage(indexPageTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-
+    # Hide Components -----
     # Hide Connect Smartsheet Button on Load
     self.connectSmartsheetBtn.visible = False
-
-    # Do not display total sheet section when loading
+    # Hide total sheet count on load 
     self.totalSheetsColum.visible = False
-
-    # Get logged in User ID
+    
+    # Get User Specific Data -----
+    # Get logged in User Object or return to home if not logged in
     user = anvil.users.get_user()
-    # remeber to get user details and add below dynamically!
-    self.headLine.text = f'Welcome {user}'
+    if not user:
+      open_form('homePage')
+    
+    # Set Heading to User Name / Email
+    self.headLine.text = f"Welcome {user['email']}"
 
+    # Start Logic -----
+    # Get Smartsheet's Auth Status
     authStatus = anvil.server.call('check_auth_status',user)
     if authStatus:
+      # Get Sheet Counts
+      if anvil.server.call('getSheetsCount',user):
+        self.totCountSheets.text = user['totalSheetsInAccount']
+        
+      # Get Sheet Data
+      if anvil.server.call('getSheetData',user):
+        self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search(user=user)
+        
+      # Enable Visual Effects
       self.connectSmartsheetBtn.visible = True
       self.connectSmartsheetBtn.remove_event_handler('click')
       self.connectSmartsheetBtn.text = 'Connected'
@@ -36,7 +50,7 @@ class indexPage(indexPageTemplate):
       self.totalSheetsColum.visible = True
       # try:
         # self.totCountSheets.text = tables.app_tables.auth_data.get(user=user)['totalSheetsInAccount']
-      self.totCountSheets.text = user['totalSheetsInAccount']
+      
       # except:
         # pass
     else:
@@ -45,27 +59,28 @@ class indexPage(indexPageTemplate):
       self.connectSmartsheetBtn.icon = 'fa:link'
       self.connectSmartsheetBtn.background = '#212121'
       
-
+  # Start Smartsheets OAuth Flow.
   def connectSmartsheetBtn_click(self, **event_args):
     """This method is called when the button is clicked"""
     user = anvil.users.get_user()
     auth_url = anvil.server.call('get_auth_url',user)
     anvil.js.window.open(auth_url, '_blank')
 
+  
   def form_show(self, **event_args):
     """This method is called when the HTML panel is shown on the screen"""
-    
-
-  # def dataGridMain_show(self, **event_args):
-  #   """This method is called when the data grid is shown on the screen"""
-  #   user = anvil.users.get_user()
-  #   self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search(user=user)
 
 
-  # def searchInputChange(self, **event_args):
-  #     """This method is called when the text in this text box is edited"""
-  #     search_string = self.searchInput.text.lower()
-  #     self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search(sheet_name=q.ilike('%' + search_string + '%'))
+
+  def searchInputChange(self, **event_args):
+      """This method is called when the text in this text box is edited"""
+      search_string = self.searchInput.text.lower()
+      self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search(sheet_name=q.ilike('%' + search_string + '%'))
+
+  def link_1_click(self, **event_args):
+    """This method is called when the link is clicked"""
+    anvil.users.logout()
+
 
 
     
