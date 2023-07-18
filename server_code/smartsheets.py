@@ -128,22 +128,33 @@ def getSheetData(user):
     response = client.Sheets.list_sheets(include_all=True)
     responseData = response.data
 
-    for sheet in responseData:
-        existing_sheet = tables.app_tables.sheets.get(sheet_id=str(sheet.id))
+    # Transform response data into a list of dictionaries
+    sheets = [{'sheet_id': str(sheet.id), 'sheet_name': sheet.name} for sheet in responseData]
+    
+    return sheets
 
-        if existing_sheet is not None:
-            if existing_sheet['sheet_name'] != sheet.name:
-                # Update the sheet name if it is different
-                existing_sheet['sheet_name'] = sheet.name
-                existing_sheet.save()
-        else:
-            # Add a new row if the sheet does not exist in the table
-            tables.app_tables.sheets.add_row(
-                sheet_id=str(sheet.id),
-                sheet_name=sheet.name,
-                user=user
-            )
-    return True
+# @anvil.server.callable
+# def getSheetData(user):
+#     client = getSmartsheetClient(user)
+#     response = client.Sheets.list_sheets(include_all=True)
+#     responseData = response.data
+
+#     for sheet in responseData:
+#         existing_sheet = tables.app_tables.sheets.get(sheet_id=str(sheet.id))
+
+#         if existing_sheet is not None:
+#             if existing_sheet['sheet_name'] != sheet.name:
+#                 # Update the sheet name if it is different
+#                 existing_sheet['sheet_name'] = sheet.name
+#                 existing_sheet.save()
+#         else:
+#             # Add a new row if the sheet does not exist in the table
+#             tables.app_tables.sheets.add_row(
+#                 sheet_id=str(sheet.id),
+#                 sheet_name=sheet.name,
+#                 user=user
+#             )
+#     return True
   
 
 # This is a server module. It runs on the Anvil server,

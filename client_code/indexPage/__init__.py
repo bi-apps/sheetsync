@@ -38,8 +38,7 @@ class indexPage(indexPageTemplate):
         self.totCountSheets.text = user['totalSheetsInAccount']
         
       # Get Sheet Data
-      if anvil.server.call('getSheetData',user):
-        self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search(user=user)
+      self.dataGridRepeatingPanelMain.items = anvil.server.call('getSheetData')
         
       # Enable Visual Effects
       self.connectSmartsheetBtn.visible = True
