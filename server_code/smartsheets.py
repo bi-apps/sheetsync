@@ -17,6 +17,15 @@ import base64
 from cryptography.fernet import Fernet
 
 # Start Server Code
+from anvil import Container
+
+class RowPanel(Container):
+    def __init__(self, **properties):
+        super().__init__(**properties)
+        self.role = "row"
+        self.add_class("flow-panel")
+        self.add_class("flow-spacing-small")
+
 
 # Common Smartsheet Client Initiation Code
 def getSmartsheetClient(user):

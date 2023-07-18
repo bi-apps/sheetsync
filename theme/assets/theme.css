@@ -795,6 +795,11 @@ textarea.anvil-component[disabled] {
   font-size: 16px;
 }
 
+/* Custom RowPanel class */
+.flow-panel.flow-spacing-small {
+  margin: 0 -4px;
+}
+
 /* Shadow values taken from 
 https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-material-design-elevations
 */

@@ -12,6 +12,7 @@ import anvil.users
 import anvil.tables as tables
 import anvil.tables.query as q
 import anvil.js
+from RelationshipMappingForm import RelationshipMappingForm
 
 class mapperHome(mapperHomeTemplate):
   def __init__(self, **properties):
@@ -24,7 +25,7 @@ class mapperHome(mapperHomeTemplate):
     sheet_data = anvil.server.call('getSheetData', user)
     self.sourceSheetDropDown.items = [sheet['sheet_name'] for sheet in sheet_data]
 
-    # self.sourceSheetDropDown.items = anvil.server.call('getSheetData', user)['sheet_name']
+    self.flow_panel_2.add_component(RelationshipMappingForm())
 
   def sign_out_user_on_click(self, **event_args):
     """This method is called when the link is clicked"""
