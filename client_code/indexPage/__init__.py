@@ -23,8 +23,8 @@ class indexPage(indexPageTemplate):
     # Get User Specific Data -----
     # Get logged in User Object or return to home if not logged in
     user = anvil.users.get_user()
-    if not user:
-      open_form('homePage')
+    # if not user:
+    #   open_form('homePage')
     
     # Set Heading to User Name / Email
     self.headLine.text = f"Welcome {user['email']}"
@@ -38,7 +38,7 @@ class indexPage(indexPageTemplate):
         self.totCountSheets.text = user['totalSheetsInAccount']
         
       # Get Sheet Data
-      self.dataGridRepeatingPanelMain.items = anvil.server.call('getSheetData')
+      self.dataGridRepeatingPanelMain.items = anvil.server.call('getSheetData',user)
         
       # Enable Visual Effects
       self.connectSmartsheetBtn.visible = True
@@ -47,11 +47,6 @@ class indexPage(indexPageTemplate):
       self.connectSmartsheetBtn.icon = 'fa:check'
       self.connectSmartsheetBtn.background = '#4CAF50'
       self.totalSheetsColum.visible = True
-      # try:
-        # self.totCountSheets.text = tables.app_tables.auth_data.get(user=user)['totalSheetsInAccount']
-      
-      # except:
-        # pass
     else:
       self.connectSmartsheetBtn.visible = True
       self.connectSmartsheetBtn.text = 'Connect To Smartsheets...'
@@ -64,21 +59,23 @@ class indexPage(indexPageTemplate):
     user = anvil.users.get_user()
     auth_url = anvil.server.call('get_auth_url',user)
     anvil.js.window.open(auth_url, '_blank')
-
-  
-  def form_show(self, **event_args):
-    """This method is called when the HTML panel is shown on the screen"""
-
-
+    return
 
   def searchInputChange(self, **event_args):
-      """This method is called when the text in this text box is edited"""
-      search_string = self.searchInput.text.lower()
-      self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search(sheet_name=q.ilike('%' + search_string + '%'))
+    """This method is called when the text in this text box is edited"""
+    search_string = self.searchInput.text.lower()
+    self.dataGridRepeatingPanelMain.items = tables.app_tables.sheets.search(sheet_name=q.ilike('%' + search_string + '%'))
+    return
 
-  def link_1_click(self, **event_args):
+  def sign_out_user_on_click(self, **event_args):
     """This method is called when the link is clicked"""
     anvil.users.logout()
+    open_form('homePage')
+    return
+
+
+
+    
 
 
 

@@ -130,7 +130,8 @@ def getSheetData(user):
 
     # Transform response data into a list of dictionaries
     sheets = [{'sheet_id': str(sheet.id), 'sheet_name': sheet.name} for sheet in responseData]
-    
+    print(type(sheets))
+    print(sheets)
     return sheets
 
 # @anvil.server.callable

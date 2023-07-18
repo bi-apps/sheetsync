@@ -3,7 +3,7 @@ services:
   client_config: {}
   server_config: {}
 - source: /runtime/services/anvil/users.yml
-  client_config: {require_secure_passwords: true, share_login_status: false, use_token: false,
+  client_config: {require_secure_passwords: true, share_login_status: true, use_token: false,
     use_email: true, allow_remember_me: true, allow_signup: true, enable_automatically: true,
     confirm_email: true, remember_me_days: 30, use_google: true, use_facebook: true}
   server_config: {user_table: users}
@@ -16,7 +16,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: homePage}
+startup: {type: form, module: mapperHome}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
