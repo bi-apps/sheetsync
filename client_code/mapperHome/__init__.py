@@ -22,11 +22,10 @@ class mapperHome(mapperHomeTemplate):
     # Get Logged in User
     user = anvil.users.get_user()
     # Source Sheet DropDown Selection
-    sheet_data = anvil.server.call('getSheetData', user)
-    self.sourceSheetDropDown.items = [sheet['sheet_name'] for sheet in sheet_data]
+    # sheet_data = anvil.server.call('getSheetData', user)
+    # self.sourceSheetDropDown.items = [sheet['sheet_name'] for sheet in sheet_data]
 
-    self.flow_panel_2.add_component(RelationshipMappingForm())
-
+    # self.flow_panel_2.add_component(RelationshipMappingForm())
   def sign_out_user_on_click(self, **event_args):
     """This method is called when the link is clicked"""
     anvil.users.logout()
@@ -66,3 +65,10 @@ class mapperHome(mapperHomeTemplate):
   #         destination_mapping = event_args['sender']
   #         self.destination_mappings.remove(destination_mapping)
   #         destination_mapping.remove_from_parent()
+
+  def oneToOneBtnSelected(self, **event_args):
+    """This method is called when the button is clicked"""
+    self.grid_panel_1.visible = False
+
+
+
