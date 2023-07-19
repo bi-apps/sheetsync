@@ -178,3 +178,5 @@ color_scheme:
   - {name: Gray 900, color: '#212121'}
   - {name: Black, color: '#000000'}
   - {name: Green, color: '#4CAF50'}
+  - {name: Add Map, color: '#09af00'}
+  - {name: Reset Form, color: '#E53935'}

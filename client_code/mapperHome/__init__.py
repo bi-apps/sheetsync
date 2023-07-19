@@ -12,7 +12,7 @@ import anvil.users
 import anvil.tables as tables
 import anvil.tables.query as q
 import anvil.js
-from RelationshipMappingForm import RelationshipMappingForm
+from .oneToOneSetup import oneToOneSetupTemplate
 
 class mapperHome(mapperHomeTemplate):
   def __init__(self, **properties):
@@ -24,13 +24,13 @@ class mapperHome(mapperHomeTemplate):
     # Source Sheet DropDown Selection
     # sheet_data = anvil.server.call('getSheetData', user)
     # self.sourceSheetDropDown.items = [sheet['sheet_name'] for sheet in sheet_data]
+    
 
     # self.flow_panel_2.add_component(RelationshipMappingForm())
   def sign_out_user_on_click(self, **event_args):
     """This method is called when the link is clicked"""
     anvil.users.logout()
     open_form('homePage')
-
 
   # class RelationshipMappingForm(Form):
   #     def __init__(self, **properties):
@@ -68,7 +68,35 @@ class mapperHome(mapperHomeTemplate):
 
   def oneToOneBtnSelected(self, **event_args):
     """This method is called when the button is clicked"""
-    self.grid_panel_1.visible = False
+    self.mainGridPanelMappings.visible = False
+    self.mainPageColumn.clear()
+    self.mainPageColumn.add_component(oneToOneSetupTemplate())
+    
+
+  def oneToManyBtnClick(self, **event_args):
+    """This method is called when the button is clicked"""
+    self.mainGridPanelMappings.visible = False
+
+  def manyToOneBtnClick(self, **event_args):
+    """This method is called when the button is clicked"""
+    self.mainGridPanelMappings.visible = False
+
+  def criteriaBasedOneToOneClick(self, **event_args):
+    """This method is called when the button is clicked"""
+    self.mainGridPanelMappings.visible = False
+
+  def criteriaBasedOneToManyBtnClick(self, **event_args):
+    """This method is called when the button is clicked"""
+    self.mainGridPanelMappings.visible = False
+
+  def criteriaBasedManyToOneBtnClick(self, **event_args):
+    """This method is called when the button is clicked"""
+    self.mainGridPanelMappings.visible = False
+
+
+
+
+
 
 
 
