@@ -99,7 +99,7 @@ components:
               include_placeholder: true
             name: oneToOneSourceSheetDropDown
             layout_properties: {}
-            event_bindings: {}
+            event_bindings: {change: oneToOneSourceSheetDropDown_change}
         - type: LinearPanel
           properties: {spacing_above: small, spacing_below: large, background: '',
             foreground: '', border: '', visible: true, role: null, tooltip: ''}

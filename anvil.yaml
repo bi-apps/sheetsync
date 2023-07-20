@@ -16,7 +16,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: mapperHome}
+startup: {type: form, module: mapperHome.oneToOneSetup}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
@@ -116,6 +116,42 @@ db_schema:
       admin_ui: {order: 4, width: 200}
       type: number
     title: auth_data
+  db_sd_one_to_one:
+    client: none
+    server: full
+    columns:
+    - name: user
+      admin_ui: {order: 0, width: 200}
+      type: link_multiple
+      target: users
+    - name: src_sheet_name
+      admin_ui: {order: 1, width: 200}
+      type: string
+    - name: src_sheet_id
+      admin_ui: {order: 2, width: 200}
+      type: string
+    - name: src_sheet_col_name
+      admin_ui: {order: 3, width: 200}
+      type: string
+    - name: src_sheet_col_id
+      admin_ui: {order: 4, width: 200}
+      type: string
+    - name: dest_sheet_name
+      admin_ui: {order: 5, width: 200}
+      type: string
+    - name: dest_sheet_id
+      admin_ui: {order: 6, width: 200}
+      type: string
+    - name: dest_col_name
+      admin_ui: {order: 7, width: 200}
+      type: string
+    - name: dest_col_id
+      admin_ui: {order: 8, width: 200}
+      type: string
+    - name: created_DateStamp
+      admin_ui: {order: 9, width: 200}
+      type: datetime
+    title: db_sd_one-to-one
 secrets:
   smartsheetsKey:
     value: {UZ77GC6XSOFJWHZW: d8igp1JrC9z+JnxQOmMhHyU1OAf4QVkjLl9K7LuQljR30QXG+Tcq/T8+P5JScn/T9bwJ1hvgzl7yYlr0KhBF6rGh/cQycPDCaes+eBBeZFbW8jJnZzoRu7rCaRNQYBMaHQCehqOPK2yTPnk4sn9gak2vYljCrdgIi1av2fDBYCMUhwL7}
