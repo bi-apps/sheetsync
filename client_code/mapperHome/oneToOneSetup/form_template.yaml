@@ -135,6 +135,7 @@ components:
               include_placeholder: true
             name: oneToOneSourceColumnDropDown
             layout_properties: {}
+            event_bindings: {change: sourceSheetColumnDropDown_change}
   - type: FlowPanel
     properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
       foreground: '', visible: true, spacing_above: small, spacing_below: small, background: ''}
@@ -207,8 +208,9 @@ components:
               bold: false
               underline: false
               include_placeholder: true
-            name: drop_down_2
+            name: oneToOneDestinationSheetDropDown
             layout_properties: {}
+            event_bindings: {change: oneToOneDestinationSheetDropDown_change}
         - type: LinearPanel
           properties: {spacing_above: small, spacing_below: small, background: '',
             foreground: '', border: '', visible: true, role: null, tooltip: ''}
@@ -242,8 +244,9 @@ components:
               bold: false
               underline: false
               include_placeholder: true
-            name: drop_down_1
+            name: oneToOneDestinationColumnDropDown
             layout_properties: {}
+            event_bindings: {change: oneToOneDestinationColumnDropDown_change}
   - type: FlowPanel
     properties: {role: null, spacing: large, align: center, tooltip: '', border: '',
       foreground: '', visible: true, spacing_above: large, spacing_below: small, background: ''}
@@ -255,13 +258,14 @@ components:
         foreground: '', visible: true, text: Add Mapping & run, font_size: null, font: '',
         spacing_above: small, icon_align: left, spacing_below: small, italic: false,
         background: 'theme:Add Map', bold: true, underline: false, icon: 'fa:plus'}
-      name: primary_color_1
+      name: oneToOneAddMappingAndRunBtn
       layout_properties: {width: 300, expand: false}
+      event_bindings: {click: oneToOneAddMappingAndRunBtn_click}
     - type: Button
       properties: {role: primary-color, align: full, tooltip: '', border: '', enabled: true,
         foreground: '', visible: true, text: Reset Mapping form, font_size: null,
         font: '', spacing_above: small, icon_align: left, spacing_below: small, italic: false,
         background: 'theme:Reset Form', bold: true, underline: false, icon: 'fa:times'}
-      name: primary_color_2
+      name: oneToOneResetMappingFormBtn
       layout_properties: {width: 300, expand: false}
 is_package: true

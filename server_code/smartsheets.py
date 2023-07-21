@@ -139,9 +139,26 @@ def getSheetData(user):
 
     # Transform response data into a list of dictionaries
     sheets = [{'sheet_id': str(sheet.id), 'sheet_name': sheet.name} for sheet in responseData]
-    print(type(sheets))
-    print(sheets)
+  
     return sheets
+
+@anvil.server.callable
+def getSheetColumn(sheetId, user):
+  client = getSmartsheetClient(user)
+  response = client.Sheets.get_columns(sheet_id=sheetId,include_all=True, level=2)
+  responseData = response.data
+  columns = [{'id': str(column.id), 'title': column.title} for column in responseData]
+  return columns
+
+@anvil.server.callable
+def getColumnData(sheetId,ColumnId,user):
+  client = getSmartsheetClient(user)
+  response = client.Sheets.get_column(sheet_id=sheetId, column_id=ColumnId)
+  reponseData = response.options
+  print(type(reponseData))
+  print(reponseData)
+  return reponseData
+
 
 # @anvil.server.callable
 # def getSheetData(user):

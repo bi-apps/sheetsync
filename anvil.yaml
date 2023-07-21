@@ -117,13 +117,9 @@ db_schema:
       type: number
     title: auth_data
   db_sd_one_to_one:
-    client: none
+    client: full
     server: full
     columns:
-    - name: user
-      admin_ui: {order: 0, width: 200}
-      type: link_multiple
-      target: users
     - name: src_sheet_name
       admin_ui: {order: 1, width: 200}
       type: string
@@ -151,6 +147,10 @@ db_schema:
     - name: created_DateStamp
       admin_ui: {order: 9, width: 200}
       type: datetime
+    - name: user
+      admin_ui: {width: 200}
+      type: link_single
+      target: users
     title: db_sd_one-to-one
 secrets:
   smartsheetsKey:
