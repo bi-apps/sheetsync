@@ -26,11 +26,11 @@ class RowPanel(Container):
         self.add_class("flow-panel")
         self.add_class("flow-spacing-small")
 
-
 # Common Smartsheet Client Initiation Code
 def getSmartsheetClient(user):
   access_token = app_tables.users.get(email=user['email'])['access_token']
   client = smartsheet.Smartsheet(access_token)
+  # print(client.Sheets.list_sheets())
   # client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
   return client
 
@@ -67,7 +67,7 @@ def get_auth_url(user):
     client_id = anvil.secrets.get_secret('smartsheetAppClientId') # Save your client id in secrets
     state = f"{uuid.uuid4()}_{encoded_state}"
     user.update(encryption_state=state)
-    scope = 'READ_SHEETS WRITE_SHEETS'
+    scope = 'READ_SHEETS WRITE_SHEETS ADMIN_SHEETS'
     auth_url = f"https://app.smartsheet.com/b/authorize?response_type=code&client_id={client_id}&scope={scope}&state={state}"
     print(f'URL Link {auth_url}')
     return auth_url
@@ -143,56 +143,118 @@ def getSheetData(user):
     return sheets
 
 @anvil.server.callable
-def getSheetColumn(sheetId, user):
+def getColumnNames(sheetId, user):
   client = getSmartsheetClient(user)
   response = client.Sheets.get_columns(sheet_id=sheetId,include_all=True, level=2)
   responseData = response.data
+  # print(response)
   columns = [{'id': str(column.id), 'title': column.title} for column in responseData]
   return columns
 
 @anvil.server.callable
 def getColumnData(sheetId, ColumnId, user):
   client = getSmartsheetClient(user)
-  response = client.Sheets.get_column(sheet_id=sheetId, column_id=ColumnId)
-  reponseData = response
-  print(type(reponseData))
-  print(reponseData)
+  print('Client =' + str(client))
+  sheet = client.Sheets.get_sheet(sheetId)
+  print('sheet = ' + str(sheet))
+  column = client.Sheets.get_column(sheetId,ColumnId)
+  # print(column)
+  columnValues = []
+  for row in sheet.rows:
+    columnCellValues = row.get_column(column.id).value
+    columnValues.append(columnCellValues)
+    
+  print(columnValues)
+  return columnValues
+
+@anvil.server.callable
+def updateColums(user, runId = None):
+  client = getSmartsheetClient(user)
+
+  if runId is not None:
+    mapToRun = app_tables.db_sd_one_to_one.get_by_id(runId)
+    
+    sourceSheetId = mapToRun['src_sheet_id']
+    sourceColumId = mapToRun['src_sheet_col_id']
+
+    destSheetId = mapToRun['dest_sheet_id']
+    destColumnId = mapToRun['dest_col_id']
+
+    destColumnType = mapToRun['dest_column_type']
+    destColmnValidation = mapToRun['dest_column_validation']
+
+    newColumnValues = getColumnData(sourceSheetId, sourceColumId, user)
+
+    destColumnOptions = client.Sheets.get_column(sheet_id=destSheetId, column_id=destColumnId)
+
+    updated_column = client.Sheets.update_column(
+        sheet_id=destSheetId,
+        column_id=destColumnId,
+        column_obj={
+            "options": newColumnValues,
+            "type": destinationColumnType,
+            "validation": destinationColumnValidation
+              }
+      )
+
+    print(updated_column)
+    
   return
 
+@anvil.server.callable
+def testRun(user, sourceSheetId, sourceColumnId, destinationSheetId, destinationColumnId, destinationColumnType, destinationColumnValidation):
+  client = getSmartsheetClient(user)
 
-# @anvil.server.callable
-# def getSheetData(user):
-#     client = getSmartsheetClient(user)
-#     response = client.Sheets.list_sheets(include_all=True)
-#     responseData = response.data
+  newColumnValues = getColumnData(sourceSheetId, sourceColumnId, user)
+  print('new col values ' + str(newColumnValues))
+  # print('New Col Values ' + str(newColumnValues))
 
-#     for sheet in responseData:
-#         existing_sheet = tables.app_tables.sheets.get(sheet_id=str(sheet.id))
+  destColumnOptions = client.Sheets.get_column(sheet_id=destinationSheetId, column_id=destinationColumnId)
+  # print('Destination Colum details ' + str(destColumnOptions))
 
-#         if existing_sheet is not None:
-#             if existing_sheet['sheet_name'] != sheet.name:
-#                 # Update the sheet name if it is different
-#                 existing_sheet['sheet_name'] = sheet.name
-#                 existing_sheet.save()
-#         else:
-#             # Add a new row if the sheet does not exist in the table
-#             tables.app_tables.sheets.add_row(
-#                 sheet_id=str(sheet.id),
-#                 sheet_name=sheet.name,
-#                 user=user
-#             )
-#     return True
+
+  # Helper function to convert response values to contact dictionaries
+  def create_contact(email):
+      return {"email": email, "name": email}
   
+  # Parse the response values and create a list of contact dictionaries
+  contacts = [create_contact(email) for email in newColumnValues if email]
+  
+  # Build Column Object
+  if destinationColumnType not in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
+      column_obj = {
+          "options": newColumnValues,
+          "type": destinationColumnType,
+          "validation": destinationColumnValidation
+      }
+  else:
+      column_obj = {
+          "contact_options": contacts,
+          "type": destinationColumnType,
+          "validation": destinationColumnValidation
+      }
 
-# This is a server module. It runs on the Anvil server,
-# rather than in the user's browser.
-#
-# To allow anvil.server.call() to call functions here, we mark
-# them with @anvil.server.callable.
-# Here is an example - you can replace it with your own:
-#
-# @anvil.server.callable
-# def say_hello(name):
-#   print("Hello, " + name + "!")
-#   return 42
-#
+
+  updated_column = client.Sheets.update_column(
+      sheet_id=destinationSheetId,
+      column_id=destinationColumnId,
+      column_obj=column_obj
+    )
+  print('updated col call data ' + str(updated_column))
+  # print(updated_column.content)
+  def get_result_code_or_message(updated_column):
+      if isinstance(updated_column, smartsheet.models.Error):
+          return updated_column.result.message
+      else:
+          return updated_column.result_code
+        
+  result_to_return = get_result_code_or_message(updated_column)
+  return result_to_return
+
+@anvil.server.callable
+def is_mapping_name_unique(user, mapping_name, mapping_table):
+    # Check if there is any existing row with the same mapping name for the user
+    existing_mappings = mapping_table.search(user=user, map_name=mapping_name)
+    if existing_mappings is not None:
+      return False
+    return True

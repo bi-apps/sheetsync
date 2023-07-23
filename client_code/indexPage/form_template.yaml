@@ -41,8 +41,9 @@ components:
       foreground: 'theme:Primary 700', visible: true, text: Column Architect, font_size: null,
       font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
       background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:link'}
-    name: button_2
+    name: addMappingButton
     layout_properties: {grid_position: 'LTNYCB,CTVIDM'}
+    event_bindings: {click: addMappingButton_click}
   - type: Button
     properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
       foreground: 'theme:Primary 700', visible: true, text: Settings, font_size: null,

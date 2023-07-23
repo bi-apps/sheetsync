@@ -93,7 +93,7 @@ components:
           components:
           - type: Label
             properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-              visible: true, text: Select Sheet Name, font_size: null, font: '', spacing_above: small,
+              visible: true, text: Sheet Name, font_size: null, font: '', spacing_above: small,
               icon_align: left, spacing_below: small, italic: false, background: '',
               bold: true, underline: false, icon: ''}
             name: label_3
@@ -129,9 +129,9 @@ components:
           components:
           - type: Label
             properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-              visible: true, text: Select Column Name, font_size: null, font: '',
-              spacing_above: small, icon_align: left, spacing_below: small, italic: false,
-              background: '', bold: true, underline: false, icon: ''}
+              visible: true, text: Column Name, font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: true, underline: false, icon: ''}
             name: label_4
             layout_properties: {}
           - type: DropDown
@@ -204,7 +204,7 @@ components:
           components:
           - type: Label
             properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-              visible: true, text: Select Sheet Name, font_size: null, font: '', spacing_above: small,
+              visible: true, text: Sheet Name, font_size: null, font: '', spacing_above: small,
               icon_align: left, spacing_below: small, italic: false, background: '',
               bold: true, underline: false, icon: ''}
             name: label_5
@@ -240,9 +240,9 @@ components:
           components:
           - type: Label
             properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-              visible: true, text: Select Column Name, font_size: null, font: '',
-              spacing_above: small, icon_align: left, spacing_below: small, italic: false,
-              background: '', bold: true, underline: false, icon: ''}
+              visible: true, text: Column Name, font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: true, underline: false, icon: ''}
             name: label_6
             layout_properties: {}
           - type: DropDown
@@ -268,6 +268,43 @@ components:
             name: oneToOneDestinationColumnDropDown
             layout_properties: {}
             event_bindings: {change: oneToOneDestinationColumnDropDown_change}
+        - type: LinearPanel
+          properties: {spacing_above: small, spacing_below: small, background: '',
+            foreground: '', border: '', visible: true, role: null, tooltip: ''}
+          name: oneToOneDestinationColumLinearPanel_copy
+          layout_properties: {width: null, expand: true}
+          components:
+          - type: Label
+            properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: Column Type, font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: true, underline: false, icon: ''}
+            name: label_6_copy
+            layout_properties: {}
+          - type: DropDown
+            properties:
+              role: null
+              align: full
+              tooltip: ''
+              placeholder: Select Type
+              border: ''
+              enabled: true
+              foreground: ''
+              items: []
+              visible: true
+              font_size: null
+              font: ''
+              spacing_above: small
+              spacing_below: small
+              italic: false
+              background: ''
+              bold: false
+              underline: false
+              include_placeholder: true
+            name: oneToOneDestinationDropdownType
+            layout_properties: {}
+            event_bindings: {change: oneToOneDestinationDropdownType_change}
+            data_bindings: []
   - type: FlowPanel
     properties: {role: null, spacing: large, align: center, tooltip: '', border: '',
       foreground: '', visible: true, spacing_above: large, spacing_below: small, background: ''}
@@ -276,7 +313,7 @@ components:
     components:
     - type: Button
       properties: {role: primary-color, align: full, tooltip: '', border: '', enabled: true,
-        foreground: '', visible: true, text: Add Mapping & run, font_size: null, font: '',
+        foreground: '', visible: true, text: Test mapping, font_size: null, font: '',
         spacing_above: small, icon_align: left, spacing_below: small, italic: false,
         background: 'theme:Add Map', bold: true, underline: false, icon: 'fa:plus'}
       name: oneToOneAddMappingAndRunBtn

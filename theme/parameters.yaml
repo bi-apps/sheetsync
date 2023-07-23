@@ -180,3 +180,4 @@ color_scheme:
   - {name: Green, color: '#4CAF50'}
   - {name: Add Map, color: '#09af00'}
   - {name: Reset Form, color: '#E53935'}
+  - {name: Invalid Input, color: '#EF9A9A'}
