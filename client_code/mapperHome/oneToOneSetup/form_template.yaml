@@ -40,6 +40,27 @@ components:
   - type: FlowPanel
     properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
       foreground: '', visible: true, spacing_above: small, spacing_below: small, background: ''}
+    name: flow_panel_2
+    layout_properties: {grid_position: 'OWCXCL,OKJIGN'}
+    components:
+    - type: Label
+      properties: {role: headline, align: left, tooltip: '', border: '', foreground: '',
+        visible: true, text: Name, font_size: null, font: '', spacing_above: small,
+        icon_align: left, spacing_below: small, italic: false, background: '', bold: true,
+        underline: false, icon: ''}
+      name: label_7
+      layout_properties: {}
+    - type: TextBox
+      properties: {role: dense, align: left, hide_text: false, tooltip: '', placeholder: Unique Mapper Name,
+        border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
+        font: '', spacing_above: medium, type: text, spacing_below: small, italic: false,
+        background: '', bold: false, underline: false}
+      name: oneToOneMappingNameTxtBox
+      layout_properties: {expand: false, width: 400}
+      event_bindings: {}
+  - type: FlowPanel
+    properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
+      foreground: '', visible: true, spacing_above: small, spacing_below: small, background: ''}
     name: oneToOneFlowPanel
     layout_properties: {grid_position: 'WRSPSL,MGGIHE'}
     components:
@@ -139,7 +160,7 @@ components:
   - type: FlowPanel
     properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
       foreground: '', visible: true, spacing_above: small, spacing_below: small, background: ''}
-    name: flow_panel_4
+    name: oneToOneFilterImageObject
     layout_properties: {grid_position: 'QVDHPD,FCDQYP'}
     components:
     - type: Image
@@ -250,7 +271,7 @@ components:
   - type: FlowPanel
     properties: {role: null, spacing: large, align: center, tooltip: '', border: '',
       foreground: '', visible: true, spacing_above: large, spacing_below: small, background: ''}
-    name: flow_panel_2
+    name: oneToOneButtonFlowPanel
     layout_properties: {grid_position: 'AZBQEK,HVKMWO', full_width_row: false}
     components:
     - type: Button

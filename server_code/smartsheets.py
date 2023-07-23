@@ -151,13 +151,13 @@ def getSheetColumn(sheetId, user):
   return columns
 
 @anvil.server.callable
-def getColumnData(sheetId,ColumnId,user):
+def getColumnData(sheetId, ColumnId, user):
   client = getSmartsheetClient(user)
   response = client.Sheets.get_column(sheet_id=sheetId, column_id=ColumnId)
-  reponseData = response.options
+  reponseData = response
   print(type(reponseData))
   print(reponseData)
-  return reponseData
+  return
 
 
 # @anvil.server.callable

@@ -16,12 +16,23 @@ class oneToOneSetup(oneToOneSetupTemplate):
         self.init_components(**properties)
       
         # Initiate Screen Object States
+        # Disabled Main Flow Panel until Name is Selected
+        # self.oneToOneSourceSheetCard.visible = False
+      
+        # Enabled States Disabled
         self.oneToOneSourceColumnDropDown.enabled = False
-        self.oneToOneDestinationSheetCard.visible = False
         self.oneToOneDestinationColumnDropDown.enabled = False
-        self.oneToOneAddMappingAndRunBtn.enabled = False
-        self.oneToOneResetMappingFormBtn.enabled = False
-
+      
+        # Buttons Flow Panel Visbility Off
+        self.oneToOneButtonFlowPanel.visible = False
+      
+        # Buttons Disabled
+        # self.oneToOneAddMappingAndRunBtn.enabled = False
+        # self.oneToOneResetMappingFormBtn.enabled = False
+      
+        # Visablility Disabled
+        self.oneToOneDestinationSheetCard.visible = False
+        self.oneToOneFilterImageObject.visible = False
 
         # End Initiation of Screen Object States
       
@@ -58,6 +69,8 @@ class oneToOneSetup(oneToOneSetupTemplate):
             self.column_map = {column['title']: column['id'] for column in columns_data}
             self.oneToOneSourceColumnDropDown.items = list(self.column_map.keys())
             # End Get Columns ----------------------------------------------------------------
+          
+
 
             print(f"Selected Source Sheet ID: {self.selectedSourceSheetId}")
 
@@ -70,6 +83,8 @@ class oneToOneSetup(oneToOneSetupTemplate):
         if self.selSrcColumnName is not None:
             self.selectSourceColumnId = self.column_map[self.selSrcColumnName]
             self.oneToOneDestinationSheetCard.visible = True
+            # Enable Filter Image
+            self.oneToOneFilterImageObject.visible = True
 
         print(f"Selected Source Column ID: {self.selectSourceColumnId}")
 
@@ -96,9 +111,9 @@ class oneToOneSetup(oneToOneSetupTemplate):
 
         if self.selDestColumnName is not None:
           self.selectedDestinationColumnId = self.column_map[self.selDestColumnName]
-          self.oneToOneAddMappingAndRunBtn.enabled = True
-          self.oneToOneResetMappingFormBtn.enabled = True
-
+          # self.oneToOneAddMappingAndRunBtn.enabled = True
+          # self.oneToOneResetMappingFormBtn.enabled = True
+          self.oneToOneButtonFlowPanel.visible = True
         print(f"Selected Destination Column ID: {self.selectedDestinationColumnId}")
 
     def oneToOneAddMappingAndRunBtn_click(self, **event_args):
@@ -113,9 +128,11 @@ class oneToOneSetup(oneToOneSetupTemplate):
                                                             dest_sheet_id=self.selectedDestinationSheetId,
                                                             dest_col_name=self.selDestColumnName,
                                                             dest_col_id=self.selectedDestinationColumnId,
-                                                            created_DateStamp=datetime.now())
+                                                            created_DateStamp=datetime.now(),
+                                                            map_name=self.oneToOneMappingNameTxtBox.text)
 
         anvil.server.call('getColumnData',self.selectedSourceSheetId, self.selectSourceColumnId, self.user)
+
 
           
 
