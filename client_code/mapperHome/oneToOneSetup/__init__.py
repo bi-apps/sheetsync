@@ -139,68 +139,67 @@ class oneToOneSetup(oneToOneSetupTemplate):
           # Is the Map name unique? if Not alert user, else Execute Code
           if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneMappingNameTxtBox.text), app_tables.db_sd_one_to_one):
             # Execute a test run
-            runMappingTest = anvil.server.call('testRun',
-                                               self.user,
-                                               self.selectedSourceSheetId,
-                                               self.selectedSourceColumnId,
-                                               self.selectedDestinationSheetId,
-                                               self.selectedDestinationColumnId,
-                                               self.columnTypeValue,
-                                               self.columnTypeValidation)
-            
-            
-            alert("Mapping Name Does Not Exist")
+            runMapping = anvil.server.call('runMappingTest',
+                                              self.user,
+                                              self.selectedSourceSheetId,
+                                              self.selectedSourceColumnId,
+                                              self.selectedDestinationSheetId,
+                                              self.selectedDestinationColumnId,
+                                              self.columnTypeValue,
+                                              self.columnTypeValidation)
+            # Check Test Run Results if not '0' then alert with error else sucess
+            if runMapping == 0:
+              # Notification("Awsome! Test run successfully completed and destination column was updated with new values", style="success", timeout=2000).show()
+              if confirm("The test ran successfully, and the destination column has been updated with the new values. Are you ready to save and activate this Dropdown automation now?", title="Great job! You're a genius, my fellow Smartsheeter! ", large=True, dismissible=False):
+                saveMapping = anvil.server.call('saveMapping',
+                                                map_enabled=True,
+                                                map_name=self.oneToOneMappingNameTxtBox.text,
+                                                map_type=1,
+                                                database=tables.app_tables.db_sd_one_to_one,
+                                                user_obj=self.user,
+                                                source_sheet_id=self.selectedSourceSheetId,
+                                                source_colum_id=self.selectedSourceColumnId,
+                                                source_sheet_name=self.selSrcSheetName,
+                                                source_column_name=self.selSrcColumnName,
+                                                destination_sheet_id=self.selectedDestinationSheetId,
+                                                destination_colum_id=self.selectedDestinationColumnId,
+                                                destination_sheet_name=self.selDestSheetName,
+                                                destination_column_name=self.selDestColumnName,
+                                                destination_colum_type=self.columnTypeValue,
+                                                destination_column_validation=self.columnTypeValidation)
+                if saveMapping:
+                  Notification("Your Dropdown Automation has been saved and activated!", title="Sucess!", style="success", timeout=5).show()
+                else:
+                  Notification(f"Your Dropdown Automation has not been saved and activated due to Error: {saveMapping}", title="Oops! Error!", style="danger", timeout=10).show()
+              else:
+                saveMapping = anvil.server.call('saveMapping',
+                                map_enabled=True,
+                                map_name=self.oneToOneMappingNameTxtBox.text,
+                                map_type=1,
+                                database=tables.app_tables.db_sd_one_to_one,
+                                user_obj=self.user,
+                                source_sheet_id=self.selectedSourceSheetId,
+                                source_colum_id=self.selectedSourceColumnId,
+                                source_sheet_name=self.selSrcSheetName,
+                                source_column_name=self.selSrcColumnName,
+                                destination_sheet_id=self.selectedDestinationSheetId,
+                                destination_colum_id=self.selectedDestinationColumnId,
+                                destination_sheet_name=self.selDestSheetName,
+                                destination_column_name=self.selDestColumnName,
+                                destination_colum_type=self.columnTypeValue,
+                                destination_column_validation=self.columnTypeValidation)
+                if saveMapping:
+                  Notification(f"Your Dropdown Automation has been saved but NOT activated! ", title="Heads Up Fellow Smartsheeter!", style="info", timeout=10).show()
+                else:
+                  Notification(f"Your Dropdown Automation has not been saved and activated due to Error: {saveMapping}", title="Oops! Error!", style="danger", timeout=10).show()
+            else:
+              Notification(f"Your Dropdown Automation Test has Failed! Due to Error: {runMapping}", title="Oops! Error! Bail!", style="danger", timeout=10).show()
+
           else:
-            alert("Mapping Name Exists error")
-          
-        # if len(self.oneToOneMappingNameTxtBox.text) == 0:
-        #     self.oneToOneMappingNameTxtBox.scroll_into_view(smooth=True)
-        #     self.oneToOneMappingNameTxtBox.background = app.theme_colors['Invalid Input']
-        #     alert("Please choose a mapping name.", title="Mapping Name Empty!" , large=True, dismissible=False)
-        # else:
-        #     print('source sheet id selected ' + str(self.selectedSourceSheetId))
-        #     runMappingTest = anvil.server.call('testRun',self.user, self.selectedSourceSheetId, self.selectedSourceColumnId, self.selectedDestinationSheetId, self.selectedDestinationColumnId, self.columnTypeValue, self.columnTypeValidation)
-        #     print(runMappingTest)
-        #     if not runMappingTest:
-        #       if anvil.server.call('is_mapping_name_unique', self.user, self.oneToOneMappingNameTxtBox.text, app_tables.db_sd_one_to_one):
-        #           self.oneToOneAddMappingAndRunBtn.text = 'Sucess! Saved and Enabled'
-        #           test = anvil.server.call('saveOneToOneMapping', self)
-        #           print(test)
-        #           # oneToOneTable = app_tables.db_sd_one_to_one.add_row(user=self.user,
-        #           #                                                     src_sheet_name=self.selSrcSheetName,
-        #           #                                                     src_sheet_id=self.selectedSourceSheetId,
-        #           #                                                     src_sheet_col_name=self.selSrcColumnName,
-        #           #                                                     src_sheet_col_id=self.selectedSourceColumnId,
-        #           #                                                     dest_sheet_name=self.selDestSheetName,
-        #           #                                                     dest_sheet_id=self.selectedDestinationSheetId,
-        #           #                                                     dest_col_name=self.selDestColumnName,
-        #           #                                                     dest_col_id=self.selectedDestinationColumnId,
-        #           #                                                     created_DateStamp=datetime.now(),
-        #           #                                                     map_name=self.oneToOneMappingNameTxtBox.text,
-        #           #                                                     map_enabled=True,
-        #           #                                                     dest_column_type=self.columnTypeValue,
-        #           #                                                     dest_column_validation=self.columnTypeValidation)
-        
-        #           self.oneToOneSourceSheetDropDown.enabled = False
-        #           self.oneToOneSourceColumnDropDown.enabled = False
-          
-        #           self.oneToOneDestinationSheetDropDown.enabled = False
-        #           self.oneToOneDestinationColumnDropDown.enabled = False
-          
-        #           self.oneToOneResetMappingFormBtn.visible = False
-        #           self.oneToOneMappingNameTxtBox.enabled = False
-        
-        #           self.oneToOneAddMappingAndRunBtn.remove_event_handler('click')
-        #       else:
-        #         self.oneToOneMappingNameTxtBox.scroll_into_view(smooth=True)
-        #         self.oneToOneMappingNameTxtBox.background = app.theme_colors['Invalid Input']
-        #         alert("Please choose a different mapping name.", title=f"Mapping Name {self.oneToOneMappingNameTxtBox.text} Already Exists" , large=True, dismissible=False)
-        #     else:
-        #       alert(f"Please review your mapping setup as we've encounted an error while running a test. Error Details : {runMappingTest} and Cannot be of Type {self.columnTypeValue}", title="Mapping Error!" , large=True, dismissible=False)
-
-
+            Notification(f"Your Dropdown Automation Name: {self.oneToOneMappingNameTxtBox.text} already Exists, Please Use a Unique Name for every Automation", title="Oops! Not to Creative i see...", style="warning", timeout=10).show()
           
 
+          
 
 
 

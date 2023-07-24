@@ -15,7 +15,7 @@ import requests
 import anvil.http
 import base64
 from cryptography.fernet import Fernet
-import datetime
+from datetime import datetime
 
 # Start Server Code
 from anvil import Container
@@ -26,6 +26,20 @@ class RowPanel(Container):
         self.role = "row"
         self.add_class("flow-panel")
         self.add_class("flow-spacing-small")
+
+# ---------------- HELPER FUNCTIONS ------------------------- #
+# Helper function to convert response values to contact dictionaries
+def create_contact(email):
+    return {"email": email, "name": email}
+
+# Helper Function to Get the result code if Sucessfull or return the error message if error
+def get_result_code_or_message(updated_destination_column):
+    if isinstance(updated_destination_column, smartsheet.models.Error):
+        return updated_destination_column.result.message
+    else:
+        return updated_destination_column.result_code
+
+# ---------------- END HELPER FUNCTIONS --------------------- #
 
 # Common Smartsheet Client Initiation Code
 def getSmartsheetClient(user):
@@ -153,7 +167,7 @@ def getColumnNames(sheetId, user):
   return columns
 
 @anvil.server.callable
-def getColumnData(sheetId, ColumnId, user):
+def getColumnData(user, sheetId, ColumnId ):
   client = getSmartsheetClient(user)
   print('Client =' + str(client))
   sheet = client.Sheets.get_sheet(sheetId)
@@ -201,55 +215,90 @@ def updateColums(user, runId = None):
     print(updated_column)
     
   return
-
+  
 @anvil.server.callable
-def testRun(user, sourceSheetId, sourceColumnId, destinationSheetId, destinationColumnId, destinationColumnType, destinationColumnValidation):
-  client = getSmartsheetClient(user)
-
-  newColumnValues = getColumnData(sourceSheetId, sourceColumnId, user)
-  print('new col values ' + str(newColumnValues))
-  # print('New Col Values ' + str(newColumnValues))
-
-  destColumnOptions = client.Sheets.get_column(sheet_id=destinationSheetId, column_id=destinationColumnId)
-  # print('Destination Colum details ' + str(destColumnOptions))
-
-
-  # Helper function to convert response values to contact dictionaries
-  def create_contact(email):
-      return {"email": email, "name": email}
-  
-  # Parse the response values and create a list of contact dictionaries
-  contacts = [create_contact(email) for email in newColumnValues if email]
-  
+def runMappingTest(user_obj, source_sheet_id, source_column_id, destination_sheet_id, destination_column_id, destination_column_type, validation_on_destination_column=False, criteria_type=None, criteria_based_on=None, criteria_based_on_colum=None, criteria_value=None):
+  # Initial Smartsheet Client Connection
+  client = getSmartsheetClient(user_obj)
+  # Get New Column Values from Selected Source Sheet and Column
+  getNewColumnValues = getColumnData( user_obj, source_sheet_id, source_column_id)
+  # Get Existing Selected Destination Sheet Columns Object
+  getCurrentDestinationColumnOptions = client.Sheets.get_column(sheet_id=destination_sheet_id, column_id=destination_column_id)
   # Build Column Object
-  if destinationColumnType not in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
-      column_obj = {
-          "options": newColumnValues,
-          "type": destinationColumnType,
-          "validation": destinationColumnValidation
+  # If the Destination Selected Column Type is not Contact column types Continue as normal dropdowns
+  if destination_column_type not in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
+      new_column_obj = {
+          "options": getNewColumnValues,
+          "type": destination_column_type,
+          "validation": validation_on_destination_column
       }
   else:
-      column_obj = {
+      # If the Destination Column type is a Contact Column Type build the Contact Dropdown Column Object
+      # ---------------- Conect Column Type Specific Code ------------------------ #
+      # Parse the response values and create a list of contact dictionaries
+      contacts = [create_contact(email) for email in getNewColumnValues if email]
+      new_column_obj = {
           "contact_options": contacts,
-          "type": destinationColumnType,
-          "validation": destinationColumnValidation
+          "type": destination_column_type,
+          "validation": validation_on_destination_column
       }
+  # Update the Destination Sheet with the New Destination Column Values
+  updated_destination_column = client.Sheets.update_column(
+    sheet_id=destination_sheet_id,
+    column_id=destination_column_id,
+    column_obj=new_column_obj
+  )
+  # Return the call result
+  return get_result_code_or_message(updated_destination_column)
 
-  updated_column = client.Sheets.update_column(
-      sheet_id=destinationSheetId,
-      column_id=destinationColumnId,
-      column_obj=column_obj
-    )
-  # print('updated col call data ' + str(updated_column))
-  # print(updated_column.content)
-  def get_result_code_or_message(updated_column):
-      if isinstance(updated_column, smartsheet.models.Error):
-          return updated_column.result.message
-      else:
-          return updated_column.result_code
+# @anvil.server.callable
+# def testRun(user, sourceSheetId, sourceColumnId, destinationSheetId, destinationColumnId, destinationColumnType, destinationColumnValidation):
+#   client = getSmartsheetClient(user)
+
+#   newColumnValues = getColumnData(sourceSheetId, sourceColumnId, user)
+#   print('new col values ' + str(newColumnValues))
+#   # print('New Col Values ' + str(newColumnValues))
+
+#   destColumnOptions = client.Sheets.get_column(sheet_id=destinationSheetId, column_id=destinationColumnId)
+#   # print('Destination Colum details ' + str(destColumnOptions))
+
+
+#   # Helper function to convert response values to contact dictionaries
+#   def create_contact(email):
+#       return {"email": email, "name": email}
+  
+#   # Parse the response values and create a list of contact dictionaries
+#   contacts = [create_contact(email) for email in newColumnValues if email]
+  
+#   # Build Column Object
+#   if destinationColumnType not in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
+#       column_obj = {
+#           "options": newColumnValues,
+#           "type": destinationColumnType,
+#           "validation": destinationColumnValidation
+#       }
+#   else:
+#       column_obj = {
+#           "contact_options": contacts,
+#           "type": destinationColumnType,
+#           "validation": destinationColumnValidation
+#       }
+
+#   updated_column = client.Sheets.update_column(
+#       sheet_id=destinationSheetId,
+#       column_id=destinationColumnId,
+#       column_obj=column_obj
+#     )
+#   # print('updated col call data ' + str(updated_column))
+#   # print(updated_column.content)
+#   def get_result_code_or_message(updated_column):
+#       if isinstance(updated_column, smartsheet.models.Error):
+#           return updated_column.result.message
+#       else:
+#           return updated_column.result_code
         
-  result_to_return = get_result_code_or_message(updated_column)
-  return result_to_return
+#   result_to_return = get_result_code_or_message(updated_column)
+#   return result_to_return
 
 @anvil.server.callable
 def is_mapping_name_unique(user, mapping_name, mapping_table):
@@ -262,24 +311,31 @@ def is_mapping_name_unique(user, mapping_name, mapping_table):
 
 
 @anvil.server.callable
-def saveOneToOneMapping(self):
-    try:
-        oneToOneTable = tables.app_tables.db_sd_one_to_one
-        
-        oneToOneTable.add_row(user=self.user,
-                              src_sheet_name=self.selSrcSheetName,
-                              src_sheet_id=self.selectedSourceSheetId,
-                              src_sheet_col_name=self.selSrcColumnName,
-                              src_sheet_col_id=self.selectedSourceColumnId,
-                              dest_sheet_name=self.selDestSheetName,
-                              dest_sheet_id=self.selectedDestinationSheetId,
-                              dest_col_name=self.selDestColumnName,
-                              dest_col_id=self.selectedDestinationColumnId,
-                              created_DateStamp=datetime.now(),
-                              map_name=self.oneToOneMappingNameTxtBox.text,
-                              map_enabled=True,
-                              dest_column_type=self.columnTypeValue,
-                              dest_column_validation=self.columnTypeValidation)
-        return "sucessfuly writen"
-    except Exception as saveOneToOneError:
-        return "saveOneToOneError"
+def saveMapping(*args, **kwargs):
+    # Try Saving the data to the Database based on the Mapping Type
+    if kwargs['map_type'] == 1:
+         try:
+           kwargs['database'].add_row(
+             
+             user=kwargs['user_obj'],
+
+             map_enabled=kwargs['map_enabled'],
+             map_name=kwargs['map_name'],
+             
+             src_sheet_name=kwargs['source_sheet_name'],
+             src_sheet_id=kwargs['source_sheet_id'],
+             src_sheet_col_name=kwargs['source_column_name'],
+             src_sheet_col_id=kwargs['source_colum_id'],
+             
+             dest_sheet_name=kwargs['destination_sheet_name'],
+             dest_sheet_id=kwargs['destination_sheet_id'],
+             dest_col_name=kwargs['destination_column_name'],
+             dest_col_id=kwargs['destination_colum_id'],
+             dest_column_type=kwargs['destination_colum_type'],
+             dest_column_validation=kwargs['destination_column_validation'],
+
+             created_DateStamp=datetime.now()
+           )
+           return True
+         except tables.TableError as saveError:
+           return str(saveError)
