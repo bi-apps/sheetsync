@@ -134,49 +134,69 @@ class oneToOneSetup(oneToOneSetupTemplate):
   
     def oneToOneAddMappingAndRunBtn_click(self, **event_args):
         """This method is called when the button is clicked"""
-        if len(self.oneToOneMappingNameTxtBox.text) == 0:
-            self.oneToOneMappingNameTxtBox.scroll_into_view(smooth=True)
-            self.oneToOneMappingNameTxtBox.background = app.theme_colors['Invalid Input']
-            alert("Please choose a mapping name.", title="Mapping Name Empty!" , large=True, dismissible=False)
-        else:
-            print('source sheet id selected ' + str(self.selectedSourceSheetId))
-            runMappingTest = anvil.server.call('testRun',self.user, self.selectedSourceSheetId, self.selectedSourceColumnId, self.selectedDestinationSheetId, self.selectedDestinationColumnId, self.columnTypeValue, self.columnTypeValidation)
-            print(runMappingTest)
-            if not runMappingTest:
-              if anvil.server.call('is_mapping_name_unique', self.user, self.oneToOneMappingNameTxtBox.text, app_tables.db_sd_one_to_one):
-                  self.oneToOneAddMappingAndRunBtn.text = 'Sucess! Saved and Enabled'
-                  
-                  oneToOneTable = app_tables.db_sd_one_to_one.add_row(user=self.user,
-                                                                      src_sheet_name=self.selSrcSheetName,
-                                                                      src_sheet_id=self.selectedSourceSheetId,
-                                                                      src_sheet_col_name=self.selSrcColumnName,
-                                                                      src_sheet_col_id=self.selectedSourceColumnId,
-                                                                      dest_sheet_name=self.selDestSheetName,
-                                                                      dest_sheet_id=self.selectedDestinationSheetId,
-                                                                      dest_col_name=self.selDestColumnName,
-                                                                      dest_col_id=self.selectedDestinationColumnId,
-                                                                      created_DateStamp=datetime.now(),
-                                                                      map_name=self.oneToOneMappingNameTxtBox.text,
-                                                                      map_enabled=True,
-                                                                      dest_column_type=self.columnTypeValue,
-                                                                      dest_column_validation=self.columnTypeValidation)
-        
-                  self.oneToOneSourceSheetDropDown.enabled = False
-                  self.oneToOneSourceColumnDropDown.enabled = False
+        # Is text box filled? if not alert user
+        if self.oneToOneMappingNameTxtBox.text:
+          # Is the Map name unique? if Not alert user, else Execute Code
+          if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneMappingNameTxtBox.text), app_tables.db_sd_one_to_one):
+            # Execute a test run
+            runMappingTest = anvil.server.call('testRun',
+                                               self.user,
+                                               self.selectedSourceSheetId,
+                                               self.selectedSourceColumnId,
+                                               self.selectedDestinationSheetId,
+                                               self.selectedDestinationColumnId,
+                                               self.columnTypeValue,
+                                               self.columnTypeValidation)
+            
+            
+            alert("Mapping Name Does Not Exist")
+          else:
+            alert("Mapping Name Exists error")
           
-                  self.oneToOneDestinationSheetDropDown.enabled = False
-                  self.oneToOneDestinationColumnDropDown.enabled = False
-          
-                  self.oneToOneResetMappingFormBtn.visible = False
-                  self.oneToOneMappingNameTxtBox.enabled = False
+        # if len(self.oneToOneMappingNameTxtBox.text) == 0:
+        #     self.oneToOneMappingNameTxtBox.scroll_into_view(smooth=True)
+        #     self.oneToOneMappingNameTxtBox.background = app.theme_colors['Invalid Input']
+        #     alert("Please choose a mapping name.", title="Mapping Name Empty!" , large=True, dismissible=False)
+        # else:
+        #     print('source sheet id selected ' + str(self.selectedSourceSheetId))
+        #     runMappingTest = anvil.server.call('testRun',self.user, self.selectedSourceSheetId, self.selectedSourceColumnId, self.selectedDestinationSheetId, self.selectedDestinationColumnId, self.columnTypeValue, self.columnTypeValidation)
+        #     print(runMappingTest)
+        #     if not runMappingTest:
+        #       if anvil.server.call('is_mapping_name_unique', self.user, self.oneToOneMappingNameTxtBox.text, app_tables.db_sd_one_to_one):
+        #           self.oneToOneAddMappingAndRunBtn.text = 'Sucess! Saved and Enabled'
+        #           test = anvil.server.call('saveOneToOneMapping', self)
+        #           print(test)
+        #           # oneToOneTable = app_tables.db_sd_one_to_one.add_row(user=self.user,
+        #           #                                                     src_sheet_name=self.selSrcSheetName,
+        #           #                                                     src_sheet_id=self.selectedSourceSheetId,
+        #           #                                                     src_sheet_col_name=self.selSrcColumnName,
+        #           #                                                     src_sheet_col_id=self.selectedSourceColumnId,
+        #           #                                                     dest_sheet_name=self.selDestSheetName,
+        #           #                                                     dest_sheet_id=self.selectedDestinationSheetId,
+        #           #                                                     dest_col_name=self.selDestColumnName,
+        #           #                                                     dest_col_id=self.selectedDestinationColumnId,
+        #           #                                                     created_DateStamp=datetime.now(),
+        #           #                                                     map_name=self.oneToOneMappingNameTxtBox.text,
+        #           #                                                     map_enabled=True,
+        #           #                                                     dest_column_type=self.columnTypeValue,
+        #           #                                                     dest_column_validation=self.columnTypeValidation)
         
-                  self.oneToOneAddMappingAndRunBtn.remove_event_handler('click')
-              else:
-                self.oneToOneMappingNameTxtBox.scroll_into_view(smooth=True)
-                self.oneToOneMappingNameTxtBox.background = app.theme_colors['Invalid Input']
-                alert("Please choose a different mapping name.", title=f"Mapping Name {self.oneToOneMappingNameTxtBox.text} Already Exists" , large=True, dismissible=False)
-            else:
-              alert(f"Please review your mapping setup as we've encounted an error while running a test. Error Details : {runMappingTest} and Cannot be of Type {self.columnTypeValue}", title="Mapping Error!" , large=True, dismissible=False)
+        #           self.oneToOneSourceSheetDropDown.enabled = False
+        #           self.oneToOneSourceColumnDropDown.enabled = False
+          
+        #           self.oneToOneDestinationSheetDropDown.enabled = False
+        #           self.oneToOneDestinationColumnDropDown.enabled = False
+          
+        #           self.oneToOneResetMappingFormBtn.visible = False
+        #           self.oneToOneMappingNameTxtBox.enabled = False
+        
+        #           self.oneToOneAddMappingAndRunBtn.remove_event_handler('click')
+        #       else:
+        #         self.oneToOneMappingNameTxtBox.scroll_into_view(smooth=True)
+        #         self.oneToOneMappingNameTxtBox.background = app.theme_colors['Invalid Input']
+        #         alert("Please choose a different mapping name.", title=f"Mapping Name {self.oneToOneMappingNameTxtBox.text} Already Exists" , large=True, dismissible=False)
+        #     else:
+        #       alert(f"Please review your mapping setup as we've encounted an error while running a test. Error Details : {runMappingTest} and Cannot be of Type {self.columnTypeValue}", title="Mapping Error!" , large=True, dismissible=False)
 
 
           

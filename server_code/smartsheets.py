@@ -15,6 +15,7 @@ import requests
 import anvil.http
 import base64
 from cryptography.fernet import Fernet
+import datetime
 
 # Start Server Code
 from anvil import Container
@@ -234,13 +235,12 @@ def testRun(user, sourceSheetId, sourceColumnId, destinationSheetId, destination
           "validation": destinationColumnValidation
       }
 
-
   updated_column = client.Sheets.update_column(
       sheet_id=destinationSheetId,
       column_id=destinationColumnId,
       column_obj=column_obj
     )
-  print('updated col call data ' + str(updated_column))
+  # print('updated col call data ' + str(updated_column))
   # print(updated_column.content)
   def get_result_code_or_message(updated_column):
       if isinstance(updated_column, smartsheet.models.Error):
@@ -255,6 +255,31 @@ def testRun(user, sourceSheetId, sourceColumnId, destinationSheetId, destination
 def is_mapping_name_unique(user, mapping_name, mapping_table):
     # Check if there is any existing row with the same mapping name for the user
     existing_mappings = mapping_table.search(user=user, map_name=mapping_name)
-    if existing_mappings is not None:
+    if len(existing_mappings) == 0:
+      return True
+    else:
       return False
-    return True
+
+
+@anvil.server.callable
+def saveOneToOneMapping(self):
+    try:
+        oneToOneTable = tables.app_tables.db_sd_one_to_one
+        
+        oneToOneTable.add_row(user=self.user,
+                              src_sheet_name=self.selSrcSheetName,
+                              src_sheet_id=self.selectedSourceSheetId,
+                              src_sheet_col_name=self.selSrcColumnName,
+                              src_sheet_col_id=self.selectedSourceColumnId,
+                              dest_sheet_name=self.selDestSheetName,
+                              dest_sheet_id=self.selectedDestinationSheetId,
+                              dest_col_name=self.selDestColumnName,
+                              dest_col_id=self.selectedDestinationColumnId,
+                              created_DateStamp=datetime.now(),
+                              map_name=self.oneToOneMappingNameTxtBox.text,
+                              map_enabled=True,
+                              dest_column_type=self.columnTypeValue,
+                              dest_column_validation=self.columnTypeValidation)
+        return "sucessfuly writen"
+    except Exception as saveOneToOneError:
+        return "saveOneToOneError"
