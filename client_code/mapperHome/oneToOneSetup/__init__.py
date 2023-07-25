@@ -11,7 +11,7 @@ from anvil.tables import app_tables
 from datetime import datetime
 
 class oneToOneSetup(oneToOneSetupTemplate):
-    def __init__(self, **properties):
+    def __init__(self, user, **properties):
         # Set Form properties and Data Bindings.
         self.init_components(**properties)
       
@@ -37,7 +37,7 @@ class oneToOneSetup(oneToOneSetupTemplate):
         # End Initiation of Screen Object States
       
         # Get User
-        self.user = anvil.users.get_user()
+        self.user = user
       
         # Any code you write here will run before the form opens.
         # Get Sheet Names and Id's
@@ -197,6 +197,14 @@ class oneToOneSetup(oneToOneSetupTemplate):
 
           else:
             Notification(f"Your Dropdown Automation Name: {self.oneToOneMappingNameTxtBox.text} already Exists, Please Use a Unique Name for every Automation", title="Oops! Not to Creative i see...", style="warning", timeout=10).show()
+      
+        anvil.open_form('mapperHome')
+      
+    def oneToOneBackBtn_click(self, **event_args):
+        """This method is called when the button is clicked"""
+        anvil.open_form('mapperHome')
+        
+
           
 
           

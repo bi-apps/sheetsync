@@ -1,7 +1,8 @@
 is_package: true
 container:
   type: HtmlTemplate
-  properties: {html: '@theme:standard-page.html'}
+  properties: {tooltip: '', background: '', foreground: '', border: '', visible: true,
+    role: null, html: '@theme:standard-page.html'}
   event_bindings: {}
 components:
 - type: FlowPanel
@@ -25,7 +26,9 @@ components:
   name: label_1
   layout_properties: {slot: title}
 - type: ColumnPanel
-  properties: {col_widths: '{}'}
+  properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+    wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{}',
+    spacing_below: small, background: ''}
   name: column_panel_1
   layout_properties: {slot: left-nav}
   components:
