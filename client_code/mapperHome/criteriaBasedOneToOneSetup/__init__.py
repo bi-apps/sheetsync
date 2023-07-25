@@ -14,9 +14,146 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
 
-    # Any code you write here will run before the form opens.
     # Get User
-    user = anvil.users.get_user()
-    # Any code you write here will run before the form opens.
-    sheet_data = anvil.server.call('getSheetData', user)
-    self.oneToOneCriteriaBasedSourceSheetDropDown.items = [sheet['sheet_name'] for sheet in sheet_data]
+    # self.user = user
+    self.user = anvil.users.get_user()
+
+    # # Hide Objects that needs to be hidden on load
+
+    # Get Sheet Names and Id's
+    sheet_data = anvil.server.call('getSheetData', self.user)
+  
+    # Create a dictionary to map sheet names to sheet IDs
+    self.sheet_map = {sheet['sheet_name']: sheet['sheet_id'] for sheet in sheet_data}
+
+    # Assigne Sheet names and id's to dropdowns
+    self.oneToOneCriteriaBasedSourceSheetDropDown.items = list(self.sheet_map.keys())
+    self.oneToOneCriteriaBasedDestinationSheetDropDown.items = list(self.sheet_map.keys())
+    # Assigne Column Types from database to Destination Colum Types
+    self.column_types_data = app_tables.column_types.search()
+    # Populate the dropdown with 'columnName' values
+    self.oneToOneCriteriaBasedDestinationDropdownType.items = [row['column_type'] for row in self.column_types_data]
+    # Assgne Operator Names and Types to Dropdown
+    self.operator_type_data = app_tables.operator_types.search()
+    # Populate the dropdown with the operator Name Values
+    self.oneToOneCriteriaBasedOperatorDropDown.items = [row['operator_names'] for row in self.operator_type_data]
+
+
+  def oneToOneCriteriaBasedSourceSheetDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.selectedCriteriaSourceSheetName = self.oneToOneCriteriaBasedSourceSheetDropDown.selected_value
+    
+      if self.selectedCriteriaSourceSheetName is not None:
+        self.selectedCriteriaSourceSheetId = self.sheet_map[self.selectedCriteriaSourceSheetName]
+        
+        # Start Get Columns ----------------------------------------------------------------
+        # Set Dropdown Source Coulmn State and Values
+        self.oneToOneCriteriaBasedSourceColumnDropDown.enabled = True
+        # Get Column Names for Selected Sheet and Insert Values into Dropdown
+        columns_data = anvil.server.call('getColumnNames',self.selectedCriteriaSourceSheetId, self.user)
+        self.column_map = {column['title']: column['id'] for column in columns_data}
+        self.oneToOneCriteriaBasedSourceColumnDropDown.items = list(self.column_map.keys())
+        
+        # ------- Handel Selected Type's Logic of Display ------- #
+        self.oneToOneCriteriaSourceSheetText.text = self.selectedCriteriaSourceSheetName
+        self.oneToOneCriteriaBasedCiteriaColumnDropDown.items = list(self.column_map.keys())
+        
+        # End Get Columns ----------------------------------------------------------------
+        print(f"Selected One To One Criteria Based Source Sheet ID: {self.selectedCriteriaSourceSheetId}")
+        # pass
+
+  def oneToOneCriteriaBasedDestinationSheetDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.selectedCriteriaDestinationSheetName = self.oneToOneCriteriaBasedDestinationSheetDropDown.selected_value
+      if self.selectedCriteriaDestinationSheetName is not None:
+        self.selectCriteriaBasedDestinationSheetId = self.sheet_map[self.selectedCriteriaDestinationSheetName]
+
+        # Start Get Columns ----------------------------------------------------------------
+        # Set Dropdown Source Coulmn State and Values
+        self.oneToOneCriteriaBasedDestinationColumnDropDown.enabled = True
+        # Get Column Names for Selected Sheet and Insert Values into Dropdown
+        columns_data = anvil.server.call('getColumnNames',self.selectCriteriaBasedDestinationSheetId, self.user)
+        self.column_map = {column['title']: column['id'] for column in columns_data}
+        self.oneToOneCriteriaBasedDestinationColumnDropDown.items = list(self.column_map.keys())
+        # End Get Columns ----------------------------------------------------------------
+        print(f"Selected One To One Criteria Based Destination Sheet ID: {self.selectCriteriaBasedDestinationSheetId}")
+        # pass
+
+  def oneToOneCriteriaBasedDestinationColumnDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.selectCriteriaBasedDestinationColumnType = self.oneToOneCriteriaBasedDestinationColumnDropDown.selected_value
+      if self.selectCriteriaBasedDestinationColumnType is not None:
+        self.oneToOneCriteriaBasedDestinationDropdownType.enabled = True
+      # pass
+  
+  # Criteria Dropdown Change Logic between Logical / Dynamic Criteria Forms
+  def oneToOneCriteriaTypeDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      selectedValue = self.oneToOneCriteriaTypeDropDown.selected_value
+      if selectedValue is not None:
+        if selectedValue == "Logical":
+          # ------- Handel Displaying Between selected Criteria Type ------- #
+          self.oneToOneCriteriaDynamicFlowPanel.visible = False
+          self.oneToOneCriteriaLogicalFlowPanel.visible = True
+        elif selectedValue == "Dynamic":
+          # ------- Handel Displaying Between selected Criteria Type ------- #
+          self.oneToOneCriteriaLogicalFlowPanel.visible = False
+          self.oneToOneCriteriaDynamicFlowPanel.visible = True
+      else:
+        self.oneToOneCriteriaLogicalFlowPanel.visible = False
+        self.oneToOneCriteriaDynamicFlowPanel.visible = False
+
+  def oneToOneCriteriaBasedOperatorDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.selectedOperatorName = self.oneToOneCriteriaBasedOperatorDropDown.selected_value
+      selected_row = next((row for row in self.operator_type_data if row['operator_names'] == self.selectedOperatorName), None)
+
+      if self.selectedOperatorName is not None:
+         self.selectedOperatorValue = selected_row['operator_keywords']
+
+         # If Operator is Equals to, Not Equals to Or Contains display Value input else do not display value input
+         if self.selectedOperatorValue in ["==", "!=", "in"]:
+           self.oneToOneCriteriaLogicalValue.visible = True
+         else:
+           self.oneToOneCriteriaLogicalValue.visible = False
+
+         if self.selectedOperatorValue in ["not in", "select_included*"]:
+           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = True
+           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
+           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = [""] # Set Drop down values of columns rows in sheet
+         else:
+           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = False
+
+         if self.selectedOperatorValue in ['range*']:
+           self.oneToOneCriteriaLogicalFromValue.visible = True
+           self.oneToOneCriteriaLogicalToValue.visible = True
+         else:
+           self.oneToOneCriteriaLogicalFromValue.visible = False
+           self.oneToOneCriteriaLogicalToValue.visible = False
+          
+
+         
+
+      else:
+         self.oneToOneCriteriaLogicalValue.visible = False
+        
+
+         print(self.selectedOperatorValue)
+        
+      pass
+
+          
+
+
+
+
+
+
+
+
+
+         
+
+
+
+

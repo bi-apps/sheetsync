@@ -1,7 +1,7 @@
 services:
 - source: /runtime/services/tables.yml
-  client_config: {}
-  server_config: {}
+  client_config: {enable_v2: false}
+  server_config: {auto_create_missing_columns: false}
 - source: /runtime/services/anvil/users.yml
   client_config: {require_secure_passwords: true, share_login_status: true, use_token: false,
     use_email: true, allow_remember_me: true, allow_signup: true, enable_automatically: true,
@@ -25,7 +25,7 @@ runtime_options:
   client_version: '3'
   server_version: python3-sandbox
   server_spec: {base: python310-standard}
-metadata: {logo_img: 'asset:189663.png'}
+metadata: {logo_img: 'asset:189663.png', title: SyncDrop}
 startup_form: null
 db_schema:
   users:
@@ -81,41 +81,6 @@ db_schema:
       admin_ui: {order: 15, width: 200}
       type: string
     title: Users
-  sheets:
-    client: full
-    server: full
-    columns:
-    - name: sheet_id
-      admin_ui: {order: 0, width: 200}
-      type: string
-    - name: sheet_name
-      admin_ui: {order: 1, width: 200}
-      type: string
-    - name: user
-      admin_ui: {order: 2, width: 200}
-      type: link_single
-      target: users
-    title: sheets
-  auth_data:
-    client: search
-    server: full
-    columns:
-    - name: access_token
-      admin_ui: {order: 0, width: 200}
-      type: string
-    - name: refresh_token
-      admin_ui: {order: 1, width: 200}
-      type: string
-    - name: authenticated
-      admin_ui: {order: 2, width: 200}
-      type: bool
-    - name: user
-      admin_ui: {width: 200}
-      type: string
-    - name: totalSheetsInAccount
-      admin_ui: {order: 4, width: 200}
-      type: number
-    title: auth_data
   db_sd_one_to_one:
     client: full
     server: full
@@ -181,6 +146,17 @@ db_schema:
       admin_ui: {order: 3, width: 200}
       type: bool
     title: column_types
+  operator_types:
+    client: search
+    server: full
+    columns:
+    - name: operator_names
+      admin_ui: {order: 0, width: 200}
+      type: string
+    - name: operator_keywords
+      admin_ui: {order: 1, width: 200}
+      type: string
+    title: operator_types
 secrets:
   smartsheetsKey:
     value: {UZ77GC6XSOFJWHZW: d8igp1JrC9z+JnxQOmMhHyU1OAf4QVkjLl9K7LuQljR30QXG+Tcq/T8+P5JScn/T9bwJ1hvgzl7yYlr0KhBF6rGh/cQycPDCaes+eBBeZFbW8jJnZzoRu7rCaRNQYBMaHQCehqOPK2yTPnk4sn9gak2vYljCrdgIi1av2fDBYCMUhwL7}
