@@ -167,54 +167,28 @@ def getColumnNames(sheetId, user):
   return columns
 
 @anvil.server.callable
-def getColumnData(user, sheetId, ColumnId ):
-  client = getSmartsheetClient(user)
-  print('Client =' + str(client))
-  sheet = client.Sheets.get_sheet(sheetId)
-  print('sheet = ' + str(sheet))
-  column = client.Sheets.get_column(sheetId,ColumnId)
-  # print(column)
-  columnValues = []
-  for row in sheet.rows:
-    columnCellValues = row.get_column(column.id).value
-    columnValues.append(columnCellValues)
-    
-  print(columnValues)
-  return columnValues
+def getColumnData(user, sheetId, ColumnId):
+    client = getSmartsheetClient(user)
+    sheet = client.Sheets.get_sheet(sheetId)
+    column = client.Sheets.get_column(sheetId, ColumnId)
+    columnValues = set()
 
-@anvil.server.callable
-def updateColums(user, runId = None):
-  client = getSmartsheetClient(user)
+    for row in sheet.rows:
+        columnCellValues = row.get_column(column.id).value
+        columnValues.add(columnCellValues)
 
-  if runId is not None:
-    mapToRun = app_tables.db_sd_one_to_one.get_by_id(runId)
-    
-    sourceSheetId = mapToRun['src_sheet_id']
-    sourceColumId = mapToRun['src_sheet_col_id']
+    # If the column type is a contact type, convert values to contact dictionaries
+    if column.type in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
+        # contacts = [create_contact(email) for email in columnValues if email]
+        contacts = [{"email": email, "name": email} for email in columnValues if email]
+        print(type(contacts))
+        print(contacts)
+        unique_column_values = contacts
+    else:
+        unique_column_values = list(columnValues)
 
-    destSheetId = mapToRun['dest_sheet_id']
-    destColumnId = mapToRun['dest_col_id']
+    return unique_column_values
 
-    destColumnType = mapToRun['dest_column_type']
-    destColmnValidation = mapToRun['dest_column_validation']
-
-    newColumnValues = getColumnData(sourceSheetId, sourceColumId, user)
-
-    destColumnOptions = client.Sheets.get_column(sheet_id=destSheetId, column_id=destColumnId)
-
-    updated_column = client.Sheets.update_column(
-        sheet_id=destSheetId,
-        column_id=destColumnId,
-        column_obj={
-            "options": newColumnValues,
-            "type": destinationColumnType,
-            "validation": destinationColumnValidation
-              }
-      )
-
-    print(updated_column)
-    
-  return
   
 @anvil.server.callable
 def runMappingTest(user_obj, source_sheet_id, source_column_id, destination_sheet_id, destination_column_id, destination_column_type, validation_on_destination_column=False, criteria_type=None, criteria_based_on=None, criteria_based_on_colum=None, criteria_value=None):
@@ -235,10 +209,8 @@ def runMappingTest(user_obj, source_sheet_id, source_column_id, destination_shee
   else:
       # If the Destination Column type is a Contact Column Type build the Contact Dropdown Column Object
       # ---------------- Conect Column Type Specific Code ------------------------ #
-      # Parse the response values and create a list of contact dictionaries
-      contacts = [create_contact(email) for email in getNewColumnValues if email]
       new_column_obj = {
-          "contact_options": contacts,
+          "contact_options": getNewColumnValues,
           "type": destination_column_type,
           "validation": validation_on_destination_column
       }
@@ -251,54 +223,6 @@ def runMappingTest(user_obj, source_sheet_id, source_column_id, destination_shee
   # Return the call result
   return get_result_code_or_message(updated_destination_column)
 
-# @anvil.server.callable
-# def testRun(user, sourceSheetId, sourceColumnId, destinationSheetId, destinationColumnId, destinationColumnType, destinationColumnValidation):
-#   client = getSmartsheetClient(user)
-
-#   newColumnValues = getColumnData(sourceSheetId, sourceColumnId, user)
-#   print('new col values ' + str(newColumnValues))
-#   # print('New Col Values ' + str(newColumnValues))
-
-#   destColumnOptions = client.Sheets.get_column(sheet_id=destinationSheetId, column_id=destinationColumnId)
-#   # print('Destination Colum details ' + str(destColumnOptions))
-
-
-#   # Helper function to convert response values to contact dictionaries
-#   def create_contact(email):
-#       return {"email": email, "name": email}
-  
-#   # Parse the response values and create a list of contact dictionaries
-#   contacts = [create_contact(email) for email in newColumnValues if email]
-  
-#   # Build Column Object
-#   if destinationColumnType not in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
-#       column_obj = {
-#           "options": newColumnValues,
-#           "type": destinationColumnType,
-#           "validation": destinationColumnValidation
-#       }
-#   else:
-#       column_obj = {
-#           "contact_options": contacts,
-#           "type": destinationColumnType,
-#           "validation": destinationColumnValidation
-#       }
-
-#   updated_column = client.Sheets.update_column(
-#       sheet_id=destinationSheetId,
-#       column_id=destinationColumnId,
-#       column_obj=column_obj
-#     )
-#   # print('updated col call data ' + str(updated_column))
-#   # print(updated_column.content)
-#   def get_result_code_or_message(updated_column):
-#       if isinstance(updated_column, smartsheet.models.Error):
-#           return updated_column.result.message
-#       else:
-#           return updated_column.result_code
-        
-#   result_to_return = get_result_code_or_message(updated_column)
-#   return result_to_return
 
 @anvil.server.callable
 def is_mapping_name_unique(user, mapping_name, mapping_table):
