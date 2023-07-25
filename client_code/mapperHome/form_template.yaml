@@ -4,6 +4,7 @@ container:
   properties: {tooltip: '', background: '', foreground: '', border: '', visible: true,
     role: null, html: '@theme:standard-page.html'}
   event_bindings: {}
+  data_bindings: []
 components:
 - type: FlowPanel
   properties: {}
@@ -66,9 +67,9 @@ components:
     components:
     - type: Label
       properties: {role: headline, align: center, tooltip: '', border: '', foreground: '',
-        visible: true, text: Let's get Mapping!, font_size: 45, font: '', spacing_above: large,
-        icon_align: left, spacing_below: large, italic: false, background: '', bold: true,
-        underline: false, icon: ''}
+        visible: true, text: Choose Your Dropdown Mastery!, font_size: 45, font: '',
+        spacing_above: large, icon_align: left, spacing_below: large, italic: false,
+        background: '', bold: true, underline: false, icon: ''}
       name: headingLabel
       layout_properties: {grid_position: 'NYWQJW,IQHBRC'}
   - type: Spacer

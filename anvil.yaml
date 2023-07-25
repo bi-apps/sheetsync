@@ -16,7 +16,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: mapperHome}
+startup: {type: form, module: mapperHome.criteriaBasedOneToOneSetup}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync

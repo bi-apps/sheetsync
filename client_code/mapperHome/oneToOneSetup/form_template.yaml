@@ -24,9 +24,9 @@ components:
   components:
   - type: Label
     properties: {role: headline, align: center, tooltip: '', border: '', foreground: '',
-      visible: true, text: 'One To One Mapping ', font_size: 45, font: '', spacing_above: large,
-      icon_align: left, spacing_below: large, italic: false, background: '', bold: true,
-      underline: false, icon: ''}
+      visible: true, text: 1 to 1 - Dropdown Automation, font_size: 45, font: '',
+      spacing_above: large, icon_align: left, spacing_below: large, italic: false,
+      background: '', bold: true, underline: false, icon: ''}
     name: headline_1
     layout_properties: {grid_position: 'QDGYTH,YNEQFA'}
 - type: Spacer
