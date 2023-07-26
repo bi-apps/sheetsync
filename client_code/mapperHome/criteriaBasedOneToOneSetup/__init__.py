@@ -56,7 +56,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         
         # ------- Handel Selected Type's Logic of Display ------- #
         self.oneToOneCriteriaSourceSheetText.text = self.selectedCriteriaSourceSheetName
-        self.oneToOneCriteriaBasedCiteriaColumnDropDown.items = list(self.column_map.keys())
+        self.oneToOneCriteriaBasedCiteriaColumnDropDown.items = list(self.column_map.keys()) 
         
         # End Get Columns ----------------------------------------------------------------
         print(f"Selected One To One Criteria Based Source Sheet ID: {self.selectedCriteriaSourceSheetId}")
