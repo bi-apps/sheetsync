@@ -29,16 +29,35 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     # Assigne Sheet names and id's to dropdowns
     self.oneToOneCriteriaBasedSourceSheetDropDown.items = list(self.sheet_map.keys())
     self.oneToOneCriteriaBasedDestinationSheetDropDown.items = list(self.sheet_map.keys())
+      
     # Assigne Column Types from database to Destination Colum Types
     self.column_types_data = app_tables.column_types.search()
+      
     # Populate the dropdown with 'columnName' values
     self.oneToOneCriteriaBasedDestinationDropdownType.items = [row['column_type'] for row in self.column_types_data]
+      
     # Assgne Operator Names and Types to Dropdown
     self.operator_type_data = app_tables.operator_types.search()
+      
     # Populate the dropdown with the operator Name Values
     self.oneToOneCriteriaBasedOperatorDropDown.items = [row['operator_names'] for row in self.operator_type_data]
 
+    # ------------- Helper Functions --------------- #
+    
+  def update_dynamic_source_sheet_dropdown(self):
+      selected_source_sheet = self.oneToOneCriteriaBasedSourceSheetDropDown.selected_value
+      selected_destination_sheet = self.oneToOneCriteriaBasedDestinationSheetDropDown.selected_value
 
+      if selected_source_sheet and selected_destination_sheet:
+         dynamic_source_sheets = [selected_source_sheet, selected_destination_sheet]
+         self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.items = dynamic_source_sheets
+         self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.items = dynamic_source_sheets
+      else:
+         self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.items = []
+         self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.items = []
+
+    # ------------- Helper Functions End --------------- #
+    
   def oneToOneCriteriaBasedSourceSheetDropDown_change(self, **event_args):
       """This method is called when an item is selected"""
       self.selectedCriteriaSourceSheetName = self.oneToOneCriteriaBasedSourceSheetDropDown.selected_value
@@ -58,6 +77,9 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         self.oneToOneCriteriaSourceSheetText.text = self.selectedCriteriaSourceSheetName
         self.oneToOneCriteriaBasedCiteriaColumnDropDown.items = list(self.column_map.keys()) 
         
+        # Update dynamic source sheet dropdown
+        self.update_dynamic_source_sheet_dropdown()
+          
         # End Get Columns ----------------------------------------------------------------
         print(f"Selected One To One Criteria Based Source Sheet ID: {self.selectedCriteriaSourceSheetId}")
         # pass
@@ -76,6 +98,10 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         self.column_map = {column['title']: column['id'] for column in columns_data}
         self.oneToOneCriteriaBasedDestinationColumnDropDown.items = list(self.column_map.keys())
         # End Get Columns ----------------------------------------------------------------
+        
+        # Update dynamic source sheet dropdown
+        self.update_dynamic_source_sheet_dropdown()
+          
         print(f"Selected One To One Criteria Based Destination Sheet ID: {self.selectCriteriaBasedDestinationSheetId}")
         # pass
 
@@ -121,6 +147,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = True
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = [""] # Set Drop down values of columns rows in sheet
+
+           
          else:
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = False
 
@@ -141,6 +169,46 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
          print(self.selectedOperatorValue)
         
       pass
+
+  def oneToOneCriteriaBasedDynamicSourceSheetDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.selectDynamicSourceSheetName = self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.selected_value
+
+      if self.selectDynamicSourceSheetName is not None:
+        self.selectDynamicSourceSheetId = self.sheet_map[self.selectDynamicSourceSheetName]
+
+        # Start Get Columns ----------------------------------------------------------------
+        # Set Dropdown Source Coulmn State and Values
+        self.oneToOneCriteriaBasedDynamicSourceColumnDropDown.enabled = True
+        # Get Column Names for Selected Sheet and Insert Values into Dropdown
+        columns_data = anvil.server.call('getColumnNames',self.selectDynamicSourceSheetId, self.user)
+        self.column_map = {column['title']: column['id'] for column in columns_data}
+        self.oneToOneCriteriaBasedDynamicSourceColumnDropDown.items = list(self.column_map.keys())
+
+  def oneToOneCriteriaBasedDynamicSourceColumnDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      pass
+
+  def oneToOneCriteriaBasedDynamicDestinationSheetDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.selectDynamicDestinationSheetName = self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.selected_value
+
+      if self.selectDynamicDestinationSheetName is not None:
+        self.selectDynamicDestinationSheetId = self.sheet_map[self.selectDynamicDestinationSheetName]
+
+        # Start Get Columns ----------------------------------------------------------------
+        # Set Dropdown Source Coulmn State and Values
+        self.oneToOneCriteriaBasedDynamicDestinationColumnDropDown.enabled = True
+        # Get Column Names for Selected Sheet and Insert Values into Dropdown
+        columns_data = anvil.server.call('getColumnNames',self.selectDynamicDestinationSheetId, self.user)
+        self.column_map = {column['title']: column['id'] for column in columns_data}
+        self.oneToOneCriteriaBasedDynamicDestinationColumnDropDown.items = list(self.column_map.keys())
+
+
+
+          
+
+
 
           
 
