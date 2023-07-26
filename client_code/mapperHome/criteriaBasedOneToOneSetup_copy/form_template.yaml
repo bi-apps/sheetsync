@@ -601,6 +601,13 @@ components:
           name: text_box_2
           layout_properties: {}
       event_bindings: {}
+    - type: form:dep_sfh6f32rpzhmfn:MultiSelectDropDown
+      properties:
+        unique: true
+        placeholder: Select a value
+        items: [Enter, Your, List, Of, Items, Here]
+      name: oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection
+      layout_properties: {grid_position: 'RAYMLR,ERDFJZ', full_width_row: false}
     - type: FlowPanel
       properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
         foreground: '', visible: false, spacing_above: small, spacing_below: small,

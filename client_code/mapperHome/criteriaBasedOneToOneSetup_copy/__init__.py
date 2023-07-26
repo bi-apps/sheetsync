@@ -17,6 +17,7 @@ class criteriaBasedOneToOneSetup_copy(criteriaBasedOneToOneSetup_copyTemplate):
         # Get User
         # self.user = user
         self.user = anvil.users.get_user()
+        self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.visible = False
 
         # # Hide Objects that needs to be hidden on load
 
@@ -144,13 +145,16 @@ class criteriaBasedOneToOneSetup_copy(criteriaBasedOneToOneSetup_copyTemplate):
                 self.oneToOneCriteriaLogicalValue.visible = False
 
             if self.selectedOperatorValue in ["not in", "select_included*"]:
-                self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = True
+                # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = True
                 self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
                 self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = [""] # Set Drop down values of columns rows in sheet
+                self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.visible = True
 
 
             else:
-                self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = False
+                # self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.add_to_dropdown()
+                self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.visible = False
+                # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = False
 
             if self.selectedOperatorValue in ['range*']:
                 self.oneToOneCriteriaLogicalFromValue.visible = True
