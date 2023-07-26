@@ -452,7 +452,10 @@ components:
           name: label_10
           layout_properties: {}
         - type: Label
-          properties: {}
+          properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+            visible: true, text: '', font_size: null, font: '', spacing_above: small,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: true, underline: false, icon: ''}
           name: oneToOneCriteriaSourceSheetText
           layout_properties: {}
       - type: LinearPanel

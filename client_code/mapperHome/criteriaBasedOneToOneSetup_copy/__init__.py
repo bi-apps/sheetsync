@@ -145,6 +145,17 @@ class criteriaBasedOneToOneSetup_copy(criteriaBasedOneToOneSetup_copyTemplate):
                 self.oneToOneCriteriaLogicalValue.visible = False
 
             if self.selectedOperatorValue in ["not in", "select_included*"]:
+                self.selectedLogicalSourceSheetName = self.oneToOneCriteriaSourceSheetText.text
+                if self.selectedLogicalSourceSheetName is not None:
+                    self.selectedLogicalSourceSheetId = self.sheet_map[self.selectedLogicalSourceSheetName]
+
+                    self.selectedlogicalComunName = self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value
+                    if self.selectedlogicalComunName is not None:
+                       self.selectedlogicalComunId = self.column_map[self.selectedlogicalComunName]
+                       print(anvil.server.call('getColumnData', self.user, self.selectedLogicalSourceSheetId, self.selectedlogicalComunId))
+                    self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.items =[]
+                    
+                    
                 # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = True
                 self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.visible = True
                 self.oneToOneMultiSelectLable.text = "These Values"
