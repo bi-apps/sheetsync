@@ -601,6 +601,13 @@ components:
           name: text_box_2
           layout_properties: {}
       event_bindings: {}
+    - type: Label
+      properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+        visible: true, text: '', font_size: null, font: '', spacing_above: small,
+        icon_align: left, spacing_below: small, italic: false, background: '', bold: true,
+        underline: false, icon: ''}
+      name: oneToOneMultiSelectLable
+      layout_properties: {grid_position: 'AEBMOP,DQIMKZ'}
     - type: form:dep_sfh6f32rpzhmfn:MultiSelectDropDown
       properties:
         unique: true

@@ -146,9 +146,10 @@ class criteriaBasedOneToOneSetup_copy(criteriaBasedOneToOneSetup_copyTemplate):
 
             if self.selectedOperatorValue in ["not in", "select_included*"]:
                 # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = True
-                self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
-                self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = [""] # Set Drop down values of columns rows in sheet
                 self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.visible = True
+                self.oneToOneMultiSelectLable.text = "These Values"
+                self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.items = ['Derick','Mulder']
+                
 
 
             else:
