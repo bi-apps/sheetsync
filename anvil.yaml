@@ -1,3 +1,8 @@
+dependencies:
+- dep_id: dep_sfh6f32rpzhmfn
+  version: {dev: false}
+  resolution_hints: {app_id: 5WMZF4COUYROBGFX, name: Clone of Multi Select Tokens,
+    package_name: Tokens}
 services:
 - source: /runtime/services/tables.yml
   client_config: {enable_v2: false}
