@@ -49,15 +49,31 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
       selected_destination_sheet = self.oneToOneCriteriaBasedDestinationSheetDropDown.selected_value
 
       if selected_source_sheet and selected_destination_sheet:
-         dynamic_source_sheets = [selected_source_sheet, selected_destination_sheet]
-         self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.items = dynamic_source_sheets
-         self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.items = dynamic_source_sheets
+         # dynamic_source_sheets = [selected_source_sheet, selected_destination_sheet]
+         # self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.items = dynamic_source_sheets
+         # self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.items = dynamic_source_sheets
+         # dynamic_source_sheets = [selected_source_sheet, selected_destination_sheet]
+         dynamic_source_sheet_list = [selected_source_sheet]
+         dynamic_destination_sheet_list = [selected_destination_sheet]
+         self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.items = dynamic_source_sheet_list
+         self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.items = dynamic_destination_sheet_list
+          
+         # self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.selected_value = selected_source_sheet
+         # self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.selected_value = selected_destination_sheet
+          
+         # self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.enabled = False
+         # self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.enabled = False
+
+         # self.oneToOneCriteriaBasedSourceColumnDropDown.enabled = True
+         
       else:
          self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.items = []
          self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.items = []
 
     # ------------- Helper Functions End --------------- #
-    
+
+  # ------------- Main Sheet Selection Functions of Screen (Source and Destination Selections) ------------- #
+  # Source Sheet Selection Area and Logic
   def oneToOneCriteriaBasedSourceSheetDropDown_change(self, **event_args):
       """This method is called when an item is selected"""
       self.selectedCriteriaSourceSheetName = self.oneToOneCriteriaBasedSourceSheetDropDown.selected_value
@@ -82,8 +98,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
           
         # End Get Columns ----------------------------------------------------------------
         print(f"Selected One To One Criteria Based Source Sheet ID: {self.selectedCriteriaSourceSheetId}")
-        # pass
-
+  # Destination Sheet Selection Area and Logic
   def oneToOneCriteriaBasedDestinationSheetDropDown_change(self, **event_args):
       """This method is called when an item is selected"""
       self.selectedCriteriaDestinationSheetName = self.oneToOneCriteriaBasedDestinationSheetDropDown.selected_value
@@ -103,15 +118,12 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         self.update_dynamic_source_sheet_dropdown()
           
         print(f"Selected One To One Criteria Based Destination Sheet ID: {self.selectCriteriaBasedDestinationSheetId}")
-        # pass
-
+  # Ensure all selections are made before allowing criterion selection dropdown
   def oneToOneCriteriaBasedDestinationColumnDropDown_change(self, **event_args):
       """This method is called when an item is selected"""
       self.selectCriteriaBasedDestinationColumnType = self.oneToOneCriteriaBasedDestinationColumnDropDown.selected_value
       if self.selectCriteriaBasedDestinationColumnType is not None:
         self.oneToOneCriteriaBasedDestinationDropdownType.enabled = True
-      # pass
-  
   # Criteria Dropdown Change Logic between Logical / Dynamic Criteria Forms
   def oneToOneCriteriaTypeDropDown_change(self, **event_args):
       """This method is called when an item is selected"""
@@ -128,7 +140,47 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
       else:
         self.oneToOneCriteriaLogicalFlowPanel.visible = False
         self.oneToOneCriteriaDynamicFlowPanel.visible = False
+          
+          
+  # ----------- Dynamic Criterion Section ------------- #
+  # Dynamic
+  def oneToOneCriteriaBasedDynamicSourceSheetDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.selectDynamicSourceSheetName = self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.selected_value
 
+      if self.selectDynamicSourceSheetName is not None:
+        self.selectDynamicSourceSheetId = self.sheet_map[self.selectDynamicSourceSheetName]
+
+        # Start Get Columns ----------------------------------------------------------------
+        # Set Dropdown Source Coulmn State and Values
+        self.oneToOneCriteriaBasedDynamicSourceColumnDropDown.enabled = True
+        # Get Column Names for Selected Sheet and Insert Values into Dropdown
+        columns_data = anvil.server.call('getColumnNames',self.selectDynamicSourceSheetId, self.user)
+        self.column_map = {column['title']: column['id'] for column in columns_data}
+        self.oneToOneCriteriaBasedDynamicSourceColumnDropDown.items = list(self.column_map.keys())
+  # Dynamic
+  def oneToOneCriteriaBasedDynamicSourceColumnDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      pass
+  # Dynamic
+  def oneToOneCriteriaBasedDynamicDestinationSheetDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.selectDynamicDestinationSheetName = self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.selected_value
+
+      if self.selectDynamicDestinationSheetName is not None:
+        self.selectDynamicDestinationSheetId = self.sheet_map[self.selectDynamicDestinationSheetName]
+
+        # Start Get Columns ----------------------------------------------------------------
+        # Set Dropdown Source Coulmn State and Values
+        self.oneToOneCriteriaBasedDynamicDestinationColumnDropDown.enabled = True
+        # Get Column Names for Selected Sheet and Insert Values into Dropdown
+        columns_data = anvil.server.call('getColumnNames',self.selectDynamicDestinationSheetId, self.user)
+        self.column_map = {column['title']: column['id'] for column in columns_data}
+        self.oneToOneCriteriaBasedDynamicDestinationColumnDropDown.items = list(self.column_map.keys())
+          
+          
+  # ----------- Logical Criterion Section --------------#
+  # Logical
   def oneToOneCriteriaBasedOperatorDropDown_change(self, **event_args):
       """This method is called when an item is selected"""
       self.selectedOperatorName = self.oneToOneCriteriaBasedOperatorDropDown.selected_value
@@ -146,9 +198,13 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
          if self.selectedOperatorValue in ["not in", "select_included*"]:
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = True
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
+             
+           # Last Busy Here!
+           self.selectLogicalCriterionColumnId = self.column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
+           self.column_row_values = anvil.server.call('getColumnData', self.user, self.selectedCriteriaSourceSheetId, self.selectLogicalCriterionColumnId )
+           print(self.column_row_values)
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = [""] # Set Drop down values of columns rows in sheet
-
-           
+             
          else:
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = False
 
@@ -167,61 +223,3 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         
 
          print(self.selectedOperatorValue)
-        
-      pass
-
-  def oneToOneCriteriaBasedDynamicSourceSheetDropDown_change(self, **event_args):
-      """This method is called when an item is selected"""
-      self.selectDynamicSourceSheetName = self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.selected_value
-
-      if self.selectDynamicSourceSheetName is not None:
-        self.selectDynamicSourceSheetId = self.sheet_map[self.selectDynamicSourceSheetName]
-
-        # Start Get Columns ----------------------------------------------------------------
-        # Set Dropdown Source Coulmn State and Values
-        self.oneToOneCriteriaBasedDynamicSourceColumnDropDown.enabled = True
-        # Get Column Names for Selected Sheet and Insert Values into Dropdown
-        columns_data = anvil.server.call('getColumnNames',self.selectDynamicSourceSheetId, self.user)
-        self.column_map = {column['title']: column['id'] for column in columns_data}
-        self.oneToOneCriteriaBasedDynamicSourceColumnDropDown.items = list(self.column_map.keys())
-
-  def oneToOneCriteriaBasedDynamicSourceColumnDropDown_change(self, **event_args):
-      """This method is called when an item is selected"""
-      pass
-
-  def oneToOneCriteriaBasedDynamicDestinationSheetDropDown_change(self, **event_args):
-      """This method is called when an item is selected"""
-      self.selectDynamicDestinationSheetName = self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.selected_value
-
-      if self.selectDynamicDestinationSheetName is not None:
-        self.selectDynamicDestinationSheetId = self.sheet_map[self.selectDynamicDestinationSheetName]
-
-        # Start Get Columns ----------------------------------------------------------------
-        # Set Dropdown Source Coulmn State and Values
-        self.oneToOneCriteriaBasedDynamicDestinationColumnDropDown.enabled = True
-        # Get Column Names for Selected Sheet and Insert Values into Dropdown
-        columns_data = anvil.server.call('getColumnNames',self.selectDynamicDestinationSheetId, self.user)
-        self.column_map = {column['title']: column['id'] for column in columns_data}
-        self.oneToOneCriteriaBasedDynamicDestinationColumnDropDown.items = list(self.column_map.keys())
-
-
-
-          
-
-
-
-          
-
-
-
-
-
-
-
-
-
-         
-
-
-
-

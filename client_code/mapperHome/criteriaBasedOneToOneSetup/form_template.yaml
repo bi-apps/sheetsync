@@ -425,10 +425,9 @@ components:
           - type: Label
             properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
               visible: true, text: 'Dynamic : Creteria based on Dynamic Values i.e
-                Source Sheet Column Values Match Destination Sheet Column Values or
-                Vice Versa', font_size: null, font: '', spacing_above: none, icon_align: left,
-              spacing_below: none, italic: false, background: '', bold: false, underline: false,
-              icon: ''}
+                Source Sheet Column Values Match Destination Sheet Column Values',
+              font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
+              italic: false, background: '', bold: false, underline: false, icon: ''}
             name: label_9
             layout_properties: {expand: true, width: null}
     - type: FlowPanel
@@ -618,7 +617,7 @@ components:
         components:
         - type: Label
           properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-            visible: true, text: This Sheet's, font_size: null, font: '', spacing_above: small,
+            visible: true, text: Where Sheet, font_size: null, font: '', spacing_above: small,
             icon_align: left, spacing_below: small, italic: false, background: '',
             bold: false, underline: false, icon: ''}
           name: label_10_copy
@@ -690,7 +689,7 @@ components:
         components:
         - type: Label
           properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
-            visible: true, text: Equals To, font_size: 28, font: '', spacing_above: small,
+            visible: true, text: Matches, font_size: 28, font: '', spacing_above: small,
             icon_align: left, spacing_below: small, italic: true, background: '',
             bold: true, underline: false, icon: ''}
           name: label_12_copy
@@ -703,9 +702,9 @@ components:
         components:
         - type: Label
           properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-            visible: true, text: This Sheet's, font_size: null, font: '', spacing_above: small,
-            icon_align: left, spacing_below: small, italic: false, background: '',
-            bold: false, underline: false, icon: ''}
+            visible: true, text: Your Destination Sheet, font_size: null, font: '',
+            spacing_above: small, icon_align: left, spacing_below: small, italic: false,
+            background: '', bold: false, underline: false, icon: ''}
           name: label_13_copy
           layout_properties: {}
         - type: DropDown
