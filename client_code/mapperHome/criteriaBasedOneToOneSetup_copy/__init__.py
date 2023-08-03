@@ -17,7 +17,7 @@ class criteriaBasedOneToOneSetup_copy(criteriaBasedOneToOneSetup_copyTemplate):
         # Get User
         # self.user = user
         self.user = anvil.users.get_user()
-        self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.visible = False
+        # self.oneToOneCriteriaBasedMultiSelectIsorIsNotOneOfSection.visible = False
 
         # # Hide Objects that needs to be hidden on load
 

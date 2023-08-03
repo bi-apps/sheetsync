@@ -200,10 +200,13 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
              
            # Last Busy Here!
-           self.selectLogicalCriterionColumnId = self.column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
+           logical_criteria_columns_data = anvil.server.call('getColumnNames',self.selectedCriteriaSourceSheetId, self.user)
+           self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
+      
+           self.selectLogicalCriterionColumnId = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
            self.column_row_values = anvil.server.call('getColumnData', self.user, self.selectedCriteriaSourceSheetId, self.selectLogicalCriterionColumnId )
            print(self.column_row_values)
-           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = [""] # Set Drop down values of columns rows in sheet
+           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = self.column_row_values # Set Drop down values of columns rows in sheet
              
          else:
            self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = False
@@ -214,10 +217,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
          else:
            self.oneToOneCriteriaLogicalFromValue.visible = False
            self.oneToOneCriteriaLogicalToValue.visible = False
-          
-
-         
-
+             
       else:
          self.oneToOneCriteriaLogicalValue.visible = False
         
