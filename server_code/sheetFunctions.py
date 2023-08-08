@@ -19,9 +19,18 @@ def getSmartsheetClient(user):
 
 # Helper Function Do get Column Data based on criteria values using lambda
 @anvil.server.callable
-def getColumnDataWithCriteria(user, sheetId, ColumnId, criteria_column_id, criteria_value, operator_keyword):
+def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_column_id, criteria_value, operator_keyword):
+    # print(user)
+    # print("source_sheet_id " + source_sheet_id)
+    # print("source_column_id " + source_column_id)
+    # print("criteria_column_id " + criteria_column_id)
+    # print("criteria_value " + criteria_value)
+    # print("operator_keyword " + operator_keyword)
+    
     client = getSmartsheetClient(user)
-    sheet = client.Sheets.get_sheet(sheetId)
+    sheet = client.Sheets.get_sheet(source_sheet_id)
+    criteria_column_obj = client.Sheets.get_column(source_sheet_id, criteria_column_id)
+    source_column_obj = client.Sheets.get_column(source_sheet_id, source_column_id)
     columnValues = set()
 
     # Define a dictionary of lambda functions for each operator type
@@ -35,13 +44,22 @@ def getColumnDataWithCriteria(user, sheetId, ColumnId, criteria_column_id, crite
         "is_not_one_of": lambda x: x not in criteria_value if isinstance(criteria_value, list) else False,
         "between": lambda x: criteria_value[0] <= x <= criteria_value[1] if isinstance(criteria_value, list) and len(criteria_value) == 2 else False
     }
-
+    
     for row in sheet.rows:
-        criteria_column_value = row.get_column(criteria_column_id).value
+        criteria_column_cell = row.get_column(criteria_column_obj.id)
+        # print("Criteria Cell Value " + criteria_column_cell.value)
+        if criteria_column_cell:  # Check if the cell exists before accessing its value
+            criteria_column_value = criteria_column_cell.value
+        else:
+            criteria_column_value = None
+
         # Check if the value in the criteria column matches the specified criteria using the lambda functions
         if operators.get(operator_keyword, lambda x: False)(criteria_column_value):
-            columnCellValues = row.get_column(ColumnId).value
-            columnValues.add(columnCellValues)
+            source_column_cell = row.get_column(source_column_obj.id)
+            # print("Source Cell Value " + source_column_cell.value)
+            if source_column_cell:  # Check if the cell exists before accessing its value
+                columnCellValues = source_column_cell.value
+                columnValues.add(columnCellValues)
 
     return list(columnValues)
 

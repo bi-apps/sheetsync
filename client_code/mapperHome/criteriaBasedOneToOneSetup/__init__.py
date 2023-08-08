@@ -244,6 +244,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
 
     if selected_operator_row:
         self.selected_operator_values = selected_operator_row['operator_keywords']
+        print(self.selected_operator_values)
 
         operator_ui_behavior = {
             "==": single_value_elements,
@@ -268,6 +269,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
             
              self.logical_criterion_row_values = anvil.server.call('getColumnData', self.user, self.selected_criteria_source_sheet_id, self.selected_logical_criterion_column_id)
              self.oneToOneCriteriaBasedMultiSelectDropDown.items = self.logical_criterion_row_values
+             self.criterion_value_selected = self.oneToOneCriteriaBasedMultiSelectDropDown.token_box
 
         if self.selected_operator_values in ["==", "!="]:
              logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
@@ -282,33 +284,38 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
      """This method is called when an item is selected"""
      self.oneToOneCriteriaBasedOperatorDropDown_change()
 
-
+  def oneToOneCriteriaBasedEqualsToDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.criterion_value_selected = self.oneToOneCriteriaBasedEqualsToDropDown.selected_value
 
 
   def oneToOneCriteriaBasedRunMappingBtn_click(self, **event_args):
       """This method is called when the button is clicked"""
       """Remember i am focusing on testing the logical criterion first the below is not dynamic nor scalible!!!!"""
-      print("Source Sheet ID " + self.selected_criteria_source_sheet_id)
-      print("Source Column ID " + self.oneToOneCriteriaBasedSourceColumnDropDown.selected_value)
-
-      print("Destination Sheet ID " + self.selected_criteria_destination_sheet_id)
-      print("Destination Column ID " + self.oneToOneCriteriaBasedDestinationColumnDropDown.selected_value)
       
       doWe = anvil.server.call('houstonWeHaveAProblem',
-                              userId = self.user,
-                              selectedSourceSheetId = self.selected_criteria_source_sheet_id,
-                              selectedSourceSheetColumnId = self.oneToOneCriteriaBasedSourceColumnDropDown.selected_value,
-                              selectedDestinationSheetId = self.selected_criteria_destination_sheet_id,
-                              selectedDestinationSheetColumnId = self.oneToOneCriteriaBasedDestinationColumnDropDown.selected_value,
-                              selectedDestinationSheetColumnType = self.selected_destination_column_type_value,
-                              selectedDestinationSheetColumnValidation = self.selected_destination_column_validation_type,
+                              user_id = self.user,
+                              selected_source_sheet_id = self.selected_criteria_source_sheet_id,
+                              selected_source_sheet_column_id = self.selected_criteria_source_column_id,
                               
-                              selectedOneToOneCriterionType = self.oneToOneCriteriaTypeDropDown.selected_value,
+                              selected_destination_sheet_id = self.selected_criteria_destination_sheet_id,
+                              selected_destination_sheet_column_id = self.selected_criteria_destination_column_id,
                               
-                              selectedOneToOneCriterionSourceSheetId = self.selected_criteria_source_sheet_id,
-                              selectedOneToOneCriterionSourceColumnId = self.selected_logical_criterion_column_id,
-                              selectedOntToOneCriterionValue = self.oneToOneCriteriaBasedEqualsToDropDown.selected_value)
-      print(doWe)
+                              selected_destination_column_type_value = self.selected_destination_column_type_value,
+                              selected_destination_column_validation = self.selected_destination_column_validation_type,
+                              
+                              selected_criteria_type = self.selected_criterion_type,
+                              
+                              selected_criteria_source_sheet_id = self.selected_criteria_source_sheet_id,
+                              selected_criteria_source_column_id = self.selected_logical_criterion_column_id,
+                               
+                              selected_criteria_operator = self.selected_operator_values,
+                               
+                              selected_criteria_value = self.criterion_value_selected)
+      # print(doWe)
+
+
+
 
 
 

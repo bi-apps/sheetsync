@@ -12,13 +12,12 @@ from .sheetFunctions import getSmartsheetClient, getColumnDataWithCriteria
 
 @anvil.server.callable
 def houstonWeHaveAProblem(*args, **kwargs):
-    client = getSmartsheetClient(kwargs['userId'])
+    client = getSmartsheetClient(kwargs['user_id'])
 
-    testingCriteriaColumValues = getColumnDataWithCriteria(kwargs['userId'],
-                                                           kwargs['selectedSourceSheetId'],
-                                                           kwargs['selectedSourceSheetColumnId'],
-                                                           kwargs['selectedOneToOneCriterionSourceColumnId'],
-                                                           kwargs['selectedOntToOneCriterionValue'],
-                                                           kwargs['selectedOntToOneCriterionValue'],
-                                                           )
+    testingCriteriaColumValues = getColumnDataWithCriteria(kwargs['user_id'],
+                                                          kwargs['selected_source_sheet_id'],
+                                                          kwargs['selected_source_sheet_column_id'],
+                                                          kwargs['selected_criteria_source_column_id'],
+                                                          kwargs['selected_criteria_value'],
+                                                          kwargs['selected_criteria_operator'])
     print(testingCriteriaColumValues)

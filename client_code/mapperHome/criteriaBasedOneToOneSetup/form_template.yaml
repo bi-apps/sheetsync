@@ -561,9 +561,28 @@ components:
           name: label_5
           layout_properties: {}
         - type: DropDown
-          properties: {}
+          properties:
+            role: null
+            align: full
+            tooltip: ''
+            placeholder: Select Value
+            border: ''
+            enabled: true
+            foreground: ''
+            items: []
+            visible: true
+            font_size: null
+            font: ''
+            spacing_above: small
+            spacing_below: small
+            italic: false
+            background: ''
+            bold: false
+            underline: false
+            include_placeholder: true
           name: oneToOneCriteriaBasedEqualsToDropDown
           layout_properties: {}
+          event_bindings: {change: oneToOneCriteriaBasedEqualsToDropDown_change}
       - type: LinearPanel
         properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
           border: '', visible: false, role: null, tooltip: ''}
