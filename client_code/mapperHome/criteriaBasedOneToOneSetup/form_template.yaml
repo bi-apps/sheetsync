@@ -586,6 +586,28 @@ components:
       - type: LinearPanel
         properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
           border: '', visible: false, role: null, tooltip: ''}
+        name: oneToOneCriteriaContainsLinearPanel
+        layout_properties:
+          col_widths: {}
+          grid_position: SKOQHT,XAQEZV
+        components:
+        - type: Label
+          properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+            visible: true, text: Contains, font_size: null, font: '', spacing_above: small,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: false, underline: false, icon: ''}
+          name: label_14_copy_2
+          layout_properties: {}
+        - type: TextBox
+          properties: {role: null, align: left, hide_text: false, tooltip: '', placeholder: Value,
+            border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
+            font: '', spacing_above: small, type: text, spacing_below: small, italic: false,
+            background: '', bold: false, underline: false}
+          name: oneToOneCriteriaContainsValueInput
+          layout_properties: {}
+      - type: LinearPanel
+        properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
+          border: '', visible: false, role: null, tooltip: ''}
         name: oneToOneCriteriaLogicalToValue
         layout_properties: {width: null, expand: true}
         components:

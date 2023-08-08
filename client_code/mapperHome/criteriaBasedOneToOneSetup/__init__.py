@@ -1,5 +1,6 @@
 from ._anvil_designer import criteriaBasedOneToOneSetupTemplate
 from anvil import *
+import stripe.checkout
 import anvil.server
 import anvil.google.auth, anvil.google.drive
 from anvil.google.drive import app_files
@@ -234,12 +235,13 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     selected_operator_row = next((row for row in self.db_citeria_operators_data if row['operator_names'] == self.selected_operator_name), None)
 
     # Define visibility sets
+    contains_value_elements = [self.oneToOneCriteriaContainsLinearPanel]
     single_value_elements = [self.oneToOneCriteriaLogicalValue]
     range_value_elements = [self.oneToOneCriteriaLogicalFromValue, self.oneToOneCriteriaLogicalToValue]
     list_value_elements = [self.oneToOneCriteriaBasedMultiSelectDropDown]
 
     # Hide all elements by default
-    for elem in single_value_elements + range_value_elements + list_value_elements:
+    for elem in single_value_elements + range_value_elements + list_value_elements + contains_value_elements:
         elem.visible = False
 
     if selected_operator_row:
@@ -249,7 +251,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         operator_ui_behavior = {
             "==": single_value_elements,
             "!=": single_value_elements,
-            "contains": single_value_elements,
+            "contains": contains_value_elements,
             "is_one_of": list_value_elements,
             "is_not_one_of": list_value_elements,
             "between": range_value_elements
@@ -263,6 +265,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         if self.selected_operator_values in ["is_one_of", "is_not_one_of"]:
              # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
              self.oneToOneCriteriaBasedMultiSelectDropDown.clear_tokens()
+            
              logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
              self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
             
@@ -281,6 +284,13 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
              self.logical_criterion_row_values = anvil.server.call('getColumnData', self.user, self.selected_criteria_source_sheet_id, self.selected_logical_criterion_column_id)
              self.oneToOneCriteriaBasedEqualsToDropDown.items = self.logical_criterion_row_values
 
+        if self.selected_operator_values in ["contains"]:
+             logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
+             self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
+            
+             self.selected_logical_criterion_column_id = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
+            
+
   def oneToOneCriteriaBasedCiteriaColumnDropDown_change(self, **event_args):
      """This method is called when an item is selected"""
      self.oneToOneCriteriaBasedOperatorDropDown_change()
@@ -298,6 +308,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
           self.criterion_value_selected = self.oneToOneCriteriaBasedMultiSelectDropDown.selected_tokens
       if self.oneToOneCriteriaBasedEqualsToDropDown.selected_value is not None:
           self.criterion_value_selected = self.oneToOneCriteriaBasedEqualsToDropDown.selected_value
+      if self.oneToOneCriteriaContainsValueInput.text is not None:
+          self.criterion_value_selected = self.oneToOneCriteriaContainsValueInput.text
           
       print(self.oneToOneCriteriaBasedMultiSelectDropDown.selected_tokens)
       doWe = anvil.server.call('houstonWeHaveAProblem',

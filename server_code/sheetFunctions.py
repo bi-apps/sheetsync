@@ -1,3 +1,4 @@
+import anvil.stripe
 import anvil.secrets
 import anvil.google.auth, anvil.google.drive, anvil.google.mail
 from anvil.google.drive import app_files
@@ -25,7 +26,7 @@ def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_
     # print("source_column_id " + source_column_id)
     # print("criteria_column_id " + criteria_column_id)
     # print("criteria_value " + criteria_value)
-    # print("operator_keyword " + operator_keyword)
+    print("operator_keyword " + operator_keyword)
     
     client = getSmartsheetClient(user)
     sheet = client.Sheets.get_sheet(source_sheet_id)
@@ -55,6 +56,7 @@ def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_
 
         # Check if the value in the criteria column matches the specified criteria using the lambda functions
         if operators.get(operator_keyword, lambda x: False)(criteria_column_value):
+            print(operator_keyword)
             source_column_cell = row.get_column(source_column_obj.id)
             # print("Source Cell Value " + source_column_cell.value)
             if source_column_cell:  # Check if the cell exists before accessing its value

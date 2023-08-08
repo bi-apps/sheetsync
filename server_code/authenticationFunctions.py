@@ -1,3 +1,4 @@
+import anvil.stripe
 import anvil.secrets
 import anvil.google.auth, anvil.google.drive, anvil.google.mail
 from anvil.google.drive import app_files
