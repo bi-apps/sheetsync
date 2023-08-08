@@ -782,6 +782,7 @@ components:
         foreground: '', visible: true, text: Reset Setup form, font_size: null, font: '',
         spacing_above: small, icon_align: left, spacing_below: small, italic: false,
         background: 'theme:Reset Form', bold: true, underline: false, icon: 'fa:times'}
-      name: primary_color_2
+      name: oneToOneCriteriaBasedResetButton
       layout_properties: {width: 300, expand: false}
+      event_bindings: {}
 is_package: true
