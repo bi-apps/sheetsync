@@ -262,7 +262,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         # Additional behavior for list_value_elements
         if self.selected_operator_values in ["is_one_of", "is_not_one_of"]:
              # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
-             self.oneToOneCriteriaBasedMultiSelectDropDown
+             self.oneToOneCriteriaBasedMultiSelectDropDown.clear_tokens()
              logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
              self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
             
