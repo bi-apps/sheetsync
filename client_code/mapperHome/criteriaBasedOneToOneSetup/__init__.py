@@ -269,7 +269,9 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
             
              self.logical_criterion_row_values = anvil.server.call('getColumnData', self.user, self.selected_criteria_source_sheet_id, self.selected_logical_criterion_column_id)
              self.oneToOneCriteriaBasedMultiSelectDropDown.items = self.logical_criterion_row_values
-             self.criterion_value_selected = self.oneToOneCriteriaBasedMultiSelectDropDown.token_box
+
+             # self.criterion_value_selected = self.oneToOneCriteriaBasedMultiSelectDropDown.drop_down_animals_change()
+             # print(self.criterion_value_selected)
 
         if self.selected_operator_values in ["==", "!="]:
              logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
@@ -313,8 +315,6 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                                
                               selected_criteria_value = self.criterion_value_selected)
       # print(doWe)
-
-
 
 
 
