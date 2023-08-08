@@ -165,6 +165,7 @@ components:
               include_placeholder: true
             name: oneToOneCriteriaBasedSourceColumnDropDown
             layout_properties: {}
+            event_bindings: {change: oneToOneCriteriaBasedSourceColumnDropDown_change}
   - type: FlowPanel
     properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
       foreground: '', visible: true, spacing_above: small, spacing_below: small, background: ''}
@@ -282,8 +283,8 @@ components:
             event_bindings: {change: oneToOneCriteriaBasedDestinationColumnDropDown_change}
         - type: LinearPanel
           properties: {spacing_above: small, spacing_below: small, background: '',
-            foreground: '', border: '', visible: true, role: null, tooltip: ''}
-          name: oneToOneDestinationColumLinearPanel_copy_2
+            foreground: '', border: '', visible: false, role: null, tooltip: ''}
+          name: oneToOneDestinationColumnTypeLinearPanel
           layout_properties: {width: null, expand: true}
           components:
           - type: Label
@@ -315,7 +316,7 @@ components:
               include_placeholder: true
             name: oneToOneCriteriaBasedDestinationDropdownType
             layout_properties: {}
-            event_bindings: {}
+            event_bindings: {change: oneToOneCriteriaBasedDestinationDropdownType_change}
             data_bindings: []
   - type: FlowPanel
     properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
@@ -373,7 +374,7 @@ components:
             tooltip: ''
             placeholder: Select One
             border: ''
-            enabled: true
+            enabled: false
             foreground: ''
             items: [Logical, Dynamic]
             visible: true
@@ -775,8 +776,9 @@ components:
         foreground: '', visible: true, text: Add Mapping & run, font_size: null, font: '',
         spacing_above: small, icon_align: left, spacing_below: small, italic: false,
         background: 'theme:Add Map', bold: true, underline: false, icon: 'fa:plus'}
-      name: primary_color_1
+      name: oneToOneCriteriaBasedRunMappingBtn
       layout_properties: {width: 300, expand: false}
+      event_bindings: {click: oneToOneCriteriaBasedRunMappingBtn_click}
     - type: Button
       properties: {role: primary-color, align: full, tooltip: '', border: '', enabled: true,
         foreground: '', visible: true, text: Reset Setup form, font_size: null, font: '',
