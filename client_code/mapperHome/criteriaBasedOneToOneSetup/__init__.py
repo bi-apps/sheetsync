@@ -197,7 +197,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
       print(f"selected_dynamic_source_column_id: {self.selected_dynamic_source_column_id}")
       # pass
   # Dynamic
-#########    LAST HERE DERICK    ##########
+
   def oneToOneCriteriaBasedDynamicDestinationSheetDropDown_change(self, **event_args):
       """This method is called when an item is selected"""
       self.selected_dynamic_destination_sheet_name = self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.selected_value
@@ -214,14 +214,24 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         self.oneToOneCriteriaBasedDynamicDestinationColumnDropDown.items = list(self.column_name_and_ids_map.keys())
 
       print(f"selected_dynamic_destination_sheet_id: {self.selected_dynamic_destination_sheet_id}")
-          
-          
+
+  def oneToOneCriteriaBasedDynamicDestinationColumnDropDown_change(self, **event_args):
+      """This method is called when an item is selected"""
+      self.selected_dynamic_destination_column_name = self.oneToOneCriteriaBasedDynamicDestinationColumnDropDown.selected_value
+      if self.selected_dynamic_destination_column_name is not None:
+          self.selected_dynamic_destination_column_id = self.column_name_and_ids_map[self.selected_dynamic_destination_column_name]
+
+      print(f"selected_dynamic_destination_column_id: {self.selected_dynamic_destination_column_id}")
+
+
+
+#########    LAST HERE DERICK    ##########
   # ----------- Logical Criterion Section --------------#
   # Logical
   def oneToOneCriteriaBasedOperatorDropDown_change(self, **event_args):
     """This method is called when an item is selected"""
-    self.selectedOperatorName = self.oneToOneCriteriaBasedOperatorDropDown.selected_value
-    selected_row = next((row for row in self.db_citeria_operators_data if row['operator_names'] == self.selectedOperatorName), None)
+    self.selected_operator_name = self.oneToOneCriteriaBasedOperatorDropDown.selected_value
+    selected_operator_row = next((row for row in self.db_citeria_operators_data if row['operator_names'] == self.selected_operator_name), None)
 
     # Define visibility sets
     single_value_elements = [self.oneToOneCriteriaLogicalValue]
@@ -232,8 +242,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     for elem in single_value_elements + range_value_elements + list_value_elements:
         elem.visible = False
 
-    if selected_row:
-        self.selectedOperatorValue = selected_row['operator_keywords']
+    if selected_operator_row:
+        self.selected_operator_values = selected_operator_row['operator_keywords']
 
         operator_ui_behavior = {
             "==": single_value_elements,
@@ -245,26 +255,28 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         }
 
         # Show elements based on operator
-        for elem in operator_ui_behavior.get(self.selectedOperatorValue, []):
+        for elem in operator_ui_behavior.get(self.selected_operator_values, []):
             elem.visible = True
 
         # Additional behavior for list_value_elements
-        if self.selectedOperatorValue in ["is_one_of", "is_not_one_of"]:
+        if self.selected_operator_values in ["is_one_of", "is_not_one_of"]:
              # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
              logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
-             self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_get_columns_data_based_on_sheet_id}
-             self.selectLogicalCriterionColumnId = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
-             self.column_row_values = anvil.server.call('getColumnData', self.user, self.selected_criteria_source_sheet_id, self.selectLogicalCriterionColumnId)
-             self.oneToOneCriteriaBasedMultiSelectDropDown.items = self.column_row_values
-             # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = self.column_row_values
+             self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
+            
+             self.selected_logical_criterion_column_id = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
+            
+             self.logical_criterion_row_values = anvil.server.call('getColumnData', self.user, self.selected_criteria_source_sheet_id, self.selected_logical_criterion_column_id)
+             self.oneToOneCriteriaBasedMultiSelectDropDown.items = self.logical_criterion_row_values
 
-        if self.selectedOperatorValue in ["==", "!="]:
+        if self.selected_operator_values in ["==", "!="]:
              logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
-             self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_get_columns_data_based_on_sheet_id}
-             self.selectLogicalCriterionColumnId = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
-             self.column_row_values = anvil.server.call('getColumnData', self.user, self.selected_criteria_source_sheet_id, self.selectLogicalCriterionColumnId)
-             self.oneToOneCriteriaBasedEqualsToDropDown.items = self.column_row_values
-             # self.oneToOneCriteriaBasedMultiSelectDropDown.items = self.column_row_values
+             self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
+            
+             self.selected_logical_criterion_column_id = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
+            
+             self.logical_criterion_row_values = anvil.server.call('getColumnData', self.user, self.selected_criteria_source_sheet_id, self.selected_logical_criterion_column_id)
+             self.oneToOneCriteriaBasedEqualsToDropDown.items = self.logical_criterion_row_values
 
   def oneToOneCriteriaBasedCiteriaColumnDropDown_change(self, **event_args):
      """This method is called when an item is selected"""
@@ -294,9 +306,12 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                               selectedOneToOneCriterionType = self.oneToOneCriteriaTypeDropDown.selected_value,
                               
                               selectedOneToOneCriterionSourceSheetId = self.selected_criteria_source_sheet_id,
-                              selectedOneToOneCriterionSourceColumnId = self.selectLogicalCriterionColumnId,
+                              selectedOneToOneCriterionSourceColumnId = self.selected_logical_criterion_column_id,
                               selectedOntToOneCriterionValue = self.oneToOneCriteriaBasedEqualsToDropDown.selected_value)
       print(doWe)
+
+
+
 
 
 
