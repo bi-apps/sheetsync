@@ -489,6 +489,7 @@ components:
             include_placeholder: true
           name: oneToOneCriteriaBasedCiteriaColumnDropDown
           layout_properties: {}
+          event_bindings: {change: oneToOneCriteriaBasedCiteriaColumnDropDown_change}
       - type: LinearPanel
         properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
           border: '', visible: true, role: null, tooltip: ''}
@@ -558,26 +559,9 @@ components:
             bold: false, underline: false, icon: ''}
           name: label_5
           layout_properties: {}
-        - type: TextBox
-          properties: {role: null, align: left, hide_text: false, tooltip: '', placeholder: Value,
-            border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
-            font: '', spacing_above: small, type: text, spacing_below: small, italic: false,
-            background: '', bold: false, underline: false}
-          name: text_box_3
-          layout_properties: {}
-      - type: LinearPanel
-        properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
-          border: '', visible: false, role: null, tooltip: ''}
-        name: oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel
-        layout_properties: {width: null, expand: true}
-        components:
-        - type: Label
-          properties: {}
-          name: oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel
-          layout_properties: {}
         - type: DropDown
           properties: {}
-          name: oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown
+          name: oneToOneCriteriaBasedEqualsToDropDown
           layout_properties: {}
       - type: LinearPanel
         properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
@@ -600,6 +584,21 @@ components:
           name: text_box_2
           layout_properties: {}
       event_bindings: {}
+    - type: FlowPanel
+      properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
+        foreground: '', visible: true, spacing_above: small, spacing_below: small,
+        background: ''}
+      name: flow_panel_3
+      layout_properties: {grid_position: 'CUONKS,RRQFJR', full_width_row: false}
+      components:
+      - type: form:dep_sfh6f32rpzhmfn:MultiSelectDropDown
+        properties:
+          unique: true
+          placeholder: Select Value/s
+          items: ['']
+        name: oneToOneCriteriaBasedMultiSelectDropDown
+        layout_properties: {grid_position: 'XQWZQE,ZCGSVP', expand: true, width: null,
+          full_width_row: true}
     - type: FlowPanel
       properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
         foreground: '', visible: false, spacing_above: small, spacing_below: small,

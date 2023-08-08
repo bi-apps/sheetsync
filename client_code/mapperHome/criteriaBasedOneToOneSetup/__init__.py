@@ -19,6 +19,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     self.user = anvil.users.get_user()
 
     # # Hide Objects that needs to be hidden on load
+    self.oneToOneCriteriaBasedMultiSelectDropDown.visible = False
 
     # Get Sheet Names and Id's
     sheet_data = anvil.server.call('getSheetData', self.user)
@@ -182,44 +183,56 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
   # ----------- Logical Criterion Section --------------#
   # Logical
   def oneToOneCriteriaBasedOperatorDropDown_change(self, **event_args):
-      """This method is called when an item is selected"""
-      self.selectedOperatorName = self.oneToOneCriteriaBasedOperatorDropDown.selected_value
-      selected_row = next((row for row in self.operator_type_data if row['operator_names'] == self.selectedOperatorName), None)
+    """This method is called when an item is selected"""
+    self.selectedOperatorName = self.oneToOneCriteriaBasedOperatorDropDown.selected_value
+    selected_row = next((row for row in self.operator_type_data if row['operator_names'] == self.selectedOperatorName), None)
 
-      if self.selectedOperatorName is not None:
-         self.selectedOperatorValue = selected_row['operator_keywords']
+    # Define visibility sets
+    single_value_elements = [self.oneToOneCriteriaLogicalValue]
+    range_value_elements = [self.oneToOneCriteriaLogicalFromValue, self.oneToOneCriteriaLogicalToValue]
+    list_value_elements = [self.oneToOneCriteriaBasedMultiSelectDropDown]
 
-         # If Operator is Equals to, Not Equals to Or Contains display Value input else do not display value input
-         if self.selectedOperatorValue in ["==", "!=", "in"]:
-           self.oneToOneCriteriaLogicalValue.visible = True
-         else:
-           self.oneToOneCriteriaLogicalValue.visible = False
+    # Hide all elements by default
+    for elem in single_value_elements + range_value_elements + list_value_elements:
+        elem.visible = False
 
-         if self.selectedOperatorValue in ["not in", "select_included*"]:
-           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = True
-           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
-             
-           # Last Busy Here!
-           logical_criteria_columns_data = anvil.server.call('getColumnNames',self.selectedCriteriaSourceSheetId, self.user)
-           self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
-      
-           self.selectLogicalCriterionColumnId = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
-           self.column_row_values = anvil.server.call('getColumnData', self.user, self.selectedCriteriaSourceSheetId, self.selectLogicalCriterionColumnId )
-           print(self.column_row_values)
-           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = self.column_row_values # Set Drop down values of columns rows in sheet
-             
-         else:
-           self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLinearPanel.visible = False
+    if selected_row:
+        self.selectedOperatorValue = selected_row['operator_keywords']
 
-         if self.selectedOperatorValue in ['range*']:
-           self.oneToOneCriteriaLogicalFromValue.visible = True
-           self.oneToOneCriteriaLogicalToValue.visible = True
-         else:
-           self.oneToOneCriteriaLogicalFromValue.visible = False
-           self.oneToOneCriteriaLogicalToValue.visible = False
-             
-      else:
-         self.oneToOneCriteriaLogicalValue.visible = False
-        
+        operator_ui_behavior = {
+            "==": single_value_elements,
+            "!=": single_value_elements,
+            "contains": single_value_elements,
+            "is_one_of": list_value_elements,
+            "is_not_one_of": list_value_elements,
+            "between": range_value_elements
+        }
 
-         print(self.selectedOperatorValue)
+        # Show elements based on operator
+        for elem in operator_ui_behavior.get(self.selectedOperatorValue, []):
+            elem.visible = True
+
+        # Additional behavior for list_value_elements
+        if self.selectedOperatorValue in ["is_one_of", "is_not_one_of"]:
+             # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
+             logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selectedCriteriaSourceSheetId, self.user)
+             self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
+             self.selectLogicalCriterionColumnId = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
+             self.column_row_values = anvil.server.call('getColumnData', self.user, self.selectedCriteriaSourceSheetId, self.selectLogicalCriterionColumnId)
+             self.oneToOneCriteriaBasedMultiSelectDropDown.items = self.column_row_values
+             # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotDropdown.items = self.column_row_values
+
+        if self.selectedOperatorValue in ["==", "!="]:
+             logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selectedCriteriaSourceSheetId, self.user)
+             self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
+             self.selectLogicalCriterionColumnId = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
+             self.column_row_values = anvil.server.call('getColumnData', self.user, self.selectedCriteriaSourceSheetId, self.selectLogicalCriterionColumnId)
+             self.oneToOneCriteriaBasedEqualsToDropDown.items = self.column_row_values
+             # self.oneToOneCriteriaBasedMultiSelectDropDown.items = self.column_row_values
+
+  def oneToOneCriteriaBasedCiteriaColumnDropDown_change(self, **event_args):
+     """This method is called when an item is selected"""
+     self.oneToOneCriteriaBasedOperatorDropDown_change()
+
+
+            

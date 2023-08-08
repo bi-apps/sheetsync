@@ -31,3 +31,6 @@ def is_mapping_name_unique(user, mapping_name, mapping_table):
     else:
       return False
 
+
+
+
