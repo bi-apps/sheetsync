@@ -64,23 +64,6 @@ def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_
                 columnCellValues = source_column_cell.value
                 columnValues.add(columnCellValues)
 
-    # for row in sheet.rows:
-    #     criteria_column_cell = row.get_column(criteria_column_obj.id)
-    #     # print("Criteria Cell Value " + criteria_column_cell.value)
-    #     if criteria_column_cell:  # Check if the cell exists before accessing its value
-    #         criteria_column_value = criteria_column_cell.value
-    #     else:
-    #         criteria_column_value = None
-
-    #     # Check if the value in the criteria column matches the specified criteria using the lambda functions
-    #     if operators.get(operator_keyword, lambda x: False)(criteria_column_value):
-    #         print(operator_keyword)
-    #         source_column_cell = row.get_column(source_column_obj.id)
-    #         # print("Source Cell Value " + source_column_cell.value)
-    #         if source_column_cell:  # Check if the cell exists before accessing its value
-    #             columnCellValues = source_column_cell.value
-    #             columnValues.add(columnCellValues)
-
     return list(columnValues)
 
 # Helper Function to get Total sheets in account
@@ -120,7 +103,7 @@ def getColumnNames(sheetId, user):
   response = client.Sheets.get_columns(sheet_id=sheetId,include_all=True, level=2)
   responseData = response.data
   # print(response)
-  columns = [{'id': str(column.id), 'title': column.title} for column in responseData]
+  columns = [{'id': str(column.id), 'title': column.title, 'type': column.type} for column in responseData]
   return columns
 
 # Helper Function to get column data without any criteria

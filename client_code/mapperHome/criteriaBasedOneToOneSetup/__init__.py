@@ -59,6 +59,38 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
          self.oneToOneCriteriaBasedDynamicSourceSheetDropDown.items = []
          self.oneToOneCriteriaBasedDynamicDestinationSheetDropDown.items = []
 
+  def clear_input_values(self):
+      self.oneToOneCriteriaLogicalFromValueInput.text = ""
+      self.oneToOneCriteriaLogicalToValueInput.text = ""
+      self.oneToOneCriteriaBasedEqualsToDropDown.items = []
+      self.oneToOneCriteriaContainsValueInput.text = ""
+      self.oneToOneCriteriaBasedMultiSelectDropDown.clear_tokens()
+
+    
+  def get_non_empty_values(self):
+      # Create a list of UI elements
+      ui_elements = [
+         self.oneToOneCriteriaLogicalFromValueInput,
+         self.oneToOneCriteriaLogicalToValueInput,
+         self.oneToOneCriteriaBasedEqualsToDropDown,
+         self.oneToOneCriteriaContainsValueInput,
+         self.oneToOneCriteriaBasedMultiSelectDropDown
+        ]
+        
+        # Iterate through the list and check for non-empty values
+      for element in ui_elements:
+          # Check for TextBox and TextInput components
+          if hasattr(element, 'text') and element.text:
+             return element.text
+          # Check for DropDown components
+          elif hasattr(element, 'selected_value') and element.selected_value:
+             return element.selected_value
+         # Check for MultiSelectDropDown custom component
+          elif hasattr(element, 'selected_tokens') and element.selected_tokens:
+             return element.selected_tokens
+        # If no non-empty values are found, return None
+      return None
+
     # ------------- Helper Functions End --------------- #
 
 
@@ -226,10 +258,11 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
 
 
 
-#########    LAST HERE DERICK    ##########
   # ----------- Logical Criterion Section --------------#
   # Logical
   def oneToOneCriteriaBasedOperatorDropDown_change(self, **event_args):
+    """The below helper Function Clears all Inputs and Reinitiates them"""
+    self.clear_input_values()
     """This method is called when an item is selected"""
     self.selected_operator_name = self.oneToOneCriteriaBasedOperatorDropDown.selected_value
     selected_operator_row = next((row for row in self.db_citeria_operators_data if row['operator_names'] == self.selected_operator_name), None)
@@ -263,8 +296,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
 
         # Additional behavior for list_value_elements
         if self.selected_operator_values in ["is_one_of", "is_not_one_of"]:
-             # self.oneToOneCriteriaBasedOperatorIsOneOfOrNotLabel.text = "These Values"
-             self.oneToOneCriteriaBasedMultiSelectDropDown.clear_tokens()
+             # self.clear_input_values()
             
              logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
              self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
@@ -276,6 +308,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
              
 
         if self.selected_operator_values in ["==", "!="]:
+             # self.clear_input_values()
              logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
              self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
             
@@ -285,64 +318,51 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
              self.oneToOneCriteriaBasedEqualsToDropDown.items = self.logical_criterion_row_values
 
         if self.selected_operator_values in ["contains"]:
+             # self.clear_input_values()
+             logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
+             self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
+            
+             self.selected_logical_criterion_column_id = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
+
+        if self.selected_operator_values in ["between"]:
+             # self.clear_input_values()
              logical_criteria_columns_data = anvil.server.call('getColumnNames', self.selected_criteria_source_sheet_id, self.user)
              self.logical_criteria_column_map = {column['title']: column['id'] for column in logical_criteria_columns_data}
             
              self.selected_logical_criterion_column_id = self.logical_criteria_column_map[self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value]
             
-
   def oneToOneCriteriaBasedCiteriaColumnDropDown_change(self, **event_args):
      """This method is called when an item is selected"""
+     """Everytime a Criteria Column is selected it will initiate the operator dropdown which will clear all previous inputs"""
      self.oneToOneCriteriaBasedOperatorDropDown_change()
-
-  def oneToOneCriteriaBasedEqualsToDropDown_change(self, **event_args):
-      """This method is called when an item is selected"""
-      self.criterion_value_selected = self.oneToOneCriteriaBasedEqualsToDropDown.selected_value
-
 
   def oneToOneCriteriaBasedRunMappingBtn_click(self, **event_args):
       """This method is called when the button is clicked"""
       """Remember i am focusing on testing the logical criterion first the below is not dynamic nor scalible!!!!"""
-          
-      print(self.criterion_value_selected)
-      doWe = anvil.server.call('houstonWeHaveAProblem',
-                              user_id = self.user,
-                              selected_source_sheet_id = self.selected_criteria_source_sheet_id,
-                              selected_source_sheet_column_id = self.selected_criteria_source_column_id,
-                              
-                              selected_destination_sheet_id = self.selected_criteria_destination_sheet_id,
-                              selected_destination_sheet_column_id = self.selected_criteria_destination_column_id,
-                              
-                              selected_destination_column_type_value = self.selected_destination_column_type_value,
-                              selected_destination_column_validation = self.selected_destination_column_validation_type,
-                              
-                              selected_criteria_type = self.selected_criterion_type,
-                              
-                              selected_criteria_source_sheet_id = self.selected_criteria_source_sheet_id,
-                              selected_criteria_source_column_id = self.selected_logical_criterion_column_id,
-                               
-                              selected_criteria_operator = self.selected_operator_values,
-                               
-                              selected_criteria_value = self.criterion_value_selected)
-      print(doWe)
-
-
-
-
-
-
-
-
-
-
-
-
-
       
+      self.selected_criterion_value = self.get_non_empty_values()
+      
+      if self.selected_criterion_value:
+        doWe = anvil.server.call('houstonWeHaveAProblem',
+                                user_id = self.user,
+                                selected_source_sheet_id = self.selected_criteria_source_sheet_id,
+                                selected_source_sheet_column_id = self.selected_criteria_source_column_id,
+                                
+                                selected_destination_sheet_id = self.selected_criteria_destination_sheet_id,
+                                selected_destination_sheet_column_id = self.selected_criteria_destination_column_id,
+                                
+                                selected_destination_column_type_value = self.selected_destination_column_type_value,
+                                selected_destination_column_validation = self.selected_destination_column_validation_type,
+                                
+                                selected_criteria_type = self.selected_criterion_type,
+                                
+                                selected_criteria_source_sheet_id = self.selected_criteria_source_sheet_id,
+                                selected_criteria_source_column_id = self.selected_logical_criterion_column_id,
+                                
+                                selected_criteria_operator = self.selected_operator_values,
+                                
+                                selected_criteria_value = self.selected_criterion_value)
+        print(doWe)
+      else:
+        print("all Empty")
 
-
-
-
-
-
-            

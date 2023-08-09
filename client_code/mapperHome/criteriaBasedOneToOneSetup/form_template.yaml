@@ -545,7 +545,7 @@ components:
             border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
             font: '', spacing_above: small, type: text, spacing_below: small, italic: false,
             background: '', bold: false, underline: false}
-          name: text_box_1
+          name: oneToOneCriteriaLogicalFromValueInput
           layout_properties: {}
       - type: LinearPanel
         properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
@@ -582,7 +582,7 @@ components:
             include_placeholder: true
           name: oneToOneCriteriaBasedEqualsToDropDown
           layout_properties: {}
-          event_bindings: {change: oneToOneCriteriaBasedEqualsToDropDown_change}
+          event_bindings: {}
       - type: LinearPanel
         properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
           border: '', visible: false, role: null, tooltip: ''}
@@ -623,7 +623,7 @@ components:
             border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
             font: '', spacing_above: small, type: text, spacing_below: small, italic: false,
             background: '', bold: false, underline: false}
-          name: text_box_2
+          name: oneToOneCriteriaLogicalToValueInput
           layout_properties: {}
       event_bindings: {}
     - type: FlowPanel
