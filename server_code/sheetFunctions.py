@@ -22,10 +22,10 @@ def getSmartsheetClient(user):
 @anvil.server.callable
 def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_column_id, criteria_value, operator_keyword):
     # print(user)
-    # print("source_sheet_id " + source_sheet_id)
-    # print("source_column_id " + source_column_id)
-    # print("criteria_column_id " + criteria_column_id)
-    # print("criteria_value " + criteria_value)
+    print("source_sheet_id " + source_sheet_id)
+    print("source_column_id " + source_column_id)
+    print("criteria_column_id " + criteria_column_id)
+    print("criteria_value " + criteria_value)
     print("operator_keyword " + operator_keyword)
     
     client = getSmartsheetClient(user)
@@ -45,23 +45,41 @@ def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_
         "is_not_one_of": lambda x: x not in criteria_value if isinstance(criteria_value, list) else False,
         "between": lambda x: criteria_value[0] <= x <= criteria_value[1] if isinstance(criteria_value, list) and len(criteria_value) == 2 else False
     }
-    
     for row in sheet.rows:
         criteria_column_cell = row.get_column(criteria_column_obj.id)
-        # print("Criteria Cell Value " + criteria_column_cell.value)
+    
         if criteria_column_cell:  # Check if the cell exists before accessing its value
             criteria_column_value = criteria_column_cell.value
         else:
             criteria_column_value = None
 
+        print(f"Checking if {criteria_column_value} == {criteria_value}")
+
         # Check if the value in the criteria column matches the specified criteria using the lambda functions
         if operators.get(operator_keyword, lambda x: False)(criteria_column_value):
-            print(operator_keyword)
+            print(f"Match found for {criteria_column_value}")
+        
             source_column_cell = row.get_column(source_column_obj.id)
-            # print("Source Cell Value " + source_column_cell.value)
             if source_column_cell:  # Check if the cell exists before accessing its value
                 columnCellValues = source_column_cell.value
                 columnValues.add(columnCellValues)
+
+    # for row in sheet.rows:
+    #     criteria_column_cell = row.get_column(criteria_column_obj.id)
+    #     # print("Criteria Cell Value " + criteria_column_cell.value)
+    #     if criteria_column_cell:  # Check if the cell exists before accessing its value
+    #         criteria_column_value = criteria_column_cell.value
+    #     else:
+    #         criteria_column_value = None
+
+    #     # Check if the value in the criteria column matches the specified criteria using the lambda functions
+    #     if operators.get(operator_keyword, lambda x: False)(criteria_column_value):
+    #         print(operator_keyword)
+    #         source_column_cell = row.get_column(source_column_obj.id)
+    #         # print("Source Cell Value " + source_column_cell.value)
+    #         if source_column_cell:  # Check if the cell exists before accessing its value
+    #             columnCellValues = source_column_cell.value
+    #             columnValues.add(columnCellValues)
 
     return list(columnValues)
 

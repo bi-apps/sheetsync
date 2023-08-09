@@ -304,14 +304,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
       """This method is called when the button is clicked"""
       """Remember i am focusing on testing the logical criterion first the below is not dynamic nor scalible!!!!"""
       
-      if self.oneToOneCriteriaBasedMultiSelectDropDown.selected_tokens is not None:
-          self.criterion_value_selected = self.oneToOneCriteriaBasedMultiSelectDropDown.selected_tokens
-      if self.oneToOneCriteriaBasedEqualsToDropDown.selected_value is not None:
-          self.criterion_value_selected = self.oneToOneCriteriaBasedEqualsToDropDown.selected_value
-      if self.oneToOneCriteriaContainsValueInput.text is not None:
-          self.criterion_value_selected = self.oneToOneCriteriaContainsValueInput.text
           
-      print(self.oneToOneCriteriaBasedMultiSelectDropDown.selected_tokens)
+      print(self.criterion_value_selected)
       doWe = anvil.server.call('houstonWeHaveAProblem',
                               user_id = self.user,
                               selected_source_sheet_id = self.selected_criteria_source_sheet_id,
@@ -331,7 +325,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                               selected_criteria_operator = self.selected_operator_values,
                                
                               selected_criteria_value = self.criterion_value_selected)
-      # print(doWe)
+      print(doWe)
 
 
 
