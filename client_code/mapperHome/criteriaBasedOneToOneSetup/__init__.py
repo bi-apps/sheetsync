@@ -303,7 +303,6 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
   def oneToOneCriteriaBasedRunMappingBtn_click(self, **event_args):
       """This method is called when the button is clicked"""
       """Remember i am focusing on testing the logical criterion first the below is not dynamic nor scalible!!!!"""
-      
           
       print(self.criterion_value_selected)
       doWe = anvil.server.call('houstonWeHaveAProblem',
