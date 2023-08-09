@@ -22,11 +22,11 @@ def getSmartsheetClient(user):
 @anvil.server.callable
 def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_column_id, criteria_value, operator_keyword):
     # print(user)
-    print("source_sheet_id " + source_sheet_id)
-    print("source_column_id " + source_column_id)
-    print("criteria_column_id " + criteria_column_id)
-    print("criteria_value " + criteria_value)
-    print("operator_keyword " + operator_keyword)
+    # print("source_sheet_id " + source_sheet_id)
+    # print("source_column_id " + source_column_id)
+    # print("criteria_column_id " + criteria_column_id)
+    # print("criteria_value " + criteria_value)
+    # print("operator_keyword " + operator_keyword)
     
     client = getSmartsheetClient(user)
     sheet = client.Sheets.get_sheet(source_sheet_id)
@@ -43,28 +43,40 @@ def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_
         "is_not_blank": lambda x: bool(x),
         "is_one_of": lambda x: x in criteria_value if isinstance(criteria_value, list) else False,
         "is_not_one_of": lambda x: x not in criteria_value if isinstance(criteria_value, list) else False,
-        "between": lambda x: criteria_value[0] <= x <= criteria_value[1] if isinstance(criteria_value, list) and len(criteria_value) == 2 else False
+        "between": lambda x: criteria_value[0] <= x <= criteria_value[1] if isinstance(criteria_value, list) and len(criteria_value) == 2 and x is not None else False
     }
     for row in sheet.rows:
         criteria_column_cell = row.get_column(criteria_column_obj.id)
-    
+        
         if criteria_column_cell:  # Check if the cell exists before accessing its value
             criteria_column_value = criteria_column_cell.value
         else:
             criteria_column_value = None
-
+    
         print(f"Checking if {criteria_column_value} == {criteria_value}")
-
+    
         # Check if the value in the criteria column matches the specified criteria using the lambda functions
         if operators.get(operator_keyword, lambda x: False)(criteria_column_value):
             print(f"Match found for {criteria_column_value}")
-        
+            
             source_column_cell = row.get_column(source_column_obj.id)
             if source_column_cell:  # Check if the cell exists before accessing its value
                 columnCellValues = source_column_cell.value
-                columnValues.add(columnCellValues)
-
+    
+                # If the column type is a contact type, convert values to contact dictionaries
+                if source_column_obj.type in ["CONTACT_LIST", "MULTI_CONTACT_LIST"] and columnCellValues:
+                    contacts = [{"email": email, "name": email} for email in [columnCellValues] if email]
+                    for contact in contacts:
+                        columnValues.add(str(contact))
+                else:
+                    columnValues.add(columnCellValues)
+    
+    # Convert the set of strings back to dictionaries if the column type is a contact type
+    if source_column_obj.type in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
+        columnValues = [eval(contact_str) for contact_str in columnValues]
+    
     return list(columnValues)
+
 
 # Helper Function to get Total sheets in account
 @anvil.server.callable
@@ -103,7 +115,7 @@ def getColumnNames(sheetId, user):
   response = client.Sheets.get_columns(sheet_id=sheetId,include_all=True, level=2)
   responseData = response.data
   # print(response)
-  columns = [{'id': str(column.id), 'title': column.title, 'type': column.type} for column in responseData]
+  columns = [{'id': str(column.id), 'title': column.title} for column in responseData]
   return columns
 
 # Helper Function to get column data without any criteria
@@ -115,13 +127,43 @@ def getColumnData(user, sheetId, ColumnId):
     columnValues = set()
 
     for row in sheet.rows:
-        columnCellValues = row.get_column(column.id).value
-        columnValues.add(columnCellValues)
+        column_values = row.get_column(column.id).value
+        if column_values:
+            columnCellValues = column_values
+            columnValues.add(columnCellValues)
 
-    # If the column type is a contact type, convert values to contact dictionaries
+        # If the column type is a contact type, convert values to contact dictionaries
     if column.type in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
         # contacts = [create_contact(email) for email in columnValues if email]
         contacts = [{"email": email, "name": email} for email in columnValues if email]
+        print(type(contacts))
+        print(contacts)
+        unique_column_values = contacts
+    else:
+        unique_column_values = list(columnValues)
+
+    return unique_column_values
+
+# Helper Function to get column data for DropDown Objects
+@anvil.server.callable
+def get_colum_data_for_ui(user, sheetId, ColumnId):
+    client = getSmartsheetClient(user)
+    sheet = client.Sheets.get_sheet(sheetId)
+    column = client.Sheets.get_column(sheetId, ColumnId)
+    columnValues = set()
+    print(column)
+
+    for row in sheet.rows:
+        column_values = row.get_column(column.id).value
+        if column_values:
+            columnCellValues = column_values
+            columnValues.add(columnCellValues)
+
+        # If the column type is a contact type, convert values to contact dictionaries
+    if column.type in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
+        # contacts = [create_contact(email) for email in columnValues if email]
+        contacts = [email for email in columnValues if email]
+        # emails = [email for email in columnValues if email]
         print(type(contacts))
         print(contacts)
         unique_column_values = contacts

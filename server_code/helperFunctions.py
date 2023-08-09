@@ -22,6 +22,10 @@ def get_result_code_or_message(updated_destination_column):
 def create_contact(email):
     return {"email": email, "name": email}
 
+# Helper function to convert response values to contact lists for DropDowns
+def create_contact_list_for_dropdowns(email):
+    return [email]
+
 # Helper Function To Check that Automation Name is unique
 @anvil.server.callable
 def is_mapping_name_unique(user, mapping_name, mapping_table):

@@ -12,7 +12,8 @@ from anvil.tables import app_tables
 from datetime import datetime
 
 class oneToOneSetup(oneToOneSetupTemplate):
-    def __init__(self, user, **properties):
+    # def __init__(self, user, **properties):
+    def __init__(self, **properties):
         # Set Form properties and Data Bindings.
         self.init_components(**properties)
       
@@ -38,7 +39,8 @@ class oneToOneSetup(oneToOneSetupTemplate):
         # End Initiation of Screen Object States
       
         # Get User
-        self.user = user
+        # self.user = user
+        self.user = anvil.users.get_user()
       
         # Any code you write here will run before the form opens.
         # Get Sheet Names and Id's
@@ -189,17 +191,18 @@ class oneToOneSetup(oneToOneSetupTemplate):
                                 destination_column_name=self.selDestColumnName,
                                 destination_colum_type=self.columnTypeValue,
                                 destination_column_validation=self.columnTypeValidation)
-                if saveMapping:
+              if saveMapping:
                   Notification(f"Your Dropdown Automation has been saved but NOT activated! ", title="Heads Up Fellow Smartsheeter!", style="info", timeout=10).show()
-                else:
+              else:
                   Notification(f"Your Dropdown Automation has not been saved and activated due to Error: {saveMapping}", title="Oops! Error!", style="danger", timeout=10).show()
-            else:
+          else:
               Notification(f"Your Dropdown Automation Test has Failed! Due to Error: {runMapping}", title="Oops! Error! Bail!", style="danger", timeout=10).show()
 
-          else:
+        else:
             Notification(f"Your Dropdown Automation Name: {self.oneToOneMappingNameTxtBox.text} already Exists, Please Use a Unique Name for every Automation", title="Oops! Not to Creative i see...", style="warning", timeout=10).show()
       
-        anvil.open_form('mapperHome')
+        # anvil.open_form('mapperHome')
+        print("error")
       
     def oneToOneBackBtn_click(self, **event_args):
         """This method is called when the button is clicked"""
