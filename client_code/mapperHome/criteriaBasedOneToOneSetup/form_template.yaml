@@ -54,7 +54,7 @@ components:
       border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
       font: '', spacing_above: medium, type: text, spacing_below: small, italic: false,
       background: '', bold: false, underline: false}
-    name: oneToOneMappingNameTxtBox
+    name: oneToOneCriteriaBasedMappingNameTxtBox
     layout_properties: {expand: false, width: 400}
     event_bindings: {}
 - type: ColumnPanel

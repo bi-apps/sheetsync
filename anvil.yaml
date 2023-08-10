@@ -6,7 +6,7 @@ dependencies:
 services:
 - source: /runtime/services/tables.yml
   client_config: {enable_v2: false}
-  server_config: {auto_create_missing_columns: false}
+  server_config: {auto_create_missing_columns: true}
 - source: /runtime/services/anvil/users.yml
   client_config: {require_secure_passwords: true, share_login_status: true, use_token: false,
     use_email: true, allow_remember_me: true, allow_signup: true, enable_automatically: true,
@@ -166,16 +166,12 @@ db_schema:
       type: string
     title: operator_types
   db_cr_one_to_one:
-    client: full
+    client: search
     server: full
     columns:
     - name: map_name
       admin_ui: {order: 0, width: 200}
       type: string
-    - name: user
-      admin_ui: {order: 1, width: 200}
-      type: link_multiple
-      target: users
     - name: src_sheet_name
       admin_ui: {order: 2, width: 200}
       type: string
@@ -233,6 +229,25 @@ db_schema:
     - name: criterion_src_sheet_col_id
       admin_ui: {order: 20, width: 200}
       type: string
+    - name: criterion_dest_sheet_col_name
+      admin_ui: {order: 21, width: 200}
+      type: string
+    - name: criterion_dest_sheet_col_id
+      admin_ui: {order: 22, width: 200}
+      type: string
+    - name: created_date_timestamp
+      admin_ui: {order: 23, width: 200}
+      type: datetime
+    - name: map_enabled
+      admin_ui: {order: 24, width: 200}
+      type: bool
+    - name: user
+      admin_ui: {width: 200}
+      type: link_single
+      target: users
+    - name: criterion_value
+      admin_ui: {width: 323.498}
+      type: simpleObject
     title: db_cr_one-to-one
 secrets:
   smartsheetsKey:
