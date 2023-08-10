@@ -10,6 +10,8 @@ from anvil.tables import app_tables
 import anvil.server
 from datetime import datetime
 
+app_tables.
+
 # Helper Function To Save Automation for One To One Mapping ONLY
 @anvil.server.callable
 def saveMapping(*args, **kwargs):
