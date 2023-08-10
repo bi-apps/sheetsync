@@ -24,7 +24,7 @@ services:
 - source: /runtime/services/stripe.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: mapperHome.criteriaBasedOneToOneSetup}
+startup: {type: form, module: homePage}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
