@@ -376,7 +376,7 @@ components:
             border: ''
             enabled: false
             foreground: ''
-            items: [Logical, Dynamic]
+            items: [Logical]
             visible: true
             font_size: null
             font: ''
@@ -401,21 +401,13 @@ components:
         name: linear_panel_1
         layout_properties: {width: null, expand: true}
         components:
-        - type: FlowPanel
-          properties: {role: null, spacing: medium, align: left, tooltip: '', border: '',
-            foreground: '', visible: true, spacing_above: small, spacing_below: small,
-            background: ''}
-          name: flow_panel_6
+        - type: Label
+          properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+            visible: true, text: Automation Evaluation, font_size: null, font: '',
+            spacing_above: small, icon_align: left, spacing_below: small, italic: false,
+            background: '', bold: true, underline: false, icon: ''}
+          name: label_6
           layout_properties: {}
-          components:
-          - type: Label
-            properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-              visible: true, text: 'Logical : Criteria based on logical values i.e
-                Column Value/s', font_size: null, font: '', spacing_above: none, icon_align: left,
-              spacing_below: none, italic: false, background: '', bold: false, underline: false,
-              icon: ''}
-            name: label_8
-            layout_properties: {expand: true, width: null}
         - type: FlowPanel
           properties: {role: null, spacing: medium, align: left, tooltip: '', border: '',
             foreground: '', visible: true, spacing_above: small, spacing_below: small,
@@ -423,13 +415,16 @@ components:
           name: flow_panel_7
           layout_properties: {}
           components:
-          - type: Label
-            properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-              visible: true, text: 'Dynamic : Creteria based on Dynamic Values i.e
-                Source Sheet Column Values Match Destination Sheet Column Values',
-              font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-              italic: false, background: '', bold: false, underline: false, icon: ''}
-            name: label_9
+          - type: RichText
+            properties: {role: null, align: left, tooltip: '', enable_slots: true,
+              border: '', foreground: '', visible: false, font_size: 10, content: 'Moving
+                Cell Values from {source_sheet_name}''s column {source_column_name}
+                to {dest_sheet_name}''s Column {dest_column_name} Where {criteria_source_sheet_name}''s
+                Column {criteria_column_name} is {operator_name} {criteria_values}
+                {to_criterion_values} with {column_type} {column_validation}', font: '',
+              spacing_above: none, spacing_below: none, data: null, background: '',
+              format: markdown}
+            name: oneToOneCriteriaBasedCriteriaExplainationText
             layout_properties: {expand: true, width: null}
     - type: FlowPanel
       properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
@@ -547,6 +542,7 @@ components:
             background: '', bold: false, underline: false}
           name: oneToOneCriteriaLogicalFromValueInput
           layout_properties: {}
+          event_bindings: {change: oneToOneCriteriaLogicalFromValueInput_change}
       - type: LinearPanel
         properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
           border: '', visible: false, role: null, tooltip: ''}
@@ -582,7 +578,7 @@ components:
             include_placeholder: true
           name: oneToOneCriteriaBasedEqualsToDropDown
           layout_properties: {}
-          event_bindings: {}
+          event_bindings: {change: oneToOneCriteriaBasedEqualsToDropDown_change}
       - type: LinearPanel
         properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
           border: '', visible: false, role: null, tooltip: ''}
@@ -605,6 +601,7 @@ components:
             background: '', bold: false, underline: false}
           name: oneToOneCriteriaContainsValueInput
           layout_properties: {}
+          event_bindings: {change: oneToOneCriteriaContainsValueInput_change}
       - type: LinearPanel
         properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
           border: '', visible: false, role: null, tooltip: ''}
@@ -625,6 +622,7 @@ components:
             background: '', bold: false, underline: false}
           name: oneToOneCriteriaLogicalToValueInput
           layout_properties: {}
+          event_bindings: {change: oneToOneCriteriaLogicalToValueInput_change}
       event_bindings: {}
     - type: FlowPanel
       properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',

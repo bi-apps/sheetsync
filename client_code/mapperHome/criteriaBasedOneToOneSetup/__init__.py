@@ -11,12 +11,11 @@ import anvil.tables as tables
 import anvil.tables.query as q
 from anvil.tables import app_tables
 
-
 class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     def __init__(self, **properties):
         # Set Form properties and Data Bindings.
         self.init_components(**properties)
-
+        # self.oneToOneCriteriaBasedCriteriaExplainationText.data = { "source_sheet_name": "derick test"}
         self.user = anvil.users.get_user()
 
         # # Hide Objects that needs to be hidden on load
@@ -52,7 +51,21 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
             row['operator_names'] for row in self.db_citeria_operators_data]
 
         # ------------- Helper Functions --------------- #
+    
+    def update_slot(self, slot_name, value):
+        # Ensure the 'data' attribute is not None
+        if self.oneToOneCriteriaBasedCriteriaExplainationText.data is None:
+            self.oneToOneCriteriaBasedCriteriaExplainationText.data = {}
+        
+        # Copy the existing data and update the specific slot
+        updated_data = self.oneToOneCriteriaBasedCriteriaExplainationText.data.copy()
+        updated_data[slot_name] = value
+        
+        # Assign the updated data back to the Rich Text component
+        self.oneToOneCriteriaBasedCriteriaExplainationText.data = updated_data
 
+
+        
     def update_dynamic_source_sheet_dropdown(self):
         # (Source) This is for The Dynamic Criterion Only, Allows a user to select the source or destination sheet Only
         selected_source_sheet_name = self.oneToOneCriteriaBasedSourceSheetDropDown.selected_value
@@ -111,7 +124,9 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     def oneToOneCriteriaBasedSourceSheetDropDown_change(self, **event_args):
         """This method is called when an item is selected"""
         self.selected_criteria_source_sheet_name = self.oneToOneCriteriaBasedSourceSheetDropDown.selected_value
-
+        
+        self.update_slot("source_sheet_name", self.selected_criteria_source_sheet_name)
+        
         if self.selected_criteria_source_sheet_name is not None:
             self.selected_criteria_source_sheet_id = self.sheet_name_and_ids_map[
                 self.selected_criteria_source_sheet_name]
@@ -144,6 +159,9 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     def oneToOneCriteriaBasedSourceColumnDropDown_change(self, **event_args):
         """This method is called when an item is selected"""
         self.selected_criteria_source_column_name = self.oneToOneCriteriaBasedSourceColumnDropDown.selected_value
+
+        self.update_slot("source_column_name", self.selected_criteria_source_column_name)
+        
         if self.selected_criteria_source_column_name is not None:
             self.selected_criteria_source_column_id = self.column_name_and_ids_map[
                 self.selected_criteria_source_column_name]
@@ -156,6 +174,9 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     def oneToOneCriteriaBasedDestinationSheetDropDown_change(self, **event_args):
         """This method is called when an item is selected"""
         self.selected_criteria_destination_sheet_name = self.oneToOneCriteriaBasedDestinationSheetDropDown.selected_value
+
+        self.update_slot("dest_sheet_name", self.selected_criteria_destination_sheet_name)
+        
         if self.selected_criteria_destination_sheet_name is not None:
             self.selected_criteria_destination_sheet_id = self.sheet_name_and_ids_map[
                 self.selected_criteria_destination_sheet_name]
@@ -181,6 +202,9 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     def oneToOneCriteriaBasedDestinationColumnDropDown_change(self, **event_args):
         """This method is called when an item is selected"""
         self.selected_criteria_destination_column_name = self.oneToOneCriteriaBasedDestinationColumnDropDown.selected_value
+
+        self.update_slot("dest_column_name", self.selected_criteria_destination_column_name)
+        
         if self.selected_criteria_destination_column_name is not None:
             self.selected_criteria_destination_column_id = self.column_name_and_ids_map[
                 self.selected_criteria_destination_column_name]
@@ -193,6 +217,9 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     def oneToOneCriteriaBasedDestinationDropdownType_change(self, **event_args):
         """This method is called when an item is selected"""
         self.selected_column_type_name = self.oneToOneCriteriaBasedDestinationDropdownType.selected_value
+
+        self.update_slot("column_type",  self.selected_column_type_name)
+        
         selected_column_type_row = next(
             (row for row in self.db_column_type_data if row['column_type'] == self.selected_column_type_name), None)
 
@@ -212,11 +239,14 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         """This method is called when an item is selected"""
         self.selected_criterion_type = self.oneToOneCriteriaTypeDropDown.selected_value
 
+        
+
         if self.selected_criterion_type is not None:
             if self.selected_criterion_type == "Logical":
                 # ------- Handel Displaying Between selected Criteria Type ------- #
                 self.oneToOneCriteriaDynamicFlowPanel.visible = False
                 self.oneToOneCriteriaLogicalFlowPanel.visible = True
+                self.update_slot("criteria_source_sheet_name", self.selected_criteria_source_sheet_name)
 
             elif self.selected_criterion_type == "Dynamic":
                 # ------- Handel Displaying Between selected Criteria Type ------- #
@@ -255,6 +285,9 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     def oneToOneCriteriaBasedDynamicSourceColumnDropDown_change(self, **event_args):
         """This method is called when an item is selected"""
         self.selected_dynamic_source_column_name = self.oneToOneCriteriaBasedDynamicSourceColumnDropDown.selected_value
+
+        self.update_slot("criteria_source_sheet_name", self.selected_dynamic_source_column_name)
+        
         if self.selected_dynamic_source_column_name is not None:
             self.selected_dynamic_source_column_id = self.column_name_and_ids_map[
                 self.selected_dynamic_source_column_name]
@@ -304,6 +337,9 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         self.clear_input_values()
         """This method is called when an item is selected"""
         self.selected_operator_name = self.oneToOneCriteriaBasedOperatorDropDown.selected_value
+
+        self.update_slot("operator_name", self.selected_operator_name)
+        
         selected_operator_row = next(
             (row for row in self.db_citeria_operators_data if row['operator_names'] == self.selected_operator_name), None)
 
@@ -390,6 +426,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         """This method is called when an item is selected"""
         """Everytime a Criteria Column is selected it will initiate the operator dropdown which will clear all previous inputs"""
         self.oneToOneCriteriaBasedOperatorDropDown_change()
+        self.update_slot("criteria_column_name", self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value)
 
     def oneToOneCriteriaBasedRunMappingBtn_click(self, **event_args):
         """This method is called when the button is clicked"""
@@ -401,6 +438,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                 self.selected_criterion_value = self.get_non_empty_values()
                 # if Values are not Empty Continue
                 if self.selected_criterion_value:
+                    
                     # If we are using between two values, Check that both is filled, if not Notify user
                     if self.selected_operator_values in ["between"]:
                         # Check if either input box is empty
@@ -574,3 +612,26 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
     #         print(doWe)
     #     else:
     #         print("all Empty")
+
+    def oneToOneCriteriaBasedEqualsToDropDown_change(self, **event_args):
+        """This method is called when an item is selected"""
+        self.update_slot("criteria_values", self.oneToOneCriteriaBasedEqualsToDropDown.selected_value)
+        self.oneToOneCriteriaBasedCriteriaExplainationText.visible = True
+
+    def oneToOneCriteriaContainsValueInput_change(self, **event_args):
+        """This method is called when the text in this text box is edited"""
+        self.update_slot("criteria_values", self.oneToOneCriteriaContainsValueInput.text)
+        self.oneToOneCriteriaBasedCriteriaExplainationText.visible = True
+
+    def oneToOneCriteriaLogicalFromValueInput_change(self, **event_args):
+        """This method is called when the text in this text box is edited"""
+        self.update_slot("criteria_values", str("From: " + self.oneToOneCriteriaLogicalFromValueInput.text))
+        self.oneToOneCriteriaBasedCriteriaExplainationText.visible = True
+
+    def oneToOneCriteriaLogicalToValueInput_change(self, **event_args):
+        """This method is called when the text in this text box is edited"""
+        self.update_slot("to_criterion_values", str("To: " + self.oneToOneCriteriaLogicalToValueInput.text))
+        self.oneToOneCriteriaBasedCriteriaExplainationText.visible = True
+
+
+
