@@ -23,6 +23,7 @@ unique_ids:
   modules: {}
   server_modules:
     authenticationFunctions: '1691494331884496759166486.56757'
+    backgroundTasks: '169175509956950548107181.63294'
     databaseFunctions: '1691496040200901031483846.1813'
     helperFunctions: '1691492989558996023167089.3041'
     sheetFunctions: '1691495600746899420695121.1354'

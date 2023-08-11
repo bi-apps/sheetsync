@@ -419,7 +419,7 @@ components:
           components:
           - type: RichText
             properties: {role: null, align: left, tooltip: '', enable_slots: true,
-              border: '', foreground: '', visible: true, font_size: null, content: 'Moving
+              border: '', foreground: '', visible: false, font_size: null, content: 'Moving
                 Cell Values from {source_sheet_name}''s column {source_column_name}
                 to {dest_sheet_name}''s Column {dest_column_name} Where {criteria_source_sheet_name}''s
                 Column {criteria_column_name} is {operator_name} {criteria_values}

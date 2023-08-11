@@ -1,4 +1,3 @@
-import anvil.stripe
 import anvil.secrets
 import anvil.google.auth, anvil.google.drive, anvil.google.mail
 from anvil.google.drive import app_files
@@ -15,6 +14,15 @@ import requests
 import anvil.http
 import base64
 from cryptography.fernet import Fernet
+
+# Common Smartsheet Client Initiation Code
+def get_smartsheet_client_object(user):
+  access_token = app_tables.users.get(email=user['email'])['access_token']
+  client = smartsheet.Smartsheet(access_token)
+  # print(client.Sheets.list_sheets())
+  # client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
+  return client
+
 
 # Handel Encryption and Encryption Keys
 def create_user_encryption_key(user):

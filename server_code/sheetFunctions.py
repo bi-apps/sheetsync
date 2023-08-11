@@ -1,4 +1,3 @@
-import anvil.stripe
 import anvil.secrets
 import anvil.google.auth, anvil.google.drive, anvil.google.mail
 from anvil.google.drive import app_files
@@ -164,6 +163,31 @@ def get_colum_data_for_ui(user, sheetId, ColumnId):
         # contacts = [create_contact(email) for email in columnValues if email]
         contacts = [email for email in columnValues if email]
         # emails = [email for email in columnValues if email]
+        print(type(contacts))
+        print(contacts)
+        unique_column_values = contacts
+    else:
+        unique_column_values = list(columnValues)
+
+    return unique_column_values
+
+
+def get_column_data_without_criteria(smartsheet_api_obj, sheet_id, Column_id):
+    # client = getSmartsheetClient(user)
+    get_sheet_obj = smartsheet_api_obj.Sheets.get_sheet(sheet_id)
+    get_column_obj = smartsheet_api_obj.Sheets.get_column(sheet_id, Column_id)
+    columnValues = set()
+
+    for row in get_sheet_obj.rows:
+        column_values = row.get_column(get_column_obj.id).value
+        if column_values:
+            columnCellValues = column_values
+            columnValues.add(columnCellValues)
+
+        # If the column type is a contact type, convert values to contact dictionaries
+    if get_column_obj.type in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
+        # contacts = [create_contact(email) for email in columnValues if email]
+        contacts = [{"email": email, "name": email} for email in columnValues if email]
         print(type(contacts))
         print(contacts)
         unique_column_values = contacts

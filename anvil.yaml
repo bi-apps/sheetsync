@@ -1,3 +1,4 @@
+scheduled_tasks: []
 dependencies:
 - dep_id: dep_sfh6f32rpzhmfn
   version: {dev: false}
@@ -21,10 +22,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-- source: /runtime/services/stripe.yml
-  client_config: {}
-  server_config: {}
-startup: {type: form, module: mapperHome.criteriaBasedOneToOneSetup}
+startup: {type: form, module: mapperHome.oneToOneSetup}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
@@ -88,6 +86,9 @@ db_schema:
     - name: url_encoded_encryption
       admin_ui: {order: 15, width: 200}
       type: string
+    - name: automation_count
+      admin_ui: {order: 16, width: 200}
+      type: number
     title: Users
   db_sd_one_to_one:
     client: full
@@ -136,6 +137,9 @@ db_schema:
     - name: dest_column_validation
       admin_ui: {order: 13, width: 200}
       type: bool
+    - name: last_executed
+      admin_ui: {order: 14, width: 200}
+      type: datetime
     title: db_sd_one-to-one
   column_types:
     client: search
@@ -248,7 +252,28 @@ db_schema:
     - name: criterion_value
       admin_ui: {width: 323.498}
       type: simpleObject
+    - name: last_executed
+      admin_ui: {order: 24.5, width: 200}
+      type: datetime
     title: db_cr_one-to-one
+  job_logs:
+    client: none
+    server: full
+    columns:
+    - name: user
+      admin_ui: {order: 0, width: 200}
+      type: link_single
+      target: users
+    - name: automation_name
+      admin_ui: {order: 1, width: 200}
+      type: string
+    - name: log_datatime
+      admin_ui: {order: 2, width: 200}
+      type: datetime
+    - name: job_log_details
+      admin_ui: {order: 3, width: 200}
+      type: simpleObject
+    title: job_logs
 secrets:
   smartsheetsKey:
     value: {UZ77GC6XSOFJWHZW: d8igp1JrC9z+JnxQOmMhHyU1OAf4QVkjLl9K7LuQljR30QXG+Tcq/T8+P5JScn/T9bwJ1hvgzl7yYlr0KhBF6rGh/cQycPDCaes+eBBeZFbW8jJnZzoRu7rCaRNQYBMaHQCehqOPK2yTPnk4sn9gak2vYljCrdgIi1av2fDBYCMUhwL7}

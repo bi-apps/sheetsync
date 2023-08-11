@@ -1,6 +1,5 @@
 from ._anvil_designer import criteriaBasedOneToOneSetupTemplate
 from anvil import *
-import stripe.checkout
 import anvil.server
 import anvil.google.auth
 import anvil.google.drive
@@ -632,6 +631,3 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         """This method is called when the text in this text box is edited"""
         self.update_slot("to_criterion_values", str("To: " + self.oneToOneCriteriaLogicalToValueInput.text))
         self.oneToOneCriteriaBasedCriteriaExplainationText.visible = True
-
-
-
