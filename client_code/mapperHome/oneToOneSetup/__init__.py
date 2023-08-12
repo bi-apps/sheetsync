@@ -139,7 +139,7 @@ class oneToOneSetup(oneToOneSetupTemplate):
         # Is text box filled? if not alert user
         if self.oneToOneMappingNameTxtBox.text:
           # Is the Map name unique? if Not alert user, else Execute Code
-          if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneMappingNameTxtBox.text), app_tables.db_sd_one_to_one):
+          if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
             # Execute a test run
             runMapping = anvil.server.call('runMappingTest',
                                               self.user,
@@ -153,55 +153,55 @@ class oneToOneSetup(oneToOneSetupTemplate):
             if runMapping == 0:
               # Notification("Awsome! Test run successfully completed and destination column was updated with new values", style="success", timeout=2000).show()
               if confirm("The test ran successfully, and the destination column has been updated with the new values. Are you ready to save and activate this Dropdown automation now?", title="Great job! You're a genius, my fellow Smartsheeter! ", large=True, dismissible=False):
-                saveMapping = anvil.server.call('saveMapping',
+                saveMapping = anvil.server.call('save_automation',
                                                 map_enabled=True,
                                                 map_name=self.oneToOneMappingNameTxtBox.text,
                                                 map_type=1,
-                                                database=tables.app_tables.db_sd_one_to_one,
+                                                database=tables.app_tables.tb_automation_type_1_2,
                                                 user_obj=self.user,
                                                 source_sheet_id=self.selectedSourceSheetId,
-                                                source_colum_id=self.selectedSourceColumnId,
+                                                source_col_id=self.selectedSourceColumnId,
                                                 source_sheet_name=self.selSrcSheetName,
-                                                source_column_name=self.selSrcColumnName,
-                                                destination_sheet_id=self.selectedDestinationSheetId,
-                                                destination_colum_id=self.selectedDestinationColumnId,
-                                                destination_sheet_name=self.selDestSheetName,
-                                                destination_column_name=self.selDestColumnName,
-                                                destination_colum_type=self.columnTypeValue,
-                                                destination_column_validation=self.columnTypeValidation)
+                                                source_col_name=self.selSrcColumnName,
+                                                dest_sheet_id=self.selectedDestinationSheetId,
+                                                dest_col_id=self.selectedDestinationColumnId,
+                                                dest_sheet_name=self.selDestSheetName,
+                                                dest_col_name=self.selDestColumnName,
+                                                dest_col_type=self.columnTypeValue,
+                                                dest_col_validation=self.columnTypeValidation)
                 if saveMapping:
                   Notification("Your Dropdown Automation has been saved and activated!", title="Sucess!", style="success", timeout=5).show()
                 else:
                   Notification(f"Your Dropdown Automation has not been saved and activated due to Error: {saveMapping}", title="Oops! Error!", style="danger", timeout=10).show()
               else:
-                saveMapping = anvil.server.call('saveMapping',
-                                map_enabled=True,
-                                map_name=self.oneToOneMappingNameTxtBox.text,
-                                map_type=1,
-                                database=tables.app_tables.db_sd_one_to_one,
-                                user_obj=self.user,
-                                source_sheet_id=self.selectedSourceSheetId,
-                                source_colum_id=self.selectedSourceColumnId,
-                                source_sheet_name=self.selSrcSheetName,
-                                source_column_name=self.selSrcColumnName,
-                                destination_sheet_id=self.selectedDestinationSheetId,
-                                destination_colum_id=self.selectedDestinationColumnId,
-                                destination_sheet_name=self.selDestSheetName,
-                                destination_column_name=self.selDestColumnName,
-                                destination_colum_type=self.columnTypeValue,
-                                destination_column_validation=self.columnTypeValidation)
+                saveMapping = anvil.server.call('save_automation',
+                                                map_enabled=False,
+                                                map_name=self.oneToOneMappingNameTxtBox.text,
+                                                map_type=1,
+                                                database=tables.app_tables.tb_automation_type_1_2,
+                                                user_obj=self.user,
+                                                source_sheet_id=self.selectedSourceSheetId,
+                                                source_col_id=self.selectedSourceColumnId,
+                                                source_sheet_name=self.selSrcSheetName,
+                                                source_col_name=self.selSrcColumnName,
+                                                dest_sheet_id=self.selectedDestinationSheetId,
+                                                dest_col_id=self.selectedDestinationColumnId,
+                                                dest_sheet_name=self.selDestSheetName,
+                                                dest_col_name=self.selDestColumnName,
+                                                dest_col_type=self.columnTypeValue,
+                                                dest_col_validation=self.columnTypeValidation)
               if saveMapping:
                   Notification(f"Your Dropdown Automation has been saved but NOT activated! ", title="Heads Up Fellow Smartsheeter!", style="info", timeout=10).show()
               else:
                   Notification(f"Your Dropdown Automation has not been saved and activated due to Error: {saveMapping}", title="Oops! Error!", style="danger", timeout=10).show()
           else:
-              Notification(f"Your Dropdown Automation Test has Failed! Due to Error: {runMapping}", title="Oops! Error! Bail!", style="danger", timeout=10).show()
+              Notification(f"Your Dropdown Automation Test has Failed! Due to Error:", title="Oops! Error! Bail!", style="danger", timeout=10).show()
 
         else:
             Notification(f"Your Dropdown Automation Name: {self.oneToOneMappingNameTxtBox.text} already Exists, Please Use a Unique Name for every Automation", title="Oops! Not to Creative i see...", style="warning", timeout=10).show()
       
         # anvil.open_form('mapperHome')
-        print("error")
+        # print("error")
       
     def oneToOneBackBtn_click(self, **event_args):
         """This method is called when the button is clicked"""

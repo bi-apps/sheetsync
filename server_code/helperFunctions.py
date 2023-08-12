@@ -45,9 +45,6 @@ def is_mapping_name_unique(user, mapping_name, mapping_table):
 
 # Check if system should execute the automation
 def should_execute(last_executed, threshold_minutes):
-    print("threshold Minutes")
-    print(threshold_minutes)
-    
     """
     Determine if a job should be executed based on the last execution time and a threshold.
     
@@ -69,10 +66,10 @@ def should_execute(last_executed, threshold_minutes):
         now = now.replace(tzinfo=None)
 
     time_since_last_execution = now - last_executed
+    
     print("Time Since Last Executed")
     print(time_since_last_execution)
-    print("Function Directly to check evaluation")
-    print(time_since_last_execution >= timedelta(minutes=threshold_minutes))
+    
     if time_since_last_execution >= timedelta(minutes=threshold_minutes):
         return True
 

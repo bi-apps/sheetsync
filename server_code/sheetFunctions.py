@@ -8,14 +8,30 @@ import anvil.tables.query as q
 from anvil.tables import app_tables
 import anvil.server
 import smartsheet
+from datetime import datetime, timedelta
+from .authenticationFunctions import refresh_access_token
+
 
 # Common Smartsheet Client Initiation Code
 def getSmartsheetClient(user):
-  access_token = app_tables.users.get(email=user['email'])['access_token']
-  client = smartsheet.Smartsheet(access_token)
-  # print(client.Sheets.list_sheets())
-  # client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
-  return client
+    # print(user)
+    # print(user['token_expiration'])
+    current_time = datetime.now()
+    token_expiration = user['token_expiration'].replace(tzinfo=None) if user['token_expiration'] else None
+    # print(f"Current Time: {current_time}, Type: {type(current_time)}")
+    # print(f"Token Expiration: {token_expiration}, Type: {type(token_expiration)}")
+
+    if not token_expiration or current_time >= token_expiration:
+        refresh_access_token(user)
+    # After refreshing, get the updated user details with the new access token
+    user = app_tables.users.get(email=user['email'])
+    
+    access_token = user['access_token']
+    access_token = app_tables.users.get(email=user['email'])['access_token']
+    client = smartsheet.Smartsheet(access_token)
+    # print(client.Sheets.list_sheets())
+    # client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
+    return client
 
 # Helper Function Do get Column Data based on criteria values using lambda
 @anvil.server.callable
@@ -52,11 +68,11 @@ def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_
         else:
             criteria_column_value = None
     
-        print(f"Checking if {criteria_column_value} == {criteria_value}")
+        # print(f"Checking if {criteria_column_value} == {criteria_value}")
     
         # Check if the value in the criteria column matches the specified criteria using the lambda functions
         if operators.get(operator_keyword, lambda x: False)(criteria_column_value):
-            print(f"Match found for {criteria_column_value}")
+            # print(f"Match found for {criteria_column_value}")
             
             source_column_cell = row.get_column(source_column_obj.id)
             if source_column_cell:  # Check if the cell exists before accessing its value
@@ -135,8 +151,8 @@ def getColumnData(user, sheetId, ColumnId):
     if column.type in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
         # contacts = [create_contact(email) for email in columnValues if email]
         contacts = [{"email": email, "name": email} for email in columnValues if email]
-        print(type(contacts))
-        print(contacts)
+        # print(type(contacts))
+        # print(contacts)
         unique_column_values = contacts
     else:
         unique_column_values = list(columnValues)
@@ -150,7 +166,7 @@ def get_colum_data_for_ui(user, sheetId, ColumnId):
     sheet = client.Sheets.get_sheet(sheetId)
     column = client.Sheets.get_column(sheetId, ColumnId)
     columnValues = set()
-    print(column)
+    # print(column)
 
     for row in sheet.rows:
         column_values = row.get_column(column.id).value
@@ -163,8 +179,8 @@ def get_colum_data_for_ui(user, sheetId, ColumnId):
         # contacts = [create_contact(email) for email in columnValues if email]
         contacts = [email for email in columnValues if email]
         # emails = [email for email in columnValues if email]
-        print(type(contacts))
-        print(contacts)
+        # print(type(contacts))
+        # print(contacts)
         unique_column_values = contacts
     else:
         unique_column_values = list(columnValues)
@@ -188,8 +204,8 @@ def get_column_data_without_criteria(smartsheet_api_obj, sheet_id, Column_id):
     if get_column_obj.type in ["CONTACT_LIST", "MULTI_CONTACT_LIST"]:
         # contacts = [create_contact(email) for email in columnValues if email]
         contacts = [{"email": email, "name": email} for email in columnValues if email]
-        print(type(contacts))
-        print(contacts)
+        # print(type(contacts))
+        # print(contacts)
         unique_column_values = contacts
     else:
         unique_column_values = list(columnValues)

@@ -432,7 +432,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         # Check if Automation name is Empty
         if self.oneToOneCriteriaBasedMappingNameTxtBox.text:
             # Check if Automation name is Unique
-            if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneCriteriaBasedMappingNameTxtBox.text), app_tables.db_cr_one_to_one):
+            if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneCriteriaBasedMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
                 # Check for Empty Criterion Values
                 self.selected_criterion_value = self.get_non_empty_values()
                 # if Values are not Empty Continue
@@ -482,12 +482,12 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                         # Check user confirmation Feeback True =  Save and enable, False = Save and dont enable
                         if user_confirmation:
                             # Save and Enabled the automation For the User
-                            save_automation = anvil.server.call('saveMapping',
+                            save_automation = anvil.server.call('save_automation',
                                                                map_type = 2,
                                                                map_enabled = True,
                                                                map_name = self.oneToOneCriteriaBasedMappingNameTxtBox.text,
-                                                               user = self.user,
-                                                               database=tables.app_tables.db_cr_one_to_one,
+                                                               user_obj = self.user,
+                                                               database=tables.app_tables.tb_automation_type_1_2,
                                                                 
                                                                source_sheet_name = self.selected_criteria_source_sheet_name,
                                                                source_sheet_id = self.selected_criteria_source_sheet_id,
@@ -511,10 +511,10 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                                                                criterion_operator_name = self.selected_operator_name,
                                                                criterion_operator_value = self.selected_operator_values,
                                                                 
-                                                               criterion_dest_sheet_name = self.selected_dynamic_destination_sheet_name if self.selected_criterion_type == "Dynamic" else None,
-                                                               criterion_dest_sheet_id = self.selected_dynamic_destination_sheet_id if self.selected_criterion_type == "Dynamic" else None,
-                                                               criterion_dest_sheet_col_name = self.selected_dynamic_destination_column_name if self.selected_criterion_type == "Dynamic" else None,
-                                                               criterion_dest_sheet_col_id = self.selected_dynamic_destination_column_id if self.selected_criterion_type == "Dynamic" else None,
+                                                               # criterion_dest_sheet_name = self.selected_dynamic_destination_sheet_name if self.selected_criterion_type == "Dynamic" else None,
+                                                               # criterion_dest_sheet_id = self.selected_dynamic_destination_sheet_id if self.selected_criterion_type == "Dynamic" else None,
+                                                               # criterion_dest_sheet_col_name = self.selected_dynamic_destination_column_name if self.selected_criterion_type == "Dynamic" else None,
+                                                               # criterion_dest_sheet_col_id = self.selected_dynamic_destination_column_id if self.selected_criterion_type == "Dynamic" else None,
 
                                                                criterion_values = self.selected_criterion_value
                                                                )

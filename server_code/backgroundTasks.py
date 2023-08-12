@@ -10,7 +10,7 @@ import anvil.server
 from datetime import datetime, timedelta
 from .helperFunctions import should_execute, background_get_result_code_or_message
 from .authenticationFunctions import get_smartsheet_client_object
-from .sheetFunctions import get_column_data_without_criteria
+from .sheetFunctions import get_column_data_without_criteria, getColumnDataWithCriteria
 
 
 """ Global Threshold Interval settings"""
@@ -24,7 +24,7 @@ def find_clients(*args, **kwargs):
 
 def find_active_projects(*args, **kwargs):
     print("Finding Active projects")
-    return app_tables.db_sd_one_to_one.search(user=kwargs['client'])
+    return app_tables.tb_automation_type_1_2.search(user=kwargs['client'])
 
 def can_i_do_this_project(*args, **kwargs):
     # Check If this project has never been executed
@@ -33,7 +33,7 @@ def can_i_do_this_project(*args, **kwargs):
     if project['last_executed'] is None:
         return True
     else:
-        print("Project was laste Executed at:")
+        print("Project was laste Executed at :")
         print(project['last_executed'])
         # Check if this task last execute date time has reached the task interval threshold, if True = execute, False = Skip
         if should_execute(project['last_executed'], task_run_interval):
@@ -78,32 +78,44 @@ def log_project(*args, **kwargs):
                                           log_datatime=datetime.now())
     return add_log
     
-def execute_no_criteria_project(*args, **kwargs):
+def execute_automations(*args, **kwargs):
     # Initiate a Smartsheet API Client Instance to use for the Specific Client
     smartsheet_api = get_smartsheet_client_object(kwargs['client_details'])
     # Get Project Details from Keyword Args
     project_details = kwargs['project_details']
     # Get New Column Values from Source Sheet
-    new_column_values = get_column_data_without_criteria(smartsheet_api,
-                                                         project_details['src_sheet_id'],
-                                                         project_details['src_sheet_col_id'])
+    print("Map type")
+    print(project_details['map_type'])
+    print("Map name: " + project_details['map_name'])
+    if project_details['map_type'] == 1:
+        new_column_values = get_column_data_without_criteria(smartsheet_api,
+                                                            project_details['src_sheet_id'],
+                                                            project_details['src_sheet_col_id'])
+    if project_details['map_type'] == 2:
+        new_column_values = getColumnDataWithCriteria(kwargs['client_details'],
+                                                          project_details['src_sheet_id'],
+                                                          project_details['src_sheet_col_id'],
+                                                          project_details['criterion_src_sheet_col_id'],
+                                                          project_details['criterion_value'],
+                                                          project_details['criterion_operator_type_value'])
+        
     # Get the destination sheet's column Options i.e Picklist, Contact column etc
     get_destination_column_options = smartsheet_api.Sheets.get_column(sheet_id=project_details['dest_sheet_id'],
-                                                              column_id=project_details['dest_col_id'])
+                                                              column_id=project_details['dest_sheet_col_id'])
     # Get the correct Payload object for the API call from get_me_the_correct_cement function
-    column_object = get_me_the_correct_cement(destination_column_type=project_details['dest_column_type'],
-                                              destination_column_validation=project_details['dest_column_validation'],
+    column_object = get_me_the_correct_cement(destination_column_type=project_details['dest_sheet_col_type'],
+                                              destination_column_validation=project_details['dest_sheet_col_validation'],
                                               new_destination_column_values=new_column_values)
     # Call the comon component to send HTTP POST Request to smartsheets API
     project_signed_off = sign_project_off(client=smartsheet_api,
                                           destination_sheet_id=project_details['dest_sheet_id'],
-                                          destination_column_id=project_details['dest_col_id'],
+                                          destination_column_id=project_details['dest_sheet_col_id'],
                                           new_column_obj=column_object)
     if project_signed_off == 0:
-        print("sucess")
+        print("Sucessfully Ran Automation !")
         project_updated = update_the_project_last_execution(project_details=project_details)
     else:
-        print("failed")
+        print("Automation Failed")
         print(project_signed_off)
         write_project_log = log_project(client_details=kwargs['client_details'],
                                         project_details = project_details,
@@ -112,7 +124,6 @@ def execute_no_criteria_project(*args, **kwargs):
         print(write_project_log)
     
     return project_signed_off
-
 
 def get_contracts(*args, **kwargs):
     # Get all Active Clients
@@ -129,24 +140,18 @@ def get_contracts(*args, **kwargs):
             execute_now = can_i_do_this_project(current_project=project)
             # If True = Execute Now
             if execute_now:
-                print("executing now")
-                client_details = client
-                project_details = project
-                c = execute_no_criteria_project(client_details=client, project_details=project)
-                print(c)
+                print("Execute Automation Now!")
                 
-            # If False = Skip
-            else:
-                print("Should not execute")
-                print(execute_now)
-
-    return
-
-
-
+                project_done = execute_automations(client_details=client, project_details=project)
+                if project_done == 0:
+                    print("Project was completed Sucessfully")
+                else:
+                    print("Project Failed, I'll Continue with the rest, Check job_logs Table for details!")
+                    continue
+    return True
 
 @anvil.server.background_task
 def project_manager(*args, **kwargs):
-    testJob = get_contracts()
-    # print(testJob)
-    # pass
+    get_the_jobs_done = get_contracts()
+    if get_the_jobs_done:
+        print("All Contracts, Projects are done! We would not know how they are done and if they are done correctly but lets see!")

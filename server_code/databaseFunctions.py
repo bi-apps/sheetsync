@@ -91,3 +91,57 @@ def saveMapping(*args, **kwargs):
            return True
          except tables.TableError as saveError:
            return str(saveError)
+
+@anvil.server.callable
+def save_automation(*args, **kwargs):
+        try:
+            kwargs['database'].add_row(
+                user=kwargs.get('user_obj', None),
+                
+                map_enabled=kwargs.get('map_enabled', None),
+                map_name=kwargs.get('map_name', None),
+                map_type=kwargs.get('map_type', None),
+                
+                src_sheet_name=kwargs.get('source_sheet_name', None),
+                src_sheet_id=kwargs.get('source_sheet_id', None),
+                src_sheet_col_name=kwargs.get('source_col_name', None),
+                src_sheet_col_id=kwargs.get('source_col_id', None),
+                
+                dest_sheet_name=kwargs.get('dest_sheet_name', None),
+                dest_sheet_id=kwargs.get('dest_sheet_id', None),
+                dest_sheet_col_name=kwargs.get('dest_col_name', None),
+                dest_sheet_col_id=kwargs.get('dest_col_id', None),
+                
+                dest_sheet_col_type=kwargs.get('dest_col_type', None),
+                dest_sheet_col_validation=kwargs.get('dest_col_validation', None),
+                
+                criterion_type=kwargs.get('criterion_type', None),
+                
+                criterion_src_sheet_name=kwargs.get('criterion_source_sheet_name', None),
+                criterion_src_sheet_id=kwargs.get('criterion_source_sheet_id', None),
+                criterion_src_sheet_col_name=kwargs.get('criterion_source_sheet_col_name', None),
+                criterion_src_sheet_col_id=kwargs.get('criterion_source_sheet_col_id', None),
+                
+                criterion_operator_type_name=kwargs.get('criterion_operator_name', None),
+                criterion_operator_type_value=kwargs.get('criterion_operator_value', None),
+                
+                criterion_dest_sheet_name=kwargs.get('criterion_dest_sheet_name', None),
+                criterion_dest_sheet_id=kwargs.get('criterion_dest_sheet_id', None),
+                criterion_dest_sheet_col_name=kwargs.get('criterion_dest_sheet_col_name', None),
+                criterion_dest_sheet_col_id=kwargs.get('criterion_dest_sheet_col_id', None),
+                
+                criterion_value=kwargs.get('criterion_values', None),
+                
+                created_date_timestamp=datetime.now(),
+
+                last_executed=None
+            )
+            
+            # Increment user Automation Count On Sucessful Saving
+            automation_count = kwargs['user_obj']['automation_count']
+            automation_count += 1
+            kwargs['user_obj'].update(automation_count=automation_count)
+            # Return True When Done
+            return True
+        except tables.TableError as saveError:
+           return str(saveError)

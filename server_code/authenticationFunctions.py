@@ -14,14 +14,24 @@ import requests
 import anvil.http
 import base64
 from cryptography.fernet import Fernet
+from datetime import datetime, timedelta
 
 # Common Smartsheet Client Initiation Code
 def get_smartsheet_client_object(user):
-  access_token = app_tables.users.get(email=user['email'])['access_token']
-  client = smartsheet.Smartsheet(access_token)
-  # print(client.Sheets.list_sheets())
-  # client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
-  return client
+    current_time = datetime.now()
+    token_expiration = user['token_expiration'].replace(tzinfo=None) if user['token_expiration'] else None
+
+    if not token_expiration or current_time >= token_expiration:
+        refresh_access_token(user)
+    # After refreshing, get the updated user details with the new access token
+    user = app_tables.users.get(email=user['email'])
+    
+    access_token = user['access_token']
+    access_token = app_tables.users.get(email=user['email'])['access_token']
+    client = smartsheet.Smartsheet(access_token)
+    # print(client.Sheets.list_sheets())
+    # client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
+    return client
 
 
 # Handel Encryption and Encryption Keys
@@ -89,16 +99,45 @@ def oauth_callback(**kwargs):
         response.raise_for_status()
         access_token = response.json()['access_token']
         refresh_token = response.json()['refresh_token']
-
-        user.update(access_token=access_token, refresh_token=refresh_token, authenticated_to_smartsheets=True)
+        token_type = response.json()['token_type']
+        expires_in_seconds = response.json()['expires_in']
+        # Calculate the exact time when the token will expire
+        token_expiration_timestamp = datetime.now() + timedelta(seconds=expires_in_seconds)
+        
+        user.update(access_token=access_token, refresh_token=refresh_token, authenticated_to_smartsheets=True, token_type=token_type, token_expiration=token_expiration_timestamp, automation_count=0)
 
     except Exception as e:
         # Log the error and then redirect
         print(f"Error during OAuth callback: {e}")
         authenticated = False  
-        return anvil.server.HttpResponse(status=302, headers={'Location': f'https://uz77gc6xsofjwhzw.anvil.app/752S2LMMMJ6U2I2NJVGEN4VM?authenticated={authenticated}'})
+        return anvil.server.HttpResponse(status=302, headers={'Location': f'https://uz77gc6xsofjwhzw.anvil.app/AMCH7DKKMUWKPUAB7RZCKY3I?authenticated={authenticated}'})
     
     finally:
         # Always redirect, even if there was an error
-        return anvil.server.HttpResponse(status=302, headers={'Location': 'https://uz77gc6xsofjwhzw.anvil.app/752S2LMMMJ6U2I2NJVGEN4VM'})
-      
+        return anvil.server.HttpResponse(status=302, headers={'Location': 'https://uz77gc6xsofjwhzw.anvil.app/AMCH7DKKMUWKPUAB7RZCKY3I'})
+
+
+def refresh_access_token(user):
+    client_id = anvil.secrets.get_secret('smartsheetAppClientId')
+    client_secret = anvil.secrets.get_secret('smartsheetAppClientSecret')
+    
+    # Get refresh token from user data
+    refresh_token = user['refresh_token']
+    
+    data = {
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token,
+        'client_id': client_id,
+        'client_secret': client_secret,
+    }
+    
+    response = requests.post('https://api.smartsheet.com/2.0/token', data=data)
+    response.raise_for_status()
+    
+    access_token = response.json().get('access_token')
+    new_refresh_token = response.json().get('refresh_token', refresh_token)  # Use the old refresh token if a new one isn't provided
+    
+    # Update user data with new tokens
+    user.update(access_token=access_token, refresh_token=new_refresh_token)
+    
+    return access_token
