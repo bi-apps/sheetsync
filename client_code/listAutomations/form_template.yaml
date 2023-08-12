@@ -43,7 +43,7 @@ components:
       background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:link'}
     name: addMappingButton
     layout_properties: {grid_position: 'LTNYCB,CTVIDM'}
-    event_bindings: {}
+    event_bindings: {click: addMappingButton_click}
   - type: Button
     properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
       foreground: 'theme:Primary 700', visible: true, text: Settings, font_size: null,
@@ -87,16 +87,20 @@ components:
         properties:
           role: null
           columns:
-          - {id: FWQGIO, title: Name, data_key: map_name, $$hashKey: 'object:93188'}
-          - {id: AVIBMM, title: Source Sheet, data_key: src_sheet_name, $$hashKey: 'object:93204'}
-          - {id: IRJPEH, title: Source Column, data_key: src_sheet_col_name, $$hashKey: 'object:93209'}
-          - {id: DFDHKI, title: Destination Sheet, data_key: dest_sheet_name, $$hashKey: 'object:93189'}
-          - {id: IZKAIK, title: Destination Column, data_key: dest_sheet_col_name,
-            $$hashKey: 'object:93210'}
-          - {id: BCHWPA, title: Dropdown Type, data_key: dest_sheet_col_type, $$hashKey: 'object:93191'}
-          - {id: ZKQPVE, title: Validation, data_key: dest_sheet_col_validation, $$hashKey: 'object:93190'}
-          - {id: GJNWHY, title: Enabled, data_key: map_enabled, $$hashKey: 'object:93193'}
-          - {id: CCHRHZ, title: Created, data_key: created_date_timestamp, $$hashKey: 'object:93208'}
+          - {id: FWQGIO, title: Name, data_key: map_name, $$hashKey: 'object:93188',
+            expand: false}
+          - {id: AVIBMM, title: Source Sheet, data_key: src_sheet_name, $$hashKey: 'object:93204',
+            expand: false}
+          - {id: IRJPEH, title: Column, data_key: src_sheet_col_name, $$hashKey: 'object:93209',
+            expand: false}
+          - {id: DFDHKI, title: Destination Sheet, data_key: dest_sheet_name, $$hashKey: 'object:93189',
+            expand: false}
+          - {id: IZKAIK, title: Column, data_key: dest_sheet_col_name, $$hashKey: 'object:93210',
+            expand: false}
+          - {id: BCHWPA, title: Type, data_key: dest_sheet_col_type, $$hashKey: 'object:93191',
+            expand: false}
+          - {id: GJNWHY, title: Enabled, data_key: map_enabled, $$hashKey: 'object:93193',
+            expand: false}
           auto_header: true
           tooltip: ''
           border: ''
@@ -113,6 +117,7 @@ components:
         components:
         - type: RepeatingPanel
           properties: {spacing_above: none, spacing_below: none, item_template: listAutomations.RowTemplate8}
-          name: repeating_panel_1
+          name: repeatingPanelMain
           layout_properties: {}
         data_bindings: []
+      event_bindings: {show: flow_panel_2_show}
