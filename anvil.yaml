@@ -22,7 +22,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: homePage}
+startup: {type: form, module: indexPage}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
@@ -31,6 +31,11 @@ runtime_options:
   client_version: '3'
   server_version: python3-sandbox
   server_spec: {base: python310-standard}
+  server_spec_disabled: {requirements: 'smartsheet-python-sdk==3.0.2
+
+      urllib3==2.0.0a4
+
+      cryptography==41.0.2', base: python310-standard}
 metadata: {logo_img: 'asset:189663.png', title: SyncDrop}
 startup_form: null
 db_schema:

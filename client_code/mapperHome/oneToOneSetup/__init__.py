@@ -209,19 +209,3 @@ class oneToOneSetup(oneToOneSetupTemplate):
     def oneToOneBackBtn_click(self, **event_args):
         """This method is called when the button is clicked"""
         anvil.open_form('mapperHome')
-        
-
-          
-
-          
-
-
-
-
-
-
-
-          
-
-
-

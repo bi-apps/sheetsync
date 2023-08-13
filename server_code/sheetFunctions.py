@@ -10,28 +10,54 @@ import anvil.server
 import smartsheet
 from datetime import datetime, timedelta
 from .authenticationFunctions import refresh_access_token
+from time import sleep
 
+def getSmartsheetClient(user, max_retries=3, retry_delay=5):
+    """
+    Initiates a Smartsheet client. If the token is expired or invalid, it tries to refresh the token.
+    If refreshing or any other operation fails, it retries up to max_retries times.
 
-# Common Smartsheet Client Initiation Code
-def getSmartsheetClient(user):
-    # print(user)
-    # print(user['token_expiration'])
-    current_time = datetime.now()
-    token_expiration = user['token_expiration'].replace(tzinfo=None) if user['token_expiration'] else None
-    # print(f"Current Time: {current_time}, Type: {type(current_time)}")
-    # print(f"Token Expiration: {token_expiration}, Type: {type(token_expiration)}")
+    Args:
+    - user: The user object containing token information.
+    - max_retries: The maximum number of retries if an operation fails.
+    - retry_delay: The delay (in seconds) between retries.
 
-    if not token_expiration or current_time >= token_expiration:
-        refresh_access_token(user)
-    # After refreshing, get the updated user details with the new access token
-    user = app_tables.users.get(email=user['email'])
+    Returns:
+    - Smartsheet client object.
+    """
     
-    access_token = user['access_token']
-    access_token = app_tables.users.get(email=user['email'])['access_token']
-    client = smartsheet.Smartsheet(access_token)
-    # print(client.Sheets.list_sheets())
-    # client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
-    return client
+    current_time = datetime.now()
+    
+    # Accessing the token_expiration as per the specified manner
+    token_expiration = user['token_expiration'].replace(tzinfo=None) if user['token_expiration'] else None
+    
+    retry_count = 0
+
+    while retry_count < max_retries:
+        try:
+            # Check if the token is expired and refresh if necessary
+            if not token_expiration or current_time >= token_expiration:
+                refresh_access_token(user)
+                user = app_tables.users.get(email=user['email'])
+            
+            access_token = user['access_token']
+
+            if not access_token:
+                raise ValueError("Access token not found for the user.")
+            
+            client = smartsheet.Smartsheet(access_token)
+            return client
+
+        except Exception as e:
+            print("Entered the exception Block")
+            print(e)
+            retry_count += 1
+            print(f"Error encountered: {e}. Retrying {retry_count}/{max_retries}...")
+            sleep(retry_delay)
+
+    raise ValueError("Failed to initiate Smartsheet client after maximum retries.")
+
+
 
 # Helper Function Do get Column Data based on criteria values using lambda
 @anvil.server.callable
@@ -44,7 +70,27 @@ def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_
     # print("operator_keyword " + operator_keyword)
     
     client = getSmartsheetClient(user)
-    sheet = client.Sheets.get_sheet(source_sheet_id)
+    all_rows = get_all_sheet_data(client, source_sheet_id)
+    # Set initial page and pageSize values
+    # page = 1
+    # pageSize = 5  # or any other desired chunk size
+    
+    # all_rows = []
+    
+    # while True:
+    #     print(f"getting page {page}")
+    #     sheet = client.Sheets.get_sheet(source_sheet_id, page=page, page_size=pageSize, exclude="attachments,discussions,source")
+    #     print(f"sheet data {sheet}")
+    #     # Append the rows from the current page to the all_rows list
+    #     all_rows.extend(sheet.rows)
+        
+    #     # If the number of rows is less than pageSize, break out of the loop
+    #     if len(sheet.rows) < pageSize:
+    #         break
+        
+    #     # Increment the page number for the next iteration
+    #     page += 1
+        
     criteria_column_obj = client.Sheets.get_column(source_sheet_id, criteria_column_id)
     source_column_obj = client.Sheets.get_column(source_sheet_id, source_column_id)
     columnValues = set()
@@ -60,7 +106,7 @@ def getColumnDataWithCriteria(user, source_sheet_id, source_column_id, criteria_
         "is_not_one_of": lambda x: x not in criteria_value if isinstance(criteria_value, list) else False,
         "between": lambda x: criteria_value[0] <= x <= criteria_value[1] if isinstance(criteria_value, list) and len(criteria_value) == 2 and x is not None else False
     }
-    for row in sheet.rows:
+    for row in all_rows:
         criteria_column_cell = row.get_column(criteria_column_obj.id)
         
         if criteria_column_cell:  # Check if the cell exists before accessing its value
@@ -138,11 +184,32 @@ def getColumnNames(sheetId, user):
 @anvil.server.callable
 def getColumnData(user, sheetId, ColumnId):
     client = getSmartsheetClient(user)
-    sheet = client.Sheets.get_sheet(sheetId)
+    # Set initial page and pageSize values
+    all_rows = get_all_sheet_data(client, sheetId)
+    # page = 1
+    # pageSize = 5  # or any other desired chunk size
+    
+    # all_rows = []
+    
+    # while True:
+    #     print(f"getting page {page}")
+    #     sheet = client.Sheets.get_sheet(sheetId, page=page, page_size=pageSize, exclude="attachments,discussions,source")
+    #     print(f"sheet data {sheet}")
+    #     # Append the rows from the current page to the all_rows list
+    #     all_rows.extend(sheet.rows)
+        
+    #     # If the number of rows is less than pageSize, break out of the loop
+    #     if len(sheet.rows) < pageSize:
+    #         break
+        
+    #     # Increment the page number for the next iteration
+    #     page += 1
+    
+    # print(sheet.rows)
     column = client.Sheets.get_column(sheetId, ColumnId)
     columnValues = set()
 
-    for row in sheet.rows:
+    for row in all_rows:
         column_values = row.get_column(column.id).value
         if column_values:
             columnCellValues = column_values
@@ -164,12 +231,33 @@ def getColumnData(user, sheetId, ColumnId):
 @anvil.server.callable
 def get_colum_data_for_ui(user, sheetId, ColumnId):
     client = getSmartsheetClient(user)
-    sheet = client.Sheets.get_sheet(sheetId)
+    all_rows = get_all_sheet_data(client, sheetId)
+    #     # Set initial page and pageSize values
+    # page = 1
+    # pageSize = 5  # or any other desired chunk size
+    
+    # all_rows = []
+    
+    # while True:
+    #     print(f"getting page {page}")
+    #     sheet = client.Sheets.get_sheet(sheetId, page=page, page_size=pageSize, exclude="attachments,discussions,source")
+    #     print(f"sheet data {sheet}")
+    #     # Append the rows from the current page to the all_rows list
+    #     all_rows.extend(sheet.rows)
+        
+    #     # If the number of rows is less than pageSize, break out of the loop
+    #     if len(sheet.rows) < pageSize:
+    #         break
+        
+    #     # Increment the page number for the next iteration
+    #     page += 1
+
+    
     column = client.Sheets.get_column(sheetId, ColumnId)
     columnValues = set()
     # print(column)
 
-    for row in sheet.rows:
+    for row in all_rows:
         column_values = row.get_column(column.id).value
         if column_values:
             columnCellValues = column_values
@@ -191,11 +279,31 @@ def get_colum_data_for_ui(user, sheetId, ColumnId):
 
 def get_column_data_without_criteria(smartsheet_api_obj, sheet_id, Column_id):
     # client = getSmartsheetClient(user)
-    get_sheet_obj = smartsheet_api_obj.Sheets.get_sheet(sheet_id)
+    # get_sheet_obj = smartsheet_api_obj.Sheets.get_sheet(sheet_id)
+        # Set initial page and pageSize values
+    all_rows = get_all_sheet_data(smartsheet_api_obj, sheet_id)
+    # page = 1
+    # pageSize = 5  # or any other desired chunk size
+    
+    # all_rows = []
+    
+    # while True:
+    #     print(f"getting page {page}")
+    #     get_sheet_obj = smartsheet_api_obj.Sheets.get_sheet(sheetId, page=page, page_size=pageSize, exclude="attachments,discussions,source")
+    #     print(f"sheet data {sheet}")
+    #     # Append the rows from the current page to the all_rows list
+    #     all_rows.extend(get_sheet_obj.rows)
+        
+    #     # If the number of rows is less than pageSize, break out of the loop
+    #     if len(get_sheet_obj.rows) < pageSize:
+    #         break
+        
+    #     # Increment the page number for the next iteration
+    #     page += 1
     get_column_obj = smartsheet_api_obj.Sheets.get_column(sheet_id, Column_id)
     columnValues = set()
 
-    for row in get_sheet_obj.rows:
+    for row in all_rows:
         column_values = row.get_column(get_column_obj.id).value
         if column_values:
             columnCellValues = column_values
@@ -215,22 +323,71 @@ def get_column_data_without_criteria(smartsheet_api_obj, sheet_id, Column_id):
 
 
 @anvil.server.callable
-def getSheetsInfo(user):
-    client = getSmartsheetClient(user)
-    response = client.Sheets.list_sheets(include_all=True)
-    responseData = response.data
-    
-    # Update user's total sheet count if necessary
-    total_count = response.total_count 
-    if user['totalSheetsInAccount'] != total_count:
-        print('updating Sheet Count')
-        user.update(totalSheetsInAccount=total_count)
-    
-    # Transform response data into a list of dictionaries for operational data
-    sheets = [{'sheet_id': str(sheet.id), 'sheet_name': sheet.name} for sheet in responseData]
+def getSheetsInfo(user, max_retries=3, retry_delay=5):
+    """
+    Fetches information about the sheets for a given user. If any operation fails, it retries 
+    up to max_retries times.
 
-    return {
-        'total_count': total_count,
-        'sheets': sheets
-    }
+    Args:
+    - user: The user object containing token information.
+    - max_retries: The maximum number of retries if an operation fails.
+    - retry_delay: The delay (in seconds) between retries.
 
+    Returns:
+    - Dictionary containing total_count of sheets and a list of sheets with their IDs and names.
+    """
+    
+    retry_count = 0
+
+    while retry_count < max_retries:
+        print("Entered While Loop")
+        try:
+            print("Entered Try Blcok")
+            client = getSmartsheetClient(user)
+            print("Back From getting Client")
+            response = client.Sheets.list_sheets(include_all=True)
+            responseData = response.data
+            
+            # Update user's total sheet count if necessary
+            total_count = response.total_count 
+            if user['totalSheetsInAccount'] != total_count:
+                user.update(totalSheetsInAccount=total_count)
+            
+            # Transform response data into a list of dictionaries for operational data
+            sheets = [{'sheet_id': str(sheet.id), 'sheet_name': sheet.name} for sheet in responseData]
+
+            return {
+                'total_count': total_count,
+                'sheets': sheets
+            }
+
+        except Exception as e:
+            retry_count += 1
+            print(f"Error encountered: {e}. Retrying {retry_count}/{max_retries}...")
+            sleep(retry_delay)
+
+    raise ValueError("Failed to retrieve sheets info after maximum retries.")
+
+
+def get_all_sheet_data(client, sheet_id, page_size=5):
+    page = 1
+    all_rows = []
+
+    while True:
+        # Fetch a page of data from Smartsheet
+        sheet = client.Sheets.get_sheet(sheet_id, page_size=page_size, page=page)
+        
+        # Add rows from this page to our accumulated list
+        all_rows.extend(sheet.rows)
+        
+        # If we've fetched less than `page_size` rows, then we've reached the end of the data
+        if len(sheet.rows) < page_size:
+            break
+            
+        # Otherwise, increment the page number and continue fetching the next page
+        page += 1
+
+    return all_rows
+
+# Usage:
+# all_rows = get_all_sheet_data(your_sheet_id)

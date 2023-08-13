@@ -15,23 +15,54 @@ import anvil.http
 import base64
 from cryptography.fernet import Fernet
 from datetime import datetime, timedelta
+from time import sleep
 
-# Common Smartsheet Client Initiation Code
-def get_smartsheet_client_object(user):
-    current_time = datetime.now()
-    token_expiration = user['token_expiration'].replace(tzinfo=None) if user['token_expiration'] else None
+@anvil.server.callable
+def get_smartsheet_client_object(user, max_retries=3, retry_delay=5):
+    """
+    Initiates a Smartsheet client. If the token is expired or invalid, it tries to refresh the token.
+    If refreshing or any other operation fails, it retries up to max_retries times.
 
-    if not token_expiration or current_time >= token_expiration:
-        refresh_access_token(user)
-    # After refreshing, get the updated user details with the new access token
-    user = app_tables.users.get(email=user['email'])
+    Args:
+    - user: The user object containing token information.
+    - max_retries: The maximum number of retries if an operation fails.
+    - retry_delay: The delay (in seconds) between retries.
+
+    Returns:
+    - Smartsheet client object.
+    """
     
-    access_token = user['access_token']
-    access_token = app_tables.users.get(email=user['email'])['access_token']
-    client = smartsheet.Smartsheet(access_token)
-    # print(client.Sheets.list_sheets())
-    # client = smartsheet.Smartsheet(anvil.secrets.get_secret('smartsheetsKey'))
-    return client
+    current_time = datetime.now()
+    
+    # Accessing the token_expiration as per the specified manner
+    token_expiration = user['token_expiration'].replace(tzinfo=None) if user['token_expiration'] else None
+    
+    retry_count = 0
+
+    while retry_count < max_retries:
+        try:
+            # Check if the token is expired and refresh if necessary
+            if not token_expiration or current_time >= token_expiration:
+                refresh_access_token(user)
+                user = app_tables.users.get(email=user['email'])
+            
+            access_token = user['access_token']
+            
+            if not access_token:
+                raise ValueError("Access token not found for the user.")
+            
+            client = smartsheet.Smartsheet(access_token)
+            return client
+
+        except Exception as e:
+            print("Entered the exception Block")
+            print(e)
+            retry_count += 1
+            print(f"Error encountered: {e}. Retrying {retry_count}/{max_retries}...")
+            sleep(retry_delay)
+
+    raise ValueError("Failed to initiate Smartsheet client after maximum retries.")
+
 
 
 # Handel Encryption and Encryption Keys
@@ -132,7 +163,12 @@ def refresh_access_token(user):
     }
     
     response = requests.post('https://api.smartsheet.com/2.0/token', data=data)
-    response.raise_for_status()
+    
+    # Check for bad status codes and log the response for debugging
+    if response.status_code != 200:
+        print(f"Error refreshing token. Status Code: {response.status_code}")
+        print(f"Response Body: {response.text}")
+        response.raise_for_status()
     
     access_token = response.json().get('access_token')
     new_refresh_token = response.json().get('refresh_token', refresh_token)  # Use the old refresh token if a new one isn't provided
@@ -141,3 +177,4 @@ def refresh_access_token(user):
     user.update(access_token=access_token, refresh_token=new_refresh_token)
     
     return access_token
+

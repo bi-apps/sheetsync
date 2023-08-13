@@ -9,11 +9,13 @@ import anvil.users
 import anvil.tables as tables
 import anvil.tables.query as q
 import anvil.js
+from time import sleep
 
 class indexPage(indexPageTemplate):
   def __init__(self, user=None ,**properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
+    # self.search_timer = None # Initialize a property to store the Timer object
     # Hide Components -----
     # Hide Connect Smartsheet Button on Load
     self.connectSmartsheetBtn.visible = False
@@ -78,6 +80,7 @@ class indexPage(indexPageTemplate):
     """This method is called when the text in this text box is edited"""
     search_string = self.searchInput.text.lower()
     if len(search_string) > 5:
+        sleep(2)
         if len(self.all_sheets) < 200:
             # Local search for smaller datasets
             filtered_sheets = [sheet for sheet in self.all_sheets if search_string in sheet['sheet_name'].lower()]
@@ -87,6 +90,9 @@ class indexPage(indexPageTemplate):
         
         # Update the RepeatingPanel's items
         self.dataGridRepeatingPanelMain.items = filtered_sheets
+        
+    elif len(search_string) == 0:
+        self.dataGridRepeatingPanelMain.items = self.all_sheets
 
   def sign_out_user_on_click(self, **event_args):
     """This method is called when the link is clicked"""
