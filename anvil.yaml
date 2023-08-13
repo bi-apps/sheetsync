@@ -1,10 +1,4 @@
-scheduled_tasks:
-- task_name: project_manager
-  time_spec:
-    n: 5
-    every: minute
-    at: {}
-  job_id: KJJFBSBO
+scheduled_tasks: []
 dependencies:
 - dep_id: dep_sfh6f32rpzhmfn
   version: {dev: false}
@@ -28,7 +22,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: listAutomations}
+startup: {type: form, module: homePage}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
@@ -149,7 +143,7 @@ db_schema:
       type: simpleObject
     title: job_logs
   tb_automation_type_1_2:
-    client: search
+    client: full
     server: full
     columns:
     - name: user

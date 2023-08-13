@@ -34,23 +34,35 @@ components:
       foreground: 'theme:Primary 700', visible: true, text: Home, font_size: null,
       font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
       background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:home'}
-    name: button_3
+    name: indexHomeBtn
     layout_properties: {grid_position: 'LVAHNQ,NHTFPD'}
+    event_bindings: {click: indexHomeBtn_click}
   - type: Button
     properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
-      foreground: 'theme:Primary 700', visible: true, text: Column Architect, font_size: null,
+      foreground: 'theme:Primary 700', visible: true, text: Build, font_size: null,
       font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
-      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:link'}
-    name: addMappingButton
+      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:wrench'}
+    name: indexBuildBrn
     layout_properties: {grid_position: 'LTNYCB,CTVIDM'}
-    event_bindings: {click: addMappingButton_click}
+    event_bindings: {click: indexBuildBrn_click}
+  - type: Button
+    properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
+      foreground: 'theme:Primary 700', visible: true, text: View, font_size: null,
+      font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
+      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:binoculars'}
+    name: indexViewBtn
+    layout_properties:
+      col_widths: {}
+      grid_position: CQYVAQ,CKSVPK
+    event_bindings: {click: indexViewBtn_click}
   - type: Button
     properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
       foreground: 'theme:Primary 700', visible: true, text: Settings, font_size: null,
       font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
-      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:check'}
-    name: button_1
+      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:cog'}
+    name: indexSettingsBtn
     layout_properties: {grid_position: 'FVDDUC,QWJPQG'}
+    event_bindings: {click: indexSettingsBtn_click}
 - type: ColumnPanel
   properties: {col_widths: '{}'}
   name: column_panel_2

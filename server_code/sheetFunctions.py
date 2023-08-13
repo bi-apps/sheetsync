@@ -100,6 +100,7 @@ def getSheetsCount(user):
     # Call smartsheets API and retrive all sheets
     response = client.Sheets.list_sheets(include_all=True)
     # Get total sheet count from response
+    # print(response)
     total_count = response.total_count 
   
     # Get User sheet count, and if the count is the same don't update it, else update it
@@ -211,3 +212,25 @@ def get_column_data_without_criteria(smartsheet_api_obj, sheet_id, Column_id):
         unique_column_values = list(columnValues)
 
     return unique_column_values
+
+
+@anvil.server.callable
+def getSheetsInfo(user):
+    client = getSmartsheetClient(user)
+    response = client.Sheets.list_sheets(include_all=True)
+    responseData = response.data
+    
+    # Update user's total sheet count if necessary
+    total_count = response.total_count 
+    if user['totalSheetsInAccount'] != total_count:
+        print('updating Sheet Count')
+        user.update(totalSheetsInAccount=total_count)
+    
+    # Transform response data into a list of dictionaries for operational data
+    sheets = [{'sheet_id': str(sheet.id), 'sheet_name': sheet.name} for sheet in responseData]
+
+    return {
+        'total_count': total_count,
+        'sheets': sheets
+    }
+

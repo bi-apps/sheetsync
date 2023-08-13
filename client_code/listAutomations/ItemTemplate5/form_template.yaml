@@ -1,0 +1,238 @@
+container:
+  type: ColumnPanel
+  properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+    wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{}',
+    spacing_below: small, background: ''}
+components:
+- type: LinearPanel
+  properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
+    border: '', visible: true, role: card, tooltip: ''}
+  name: linear_panel_1
+  layout_properties: {grid_position: 'TCLJEV,SOBGUA', full_width_row: false}
+  components:
+  - type: ColumnPanel
+    properties: {role: card, tooltip: '', border: '', foreground: '', visible: true,
+      wrap_on: mobile, col_spacing: medium, spacing_above: medium, col_widths: '{}',
+      spacing_below: medium, background: 'theme:Gray 100'}
+    name: column_panel_1
+    layout_properties: {}
+    components:
+    - type: FlowPanel
+      properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
+        foreground: '', visible: true, spacing_above: small, spacing_below: small,
+        background: ''}
+      name: flow_panel_1
+      layout_properties: {grid_position: 'KXQPNK,RCHPLZ', full_width_row: true}
+      components:
+      - type: ColumnPanel
+        properties: {col_widths: '{"CGNNBM":109,"KRJFAG":3}'}
+        name: column_panel_5
+        layout_properties: {width: 743}
+        components:
+        - type: Spacer
+          properties: {height: 35}
+          name: spacer_1
+          layout_properties: {grid_position: 'FTGQQY,KRJFAG', full_width_row: true}
+        - type: Label
+          properties: {role: headline, align: left, tooltip: '', border: '', foreground: '',
+            visible: true, text: '', font_size: null, font: '', spacing_above: large,
+            icon_align: left, spacing_below: none, italic: false, background: '',
+            bold: false, underline: false, icon: ''}
+          name: label_1
+          layout_properties: {grid_position: 'FTGQQY,CGNNBM', full_width_row: true}
+          data_bindings:
+          - {property: text, code: 'self.item[''map_name'']'}
+      - type: ColumnPanel
+        properties: {col_widths: '{}'}
+        name: column_panel_6
+        layout_properties: {width: 84}
+        components:
+        - type: CheckBox
+          properties: {role: null, align: left, tooltip: '', border: '', enabled: true,
+            foreground: '', allow_indeterminate: false, visible: true, text: Enabled,
+            font_size: null, font: '', spacing_above: medium, spacing_below: medium,
+            italic: false, background: '', bold: true, checked: false, underline: false}
+          name: check_box_1
+          layout_properties: {grid_position: 'EELVYV,CNJLEL', full_width_row: true}
+          data_bindings:
+          - {property: checked, code: 'self.item[''map_enabled'']', writeback: true}
+          event_bindings: {}
+        - type: Label
+          properties: {role: text, align: right, tooltip: '', border: '', foreground: '',
+            visible: true, text: Last Executed, font_size: 10, font: '', spacing_above: small,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: false, underline: false, icon: ''}
+          name: label_14
+          layout_properties: {grid_position: 'KBFEEP,MVMZJO'}
+      - type: ColumnPanel
+        properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+          wrap_on: mobile, col_spacing: medium, spacing_above: medium, col_widths: '{}',
+          spacing_below: medium, background: ''}
+        name: column_panel_7
+        layout_properties: {width: null, expand: false}
+        components:
+        - type: Button
+          properties: {role: secondary-color, align: center, tooltip: '', border: '',
+            enabled: true, foreground: '', visible: true, text: Edit, font_size: null,
+            font: '', spacing_above: small, icon_align: left, spacing_below: small,
+            italic: false, background: '', bold: false, underline: false, icon: ''}
+          name: primary_color_1
+          layout_properties: {expand: false, width: null, grid_position: 'LBMRYY,MJXGWJ',
+            full_width_row: false}
+        - type: Label
+          properties: {role: text, align: left, tooltip: '', border: '', foreground: '',
+            visible: true, text: '', font_size: 10, font: '', spacing_above: medium,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: false, underline: false, icon: ''}
+          name: label_15
+          layout_properties: {grid_position: 'RVOKDK,QMDUES'}
+          data_bindings:
+          - {property: text, code: 'self.item[''last_executed''].strftime(''%Y-%m-%d
+              %H:%M'') if self.item[''last_executed''] is not None else "N/A"'}
+  - type: ColumnPanel
+    properties: {col_widths: '{}'}
+    name: column_panel_2
+    layout_properties: {}
+    components:
+    - type: LinearPanel
+      properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
+        border: '', visible: true, role: null, tooltip: ''}
+      name: linear_panel_2
+      layout_properties: {grid_position: 'PBTFHS,PILNHY', full_width_row: false}
+      components:
+      - type: FlowPanel
+        properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
+          foreground: '', visible: true, spacing_above: small, spacing_below: small,
+          background: ''}
+        name: flow_panel_2
+        layout_properties: {}
+        components:
+        - type: ColumnPanel
+          properties: {role: customborders, tooltip: '', border: '', foreground: '',
+            visible: true, wrap_on: mobile, col_spacing: medium, spacing_above: small,
+            col_widths: '{"LHUMBL":2,"WQLIRJ":13,"XESZRO":10,"FKZPQW":20,"QGEIPY":10,"KEKEXJ":11,"LBETFV":8}',
+            spacing_below: small, background: ''}
+          name: column_panel_3
+          layout_properties: {expand: true, width: null}
+          components:
+          - type: Spacer
+            properties: {height: 32}
+            name: spacer_2
+            layout_properties: {grid_position: 'XOLKSA,LHUMBL'}
+          - type: Label
+            properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: From Sheet, font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_2
+            layout_properties: {grid_position: 'XOLKSA,WQLIRJ'}
+            data_bindings: []
+          - type: Label
+            properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: From Column, font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_3
+            layout_properties: {grid_position: 'XOLKSA,XESZRO'}
+          - type: Label
+            properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: To Sheet, font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_4
+            layout_properties: {grid_position: 'XOLKSA,FKZPQW'}
+          - type: Label
+            properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: To Column, font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_8
+            layout_properties: {grid_position: 'XOLKSA,QGEIPY'}
+          - type: Label
+            properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: Column Type, font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_10
+            layout_properties: {grid_position: 'XOLKSA,KEKEXJ'}
+          - type: Label
+            properties: {role: subheading, align: left, tooltip: '', border: 'border-left
+                : 2px solid red', foreground: '', visible: true, text: Type, font_size: null,
+              font: '', spacing_above: small, icon_align: left, spacing_below: small,
+              italic: false, background: '', bold: false, underline: false, icon: ''}
+            name: label_12
+            layout_properties: {grid_position: 'XOLKSA,LBETFV'}
+      - type: FlowPanel
+        properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
+          foreground: '', visible: true, spacing_above: small, spacing_below: small,
+          background: ''}
+        name: flow_panel_3
+        layout_properties: {}
+        components:
+        - type: ColumnPanel
+          properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+            wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{"BHLTNS":2,"YYNNGG":13,"KWPTGD":10,"XARLGI":20,"QGPAHL":10,"CBEJKV":11,"NOTFLN":8}',
+            spacing_below: small, background: ''}
+          name: column_panel_4
+          layout_properties: {expand: true, width: null}
+          components:
+          - type: Spacer
+            properties: {height: 32}
+            name: spacer_3
+            layout_properties: {grid_position: 'HORUEI,BHLTNS', full_width_row: false}
+          - type: Label
+            properties: {role: text, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: '', font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_5
+            layout_properties: {grid_position: 'HORUEI,YYNNGG', full_width_row: false}
+            data_bindings:
+            - {property: text, code: 'self.item[''src_sheet_name'']'}
+          - type: Label
+            properties: {role: text, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: '', font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_6
+            layout_properties: {grid_position: 'HORUEI,KWPTGD', full_width_row: false}
+            data_bindings:
+            - {property: text, code: 'self.item[''src_sheet_col_name'']'}
+          - type: Label
+            properties: {role: text, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: '', font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_7
+            layout_properties: {grid_position: 'HORUEI,XARLGI', full_width_row: false}
+            data_bindings:
+            - {property: text, code: 'self.item[''dest_sheet_name'']'}
+          - type: Label
+            properties: {role: text, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: '', font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_9
+            layout_properties: {grid_position: 'HORUEI,QGPAHL', full_width_row: false}
+            data_bindings:
+            - {property: text, code: 'self.item[''dest_sheet_col_name'']'}
+          - type: Label
+            properties: {role: text, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: '', font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_11
+            layout_properties: {grid_position: 'HORUEI,CBEJKV', full_width_row: false}
+            data_bindings:
+            - {property: text, code: 'self.item[''dest_sheet_col_type'']'}
+          - type: Label
+            properties: {role: text, align: left, tooltip: '', border: '', foreground: '',
+              visible: true, text: '', font_size: null, font: '', spacing_above: small,
+              icon_align: left, spacing_below: small, italic: false, background: '',
+              bold: false, underline: false, icon: ''}
+            name: label_13
+            layout_properties: {grid_position: 'HORUEI,NOTFLN', full_width_row: false}
+            data_bindings:
+            - {property: text, code: '''Standard'' if self.item[''map_type''] == 1
+                else ''Criteria Based'' if self.item[''map_type''] == 2 else None'}
+is_package: true

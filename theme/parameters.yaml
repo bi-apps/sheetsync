@@ -32,6 +32,8 @@ roles:
 - name: Alert Error
   components: [Alerts]
   display_in_toolbox: false
+- {name: customborders, components: null}
+- {name: modern-heading}
 color_scheme:
   preset_groups:
   - name: Primary Colour

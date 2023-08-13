@@ -805,3 +805,28 @@ textarea.anvil-component[disabled] {
 https://stackoverflow.com/questions/30533055/calculating-shadow-values-for-all-material-design-elevations
 */
 
+.anvil-role-customborders {
+  font-size: 16px;
+  line-height: 24dp;
+  border-bottom: 1px solid gray;
+}
+
+.anvil-role-modern-heading {
+    font-family: 'Roboto', sans-serif; /* Use the Roboto font */
+    font-size: 2.5em;
+    font-weight: 300; /* Lighter weight for a modern look */
+    color: #333; /* Subtle, dark gray color */
+    text-transform: capitalize; /* Uppercase for a modern feel */
+    letter-spacing: 1px; /* Increased spacing between letters */
+    margin-bottom: 20px; /* Spacing below the heading */
+    line-height: 1.2; /* Adjusted line height */
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Responsive adjustment for smaller screens */
+@media (max-width: 768px) {
+    .anvil-role-modern-heading {
+        font-size: 1em;
+    }
+}
+

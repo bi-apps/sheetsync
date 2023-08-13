@@ -26,33 +26,6 @@ components:
   layout_properties: {slot: title}
 - type: ColumnPanel
   properties: {col_widths: '{}'}
-  name: column_panel_1
-  layout_properties: {slot: left-nav}
-  components:
-  - type: Button
-    properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
-      foreground: 'theme:Primary 700', visible: true, text: Home, font_size: null,
-      font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
-      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:home'}
-    name: button_3
-    layout_properties: {grid_position: 'LVAHNQ,NHTFPD'}
-  - type: Button
-    properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
-      foreground: 'theme:Primary 700', visible: true, text: Column Architect, font_size: null,
-      font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
-      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:link'}
-    name: addMappingButton
-    layout_properties: {grid_position: 'LTNYCB,CTVIDM'}
-    event_bindings: {click: addMappingButton_click}
-  - type: Button
-    properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
-      foreground: 'theme:Primary 700', visible: true, text: Settings, font_size: null,
-      font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
-      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:check'}
-    name: button_1
-    layout_properties: {grid_position: 'FVDDUC,QWJPQG'}
-- type: ColumnPanel
-  properties: {col_widths: '{}'}
   name: column_panel_2
   layout_properties: {slot: default}
   components:
@@ -63,61 +36,143 @@ components:
     layout_properties: {grid_position: 'RYTOOF,WEFTOV'}
     components:
     - type: Label
-      properties: {role: headline, align: center, tooltip: '', border: '', foreground: '',
-        visible: true, text: Here's all your automations!, font_size: null, font: '',
+      properties: {role: modern-heading, align: center, tooltip: '', border: '', foreground: '',
+        visible: true, text: Here's all your automations!, font_size: 35, font: '',
         spacing_above: small, icon_align: left, spacing_below: small, italic: false,
-        background: '', bold: false, underline: false, icon: ''}
+        background: '', bold: true, underline: false, icon: ''}
       name: headline_1
       layout_properties: {}
   - type: ColumnPanel
-    properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
-      wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{}',
-      spacing_below: small, background: ''}
+    properties: {col_widths: '{}'}
     name: column_panel_3
-    layout_properties: {grid_position: 'RSULHV,POTECV', full_width_row: true}
+    layout_properties: {grid_position: 'JUUVUQ,SOBJMA'}
     components:
-    - type: FlowPanel
-      properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
-        foreground: '', visible: true, spacing_above: small, spacing_below: small,
-        background: ''}
-      name: flow_panel_2
-      layout_properties: {grid_position: 'ECNSVH,FFAWSN', full_width_row: true}
+    - type: LinearPanel
+      properties: {spacing_above: small, spacing_below: small, background: '', foreground: '',
+        border: '', visible: true, role: null, tooltip: ''}
+      name: linear_panel_1
+      layout_properties: {grid_position: 'FBVLXE,YTNPNQ'}
       components:
-      - type: DataGrid
-        properties:
-          role: null
-          columns:
-          - {id: FWQGIO, title: Name, data_key: map_name, $$hashKey: 'object:93188',
-            expand: false}
-          - {id: AVIBMM, title: Source Sheet, data_key: src_sheet_name, $$hashKey: 'object:93204',
-            expand: false}
-          - {id: IRJPEH, title: Column, data_key: src_sheet_col_name, $$hashKey: 'object:93209',
-            expand: false}
-          - {id: DFDHKI, title: Destination Sheet, data_key: dest_sheet_name, $$hashKey: 'object:93189',
-            expand: false}
-          - {id: IZKAIK, title: Column, data_key: dest_sheet_col_name, $$hashKey: 'object:93210',
-            expand: false}
-          - {id: BCHWPA, title: Type, data_key: dest_sheet_col_type, $$hashKey: 'object:93191',
-            expand: false}
-          - {id: GJNWHY, title: Enabled, data_key: map_enabled, $$hashKey: 'object:93193',
-            expand: false}
-          auto_header: true
-          tooltip: ''
-          border: ''
-          foreground: ''
-          rows_per_page: 20
-          visible: true
-          wrap_on: never
-          show_page_controls: true
-          spacing_above: small
-          spacing_below: small
-          background: ''
-        name: data_grid_1
-        layout_properties: {expand: true, width: null}
+      - type: FlowPanel
+        properties: {role: null, spacing: large, align: center, tooltip: '', border: '',
+          foreground: '', visible: true, spacing_above: small, spacing_below: small,
+          background: ''}
+        name: flow_panel_2
+        layout_properties: {}
         components:
-        - type: RepeatingPanel
-          properties: {spacing_above: none, spacing_below: none, item_template: listAutomations.RowTemplate8}
-          name: repeatingPanelMain
+        - type: Label
+          properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+            visible: true, text: Total, font_size: null, font: '', spacing_above: small,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: true, underline: false, icon: ''}
+          name: label_6
+          layout_properties: {expand: false, width: null}
+        - type: Label
+          properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+            visible: true, text: '', font_size: null, font: '', spacing_above: small,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: false, underline: false, icon: ''}
+          name: totalAutomationsLbl
+          layout_properties: {expand: false, width: null}
+        - type: Label
+          properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+            visible: true, text: Active, font_size: null, font: '', spacing_above: small,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: true, underline: false, icon: ''}
+          name: label_7
           layout_properties: {}
-        data_bindings: []
-      event_bindings: {show: flow_panel_2_show}
+        - type: Label
+          properties: {}
+          name: activeAutomationsLbl
+          layout_properties: {}
+          data_bindings: []
+        - type: Label
+          properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+            visible: true, text: Standard, font_size: null, font: '', spacing_above: small,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: true, underline: false, icon: ''}
+          name: label_8
+          layout_properties: {}
+        - type: Label
+          properties: {}
+          name: standardAutomationsLbl
+          layout_properties: {}
+        - type: Label
+          properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+            visible: true, text: Criteria based, font_size: null, font: '', spacing_above: small,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: true, underline: false, icon: ''}
+          name: label_9
+          layout_properties: {}
+        - type: Label
+          properties: {}
+          name: criteriaAutomationLbl
+          layout_properties: {}
+  - type: FlowPanel
+    properties: {}
+    name: flow_panel_3
+    layout_properties:
+      col_widths: {}
+      grid_position: IQTLNL,OZZTRI
+    components:
+    - type: Label
+      properties: {role: input-prompt, align: center, tooltip: '', border: '', foreground: '',
+        visible: true, text: 'Search Automation :', font_size: null, font: '', spacing_above: small,
+        icon_align: left, spacing_below: small, italic: false, background: '', bold: true,
+        underline: false, icon: 'fa:search'}
+      name: searchLabel
+      layout_properties: {}
+    - type: TextBox
+      properties: {role: dense, align: left, hide_text: false, tooltip: '', placeholder: Automation name i.e Country Dropdown,
+        border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
+        font: '', spacing_above: small, type: text, spacing_below: small, italic: false,
+        background: '', bold: false, underline: false}
+      name: searchInput
+      layout_properties: {width: 572.375}
+      event_bindings: {change: searchInputChange}
+  - type: RepeatingPanel
+    properties: {role: null, tooltip: '', border: '', foreground: '', items: null,
+      visible: true, spacing_above: small, spacing_below: small, item_template: listAutomations.ItemTemplate5,
+      background: ''}
+    name: list_automations_repeating_panel
+    layout_properties: {grid_position: 'KFTXMD,DLMMZU', full_width_row: false}
+    event_bindings: {show: list_automations_repeating_panel_show}
+- type: ColumnPanel
+  properties: {col_widths: '{}'}
+  name: column_panel_1
+  layout_properties: {slot: left-nav}
+  components:
+  - type: Button
+    properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
+      foreground: 'theme:Primary 700', visible: true, text: Home, font_size: null,
+      font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
+      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:home'}
+    name: listHomeBtn
+    layout_properties: {grid_position: 'LVAHNQ,NHTFPD'}
+    event_bindings: {click: listHomeBtn_click}
+  - type: Button
+    properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
+      foreground: 'theme:Primary 700', visible: true, text: Build, font_size: null,
+      font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
+      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:wrench'}
+    name: listBuildBtn
+    layout_properties: {grid_position: 'LTNYCB,CTVIDM'}
+    event_bindings: {click: listBuildBtn_click}
+  - type: Button
+    properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
+      foreground: 'theme:Primary 700', visible: true, text: View, font_size: null,
+      font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
+      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:binoculars'}
+    name: listViewBtn
+    layout_properties:
+      col_widths: {}
+      grid_position: CQYVAQ,CKSVPK
+    event_bindings: {click: listViewBtn_click}
+  - type: Button
+    properties: {role: raised, align: full, tooltip: '', border: '', enabled: true,
+      foreground: 'theme:Primary 700', visible: true, text: Settings, font_size: null,
+      font: '', spacing_above: small, icon_align: top, spacing_below: small, italic: false,
+      background: 'theme:Gray 100', bold: false, underline: false, icon: 'fa:cog'}
+    name: listSettingsBtn
+    layout_properties: {grid_position: 'FVDDUC,QWJPQG'}
+    event_bindings: {click: listSettingsBtn_click}

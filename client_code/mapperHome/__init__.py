@@ -63,6 +63,26 @@ class mapperHome(mapperHomeTemplate):
     """This method is called when the button is clicked"""
     self.mainGridPanelMappings.visible = False
 
+  def mapperHomeBtn_click(self, **event_args):
+      """This method is called when the button is clicked"""
+      open_form('indexPage')
+
+  def mapperBuildBtn_click(self, **event_args):
+      """This method is called when the button is clicked"""
+      open_form('mapperHome')
+
+  def mapperViewBtn_click(self, **event_args):
+      """This method is called when the button is clicked"""
+      open_form('listAutomations')
+
+  def mapperSettingsBtn_click(self, **event_args):
+      """This method is called when the button is clicked"""
+      pass
+
+
+
+
+
 
 
 

@@ -9,6 +9,7 @@ from anvil.tables import app_tables
 import anvil.server
 import smartsheet
 from datetime import datetime, timedelta
+from .authenticationFunctions import get_smartsheet_client_object
 
 
 # Helper Function to Get the result code if Sucessfull or return the error message if error
@@ -76,7 +77,32 @@ def should_execute(last_executed, threshold_minutes):
     return False
 
 
+@anvil.server.callable
+def getLimitedSheetData(user, limit=100):
+   client = get_smartsheet_client_object(user)
+   response = client.Sheets.list_sheets(page_size=limit)
+   # print(response)
+   responseData = response.data
+   
+   sheets = [{'sheet_id': str(sheet.id), 'sheet_name': sheet.name} for sheet in responseData]
+   return sheets
+
+@anvil.server.callable
+def searchSheets(user, search_string):
+   client = get_smartsheet_client_object(user)
+   response = client.Sheets.list_sheets(include_all=True)
+   responseData = response.data
+   
+   # Filter sheets server-side and convert to dictionary
+   filtered_sheets = [{'sheet_id': str(sheet.id), 'sheet_name': sheet.name} 
+                      for sheet in responseData if search_string in sheet.name.lower()]
+   
+   return filtered_sheets
 
 
-
-
+@anvil.server.callable
+def check_logged_in():
+    user = anvil.users.get_user()
+    if user:
+        return True
+    return False
