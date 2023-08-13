@@ -13,6 +13,7 @@ import anvil.tables as tables
 import anvil.tables.query as q
 import anvil.js
 from .oneToOneSetup import oneToOneSetup
+from .criteriaBasedOneToOneSetup import criteriaBasedOneToOneSetup
 
 class mapperHome(mapperHomeTemplate):
   def __init__(self, **properties):
@@ -54,6 +55,16 @@ class mapperHome(mapperHomeTemplate):
   def criteriaBasedOneToOneClick(self, **event_args):
     """This method is called when the button is clicked"""
     self.mainGridPanelMappings.visible = False
+    self.mainPageColumn.clear()
+
+    # Create an instance of the oneToOneSetup form and pass the user variable
+    criteria_based_one_to_one = criteriaBasedOneToOneSetup(user=self.user)
+
+    # Add the oneToOneSetup form as a subform to the mainPageColumn
+    self.mainPageColumn.add_component(criteria_based_one_to_one)
+
+    # Show the oneToOneSetup form
+    criteria_based_one_to_one.visible = True
 
   def criteriaBasedOneToManyBtnClick(self, **event_args):
     """This method is called when the button is clicked"""

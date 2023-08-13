@@ -11,11 +11,14 @@ import anvil.tables.query as q
 from anvil.tables import app_tables
 
 class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
-    def __init__(self, **properties):
+    def __init__(self, user=None, **properties):
         # Set Form properties and Data Bindings.
         self.init_components(**properties)
         # self.oneToOneCriteriaBasedCriteriaExplainationText.data = { "source_sheet_name": "derick test"}
-        self.user = anvil.users.get_user()
+        if user is None:
+            self.user = anvil.users.get_user()
+        else:
+            self.user = user
 
         # # Hide Objects that needs to be hidden on load
         self.oneToOneCriteriaBasedMultiSelectDropDown.visible = False
@@ -631,3 +634,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         """This method is called when the text in this text box is edited"""
         self.update_slot("to_criterion_values", str("To: " + self.oneToOneCriteriaLogicalToValueInput.text))
         self.oneToOneCriteriaBasedCriteriaExplainationText.visible = True
+
+    def oneToOneCriteriaBasedBackBtn_click(self, **event_args):
+        """This method is called when the button is clicked"""
+        anvil.open_form('mapperHome')
+

@@ -11,8 +11,8 @@ from anvil.tables import app_tables
 from datetime import datetime
 
 class oneToOneSetup(oneToOneSetupTemplate):
-    # def __init__(self, user, **properties):
-    def __init__(self, **properties):
+    def __init__(self, user=None, **properties):
+    # def __init__(self, **properties):
         # Set Form properties and Data Bindings.
         self.init_components(**properties)
       
@@ -39,7 +39,10 @@ class oneToOneSetup(oneToOneSetupTemplate):
       
         # Get User
         # self.user = user
-        self.user = anvil.users.get_user()
+        if user is None:
+            self.user = anvil.users.get_user()
+        else:
+            self.user = user
       
         # Any code you write here will run before the form opens.
         # Get Sheet Names and Id's
