@@ -501,6 +501,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                                                                dest_sheet_id = self.selected_criteria_destination_sheet_id,
                                                                dest_col_name = self.selected_criteria_destination_column_name,
                                                                dest_col_id = self.selected_criteria_destination_column_id,
+                                                               dest_col_type_name = self.selected_column_type_name,
                                                                dest_col_type = self.selected_destination_column_type_value,
                                                                dest_col_validation = self.selected_destination_column_validation_type,
                                                                 
@@ -510,7 +511,7 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                                                                criterion_source_sheet_id = self.selected_criteria_source_sheet_id if self.selected_criterion_type == "Logical" else selected_dynamic_source_sheet_id,
                                                                criterion_source_sheet_col_name = self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value if self.selected_criterion_type == "Logical" else selected_dynamic_source_column_name,
                                                                criterion_source_sheet_col_id = self.selected_logical_criterion_column_id if self.selected_criterion_type == "Logical" else self.selected_dynamic_source_column_id,
-                                                                
+
                                                                criterion_operator_name = self.selected_operator_name,
                                                                criterion_operator_value = self.selected_operator_values,
                                                                 

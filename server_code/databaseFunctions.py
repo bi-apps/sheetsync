@@ -111,7 +111,8 @@ def save_automation(*args, **kwargs):
                 dest_sheet_id=kwargs.get('dest_sheet_id', None),
                 dest_sheet_col_name=kwargs.get('dest_col_name', None),
                 dest_sheet_col_id=kwargs.get('dest_col_id', None),
-                
+
+                dest_sheet_col_type_name=kwargs.get('dest_col_type_name', None),
                 dest_sheet_col_type=kwargs.get('dest_col_type', None),
                 dest_sheet_col_validation=kwargs.get('dest_col_validation', None),
                 

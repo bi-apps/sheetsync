@@ -69,7 +69,7 @@ components:
   layout_properties: {slot: default}
   components:
   - type: Label
-    properties: {role: headline, align: center, tooltip: '', border: '', foreground: '',
+    properties: {role: modern-heading, align: center, tooltip: '', border: '', foreground: '',
       visible: true, text: '', font_size: 45, font: '', spacing_above: large, icon_align: left,
       spacing_below: large, italic: false, background: '', bold: true, underline: false,
       icon: ''}
