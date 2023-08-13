@@ -15,3 +15,13 @@ class RowTemplate7(RowTemplate7Template):
     self.init_components(**properties)
 
     # Any code you write here will run before the form opens.
+
+  def setupAutomationBtn_click(self, **event_args):
+      """This method is called when the button is clicked"""
+      print("Button Clicked on Repeating Panel")
+      print(f"Row Data : {self.setupAutomationBtn.tag}")
+      print(f"Sheet Name : {self.setupAutomationBtn.tag['sheet_name']}")
+      print(f"Sheet Name : {self.setupAutomationBtn.tag['sheet_id']}")
+      # self.raise_event('x-setup-clicked', row_data=self.setupAutomationBtn.tag)
+      open_form('mapperHome', setup_data=self.setupAutomationBtn.tag)
+

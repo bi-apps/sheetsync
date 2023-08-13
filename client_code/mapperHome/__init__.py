@@ -16,10 +16,11 @@ from .oneToOneSetup import oneToOneSetup
 from .criteriaBasedOneToOneSetup import criteriaBasedOneToOneSetup
 
 class mapperHome(mapperHomeTemplate):
-  def __init__(self, **properties):
+  def __init__(self, setup_data=None, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-
+      
+    self.setup_data = setup_data
     # Get Logged in User
     self.user = anvil.users.get_user()
 
@@ -35,7 +36,10 @@ class mapperHome(mapperHomeTemplate):
     self.mainPageColumn.clear()
 
     # Create an instance of the oneToOneSetup form and pass the user variable
-    one_to_one_setup_form = oneToOneSetup(user=self.user)
+    if self.setup_data:
+        one_to_one_setup_form = oneToOneSetup(user=self.user, setup_data=self.setup_data)
+    else:
+        one_to_one_setup_form = oneToOneSetup(user=self.user)
 
     # Add the oneToOneSetup form as a subform to the mainPageColumn
     self.mainPageColumn.add_component(one_to_one_setup_form)
@@ -58,7 +62,10 @@ class mapperHome(mapperHomeTemplate):
     self.mainPageColumn.clear()
 
     # Create an instance of the oneToOneSetup form and pass the user variable
-    criteria_based_one_to_one = criteriaBasedOneToOneSetup(user=self.user)
+    if self.setup_data:
+        criteria_based_one_to_one = criteriaBasedOneToOneSetup(user=self.user, setup_data=self.setup_data)
+    else:
+         criteria_based_one_to_one = criteriaBasedOneToOneSetup(user=self.user)
 
     # Add the oneToOneSetup form as a subform to the mainPageColumn
     self.mainPageColumn.add_component(criteria_based_one_to_one)

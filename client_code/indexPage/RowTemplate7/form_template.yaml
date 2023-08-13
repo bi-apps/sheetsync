@@ -13,6 +13,9 @@ components:
     foreground: '', visible: true, text: Setup, font_size: null, font: '', spacing_above: small,
     icon_align: left, spacing_below: small, italic: false, background: '', bold: false,
     underline: false, icon: 'fa:link'}
-  name: primary_color_1
+  name: setupAutomationBtn
   layout_properties: {column: IWCJRF}
+  event_bindings: {click: setupAutomationBtn_click}
+  data_bindings:
+  - {property: tag, code: self.item}
 is_package: true

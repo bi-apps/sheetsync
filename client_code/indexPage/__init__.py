@@ -34,6 +34,7 @@ class indexPage(indexPageTemplate):
     # Set Heading to User Name / Email
     self.headLine.text = f"Welcome {self.user['email']}"
 
+    # Setting up an event handler for the custom event 'x-setup-clicked'
     # Start Logic -----
     # Get Smartsheet's Auth Status
     authStatus = self.user['authenticated_to_smartsheets']
@@ -116,8 +117,6 @@ class indexPage(indexPageTemplate):
   def indexSettingsBtn_click(self, **event_args):
       """This method is called when the button is clicked"""
       pass
-
-
 
 
 

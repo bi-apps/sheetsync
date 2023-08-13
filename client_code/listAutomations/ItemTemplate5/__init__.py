@@ -18,4 +18,12 @@ class ItemTemplate5(ItemTemplate5Template):
 
         # Any code you write here will run before the form opens.
 
+    def editAutomationBtn_click(self, **event_args):
+        """This method is called when the button is clicked"""
+        print(self.editAutomationBtn.tag)
+
+
+
+
+
 

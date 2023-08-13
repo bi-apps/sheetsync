@@ -76,9 +76,12 @@ components:
             enabled: true, foreground: '', visible: true, text: Edit, font_size: null,
             font: '', spacing_above: small, icon_align: left, spacing_below: small,
             italic: false, background: '', bold: false, underline: false, icon: ''}
-          name: primary_color_1
+          name: editAutomationBtn
           layout_properties: {expand: false, width: null, grid_position: 'LBMRYY,MJXGWJ',
             full_width_row: false}
+          data_bindings:
+          - {property: tag, code: self.item}
+          event_bindings: {click: editAutomationBtn_click}
         - type: Label
           properties: {role: text, align: left, tooltip: '', border: '', foreground: '',
             visible: true, text: '', font_size: 10, font: '', spacing_above: medium,
@@ -110,7 +113,7 @@ components:
         - type: ColumnPanel
           properties: {role: customborders, tooltip: '', border: '', foreground: '',
             visible: true, wrap_on: mobile, col_spacing: medium, spacing_above: small,
-            col_widths: '{"LHUMBL":2,"WQLIRJ":13,"XESZRO":10,"FKZPQW":20,"QGEIPY":10,"KEKEXJ":11,"LBETFV":8}',
+            col_widths: '{"LHUMBL":2,"WQLIRJ":13,"XESZRO":15,"FKZPQW":15,"QGEIPY":10,"KEKEXJ":11,"LBETFV":8}',
             spacing_below: small, background: ''}
           name: column_panel_3
           layout_properties: {expand: true, width: null}
@@ -129,7 +132,7 @@ components:
             data_bindings: []
           - type: Label
             properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
-              visible: true, text: From Column, font_size: null, font: '', spacing_above: small,
+              visible: true, text: Column, font_size: null, font: '', spacing_above: small,
               icon_align: left, spacing_below: small, italic: false, background: '',
               bold: false, underline: false, icon: ''}
             name: label_3
@@ -143,7 +146,7 @@ components:
             layout_properties: {grid_position: 'XOLKSA,FKZPQW'}
           - type: Label
             properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
-              visible: true, text: To Column, font_size: null, font: '', spacing_above: small,
+              visible: true, text: Column, font_size: null, font: '', spacing_above: small,
               icon_align: left, spacing_below: small, italic: false, background: '',
               bold: false, underline: false, icon: ''}
             name: label_8
@@ -171,7 +174,7 @@ components:
         components:
         - type: ColumnPanel
           properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
-            wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{"BHLTNS":2,"YYNNGG":13,"KWPTGD":10,"XARLGI":20,"QGPAHL":10,"CBEJKV":11,"NOTFLN":8}',
+            wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{"BHLTNS":2,"YYNNGG":13,"KWPTGD":15,"XARLGI":15,"QGPAHL":10,"CBEJKV":11,"NOTFLN":8}',
             spacing_below: small, background: ''}
           name: column_panel_4
           layout_properties: {expand: true, width: null}
