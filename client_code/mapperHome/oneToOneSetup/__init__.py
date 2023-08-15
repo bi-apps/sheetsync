@@ -11,11 +11,12 @@ from anvil.tables import app_tables
 from datetime import datetime
 
 class oneToOneSetup(oneToOneSetupTemplate):
-    def __init__(self, user=None, setup_data=None, **properties):
+    def __init__(self, user=None, setup_data=None, edit_data=None, **properties):
     # def __init__(self, **properties):
         # Set Form properties and Data Bindings.
         self.init_components(**properties)
         self.setup_data = setup_data
+        self.edit_data = edit_data
         print(f"Setup Data : {self.setup_data}")
         # Initiate Screen Object States
         # Disabled Main Flow Panel until Name is Selected
@@ -67,7 +68,34 @@ class oneToOneSetup(oneToOneSetupTemplate):
 
         # Set the event handler for the dropdown's change event
         # self.oneToOneSourceSheetDropDown.set_event_handler('change', self.oneToOneSourceSheetDropDown_change)
-    
+
+        if self.edit_data:
+            self.row_id = self.edit_data['row_id']
+            self.edit_data = self.edit_data['row']
+            self.editingAutomationHelper()
+            
+    def editingAutomationHelper(self, **event_args):
+        # Automation Name
+        self.oneToOneMappingNameTxtBox.text = self.edit_data['map_name']
+        # self.oneToOneMappingNameTxtBox.enabled = False
+        # Source Sheet Name
+        self.oneToOneSourceSheetDropDown.selected_value = self.edit_data['src_sheet_name']
+        self.oneToOneSourceSheetDropDown_change()
+        # Source Column Name
+        self.oneToOneSourceColumnDropDown.selected_value = self.edit_data['src_sheet_col_name']
+        self.sourceSheetColumnDropDown_change()
+        # Destination Sheet Name
+        self.oneToOneDestinationSheetDropDown.selected_value = self.edit_data['dest_sheet_name']
+        self.oneToOneDestinationSheetDropDown_change()
+        # Destination Column name
+        self.oneToOneDestinationColumnDropDown.selected_value = self.edit_data['dest_sheet_col_name']
+        self.oneToOneDestinationColumnDropDown_change()
+        # Destination Sheet Column Type
+        self.oneToOneDestinationDropdownType.selected_value = self.edit_data['dest_sheet_col_type_name']
+        self.oneToOneDestinationDropdownType_change()
+        
+        
+        pass
     def oneToOneSourceSheetDropDown_change(self, **event_args):
         """This method is called when an item is selected"""
         # Get Selected Sheet Name and ID
@@ -144,9 +172,63 @@ class oneToOneSetup(oneToOneSetupTemplate):
 
 
     def oneToOneAddMappingAndRunBtn_click(self, **event_args):
-        if self.oneToOneMappingNameTxtBox.text:
-            if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
-                # Execute a test run
+        if self.edit_data is None:
+            if self.oneToOneMappingNameTxtBox.text:
+                if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
+                    # Execute a test run
+                    runMapping = anvil.server.call('runMappingTest',
+                                                    self.user,
+                                                    self.selectedSourceSheetId,
+                                                    self.selectedSourceColumnId,
+                                                    self.selectedDestinationSheetId,
+                                                    self.selectedDestinationColumnId,
+                                                    self.columnTypeValue,
+                                                    self.columnTypeValidation)
+        
+                    if runMapping == 0:
+                        if confirm("Great news! Our test run was successful, and we've updated the destination column accordingly. Would you like to proceed by saving and activating this automation?", title="Automation Test: Successful ✅", large=True, dismissible=False):
+                            map_activation = True
+                        else:
+                            map_activation = False
+                        
+                        saveMapping = anvil.server.call('save_automation',
+                                                        map_enabled=map_activation,
+                                                        map_name=self.oneToOneMappingNameTxtBox.text,
+                                                        map_type=1,
+                                                        database=tables.app_tables.tb_automation_type_1_2,
+                                                        user_obj=self.user,
+                                                        source_sheet_id=self.selectedSourceSheetId,
+                                                        source_col_id=self.selectedSourceColumnId,
+                                                        source_sheet_name=self.selSrcSheetName,
+                                                        source_col_name=self.selSrcColumnName,
+                                                        dest_sheet_id=self.selectedDestinationSheetId,
+                                                        dest_col_id=self.selectedDestinationColumnId,
+                                                        dest_sheet_name=self.selDestSheetName,
+                                                        dest_col_name=self.selDestColumnName,
+                                                        dest_col_type_name=self.selectedColumnTypeName,
+                                                        dest_col_type=self.columnTypeValue,
+                                                        dest_col_validation=self.columnTypeValidation)
+        
+                        if saveMapping:
+                            if map_activation:
+                                Notification("Success! Your automation was stored and is now live, working behind the scenes to streamline your tasks.", title="Automation Activated 🚀", style="success", timeout=5).show()
+                                anvil.open_form('mapperHome')
+                            else:
+                                Notification(f"All set! We've saved your automation, but it's currently in standby mode. Activate it when you're ready to unleash its potential!", title="Automation Saved (Inactive) 🛌", style="info", timeout=10).show()
+                                anvil.open_form('mapperHome')
+                        else:
+                            Notification(f"Oops! We hit a snag while trying to save your automation. Don't worry, our team is on it. Here's the error detail for the tech-savvy: {saveMapping}", title="Save Error 🚫", style="danger", timeout=10).show()
+        
+                    else:
+                        Notification(f"It seems the automation test didn't go as planned. Let's review the settings or check with our support to iron out any issues.", title="Test Unsuccessful ⚠️", style="danger", timeout=10).show()
+        
+                else:
+                    Notification(f"Hold on a second! The name '{self.oneToOneMappingNameTxtBox.text}' is already taken. Let's get creative and pick a unique name for this new automation.", title="Name Duplication Alert 📛", style="warning", timeout=10).show()
+        else:
+            
+            if self.oneToOneMappingNameTxtBox.text:
+                # if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
+                    # Execute a test run
                 runMapping = anvil.server.call('runMappingTest',
                                                 self.user,
                                                 self.selectedSourceSheetId,
@@ -162,7 +244,8 @@ class oneToOneSetup(oneToOneSetupTemplate):
                     else:
                         map_activation = False
                     
-                    saveMapping = anvil.server.call('save_automation',
+                    update_mapping = anvil.server.call('update_automation',
+                                                    self.row_id,
                                                     map_enabled=map_activation,
                                                     map_name=self.oneToOneMappingNameTxtBox.text,
                                                     map_type=1,
@@ -179,7 +262,7 @@ class oneToOneSetup(oneToOneSetupTemplate):
                                                     dest_col_type=self.columnTypeValue,
                                                     dest_col_validation=self.columnTypeValidation)
     
-                    if saveMapping:
+                    if update_mapping:
                         if map_activation:
                             Notification("Success! Your automation was stored and is now live, working behind the scenes to streamline your tasks.", title="Automation Activated 🚀", style="success", timeout=5).show()
                             anvil.open_form('mapperHome')
@@ -187,13 +270,13 @@ class oneToOneSetup(oneToOneSetupTemplate):
                             Notification(f"All set! We've saved your automation, but it's currently in standby mode. Activate it when you're ready to unleash its potential!", title="Automation Saved (Inactive) 🛌", style="info", timeout=10).show()
                             anvil.open_form('mapperHome')
                     else:
-                        Notification(f"Oops! We hit a snag while trying to save your automation. Don't worry, our team is on it. Here's the error detail for the tech-savvy: {saveMapping}", title="Save Error 🚫", style="danger", timeout=10).show()
+                        Notification(f"Oops! We hit a snag while trying to save your automation. Don't worry, our team is on it. Here's the error detail for the tech-savvy: {update_mapping}", title="Save Error 🚫", style="danger", timeout=10).show()
     
                 else:
                     Notification(f"It seems the automation test didn't go as planned. Let's review the settings or check with our support to iron out any issues.", title="Test Unsuccessful ⚠️", style="danger", timeout=10).show()
-    
-            else:
-                Notification(f"Hold on a second! The name '{self.oneToOneMappingNameTxtBox.text}' is already taken. Let's get creative and pick a unique name for this new automation.", title="Name Duplication Alert 📛", style="warning", timeout=10).show()
+        
+                # else:
+                #     Notification(f"Hold on a second! The name '{self.oneToOneMappingNameTxtBox.text}' is already taken. Let's get creative and pick a unique name for this new automation.", title="Name Duplication Alert 📛", style="warning", timeout=10).show()
 
     
 

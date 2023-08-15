@@ -106,3 +106,10 @@ def check_logged_in():
     if user:
         return True
     return False
+
+@anvil.server.callable
+def update_map_enabled(map_name, new_value, user):
+    # Assuming you are using the Anvil Data Tables
+    row = app_tables.tb_automation_type_1_2.get(user=user, map_name=map_name)
+    # row = app_tables.tb_automation_type_1_2.get_by_id(item_id)
+    row['map_enabled'] = new_value

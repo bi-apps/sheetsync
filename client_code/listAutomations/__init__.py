@@ -54,6 +54,7 @@ class listAutomations(listAutomationsTemplate):
         """This method is called when the RepeatingPanel is shown on the screen"""
         self.list_automations_repeating_panel.items = tables.app_tables.tb_automation_type_1_2.search(user=self.user)
 
+
     def searchInputChange(self, **event_args):
         """This method is called when the text in this text box is edited"""
         search_string = self.searchInput.text.lower()

@@ -18,52 +18,99 @@ components:
     layout_properties: {}
     components:
     - type: FlowPanel
-      properties: {role: null, spacing: medium, align: center, tooltip: '', border: '',
+      properties: {role: null, spacing: small, align: center, tooltip: '', border: '',
         foreground: '', visible: true, spacing_above: small, spacing_below: small,
         background: ''}
       name: flow_panel_1
       layout_properties: {grid_position: 'KXQPNK,RCHPLZ', full_width_row: true}
       components:
       - type: ColumnPanel
-        properties: {col_widths: '{"CGNNBM":109,"KRJFAG":3}'}
+        properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+          wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{"CGNNBM":124,"RIHVOO":15}',
+          spacing_below: small, background: ''}
         name: column_panel_5
-        layout_properties: {width: 743}
+        layout_properties: {width: 668.3984, expand: false}
         components:
-        - type: Spacer
-          properties: {height: 35}
-          name: spacer_1
-          layout_properties: {grid_position: 'FTGQQY,KRJFAG', full_width_row: true}
+        - type: ColumnPanel
+          properties: {role: null, tooltip: '', border: '', foreground: 'theme:Reset
+              Form', visible: true, wrap_on: mobile, col_spacing: small, spacing_above: large,
+            col_widths: '{}', spacing_below: small, background: ''}
+          name: column_panel_6
+          layout_properties: {grid_position: 'FTGQQY,RIHVOO', full_width_row: false}
+          components:
+          - type: Button
+            properties: {role: null, align: center, tooltip: '', border: '', enabled: true,
+              foreground: 'theme:Reset Form', visible: true, text: '', font_size: null,
+              font: '', spacing_above: small, icon_align: left, spacing_below: small,
+              italic: false, background: 'theme:Gray 100', bold: false, underline: false,
+              icon: 'fa:trash'}
+            name: deleteAutomationBtn
+            layout_properties: {grid_position: 'XSPPDH,ANUFRT'}
+            event_bindings: {click: deleteAutomationBtn_click}
+            data_bindings:
+            - {property: tag, code: self.item}
         - type: Label
           properties: {role: headline, align: left, tooltip: '', border: '', foreground: '',
             visible: true, text: '', font_size: null, font: '', spacing_above: large,
             icon_align: left, spacing_below: none, italic: false, background: '',
             bold: false, underline: false, icon: ''}
           name: label_1
-          layout_properties: {grid_position: 'FTGQQY,CGNNBM', full_width_row: true}
+          layout_properties: {grid_position: 'FTGQQY,CGNNBM', full_width_row: false}
           data_bindings:
           - {property: text, code: 'self.item[''map_name'']'}
       - type: ColumnPanel
-        properties: {col_widths: '{}'}
-        name: column_panel_6
-        layout_properties: {width: 84}
+        properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+          wrap_on: mobile, col_spacing: medium, spacing_above: medium, col_widths: '{}',
+          spacing_below: medium, background: ''}
+        name: column_panel_7_copy_2
+        layout_properties: {width: null, expand: false}
         components:
-        - type: CheckBox
-          properties: {role: null, align: left, tooltip: '', border: '', enabled: true,
-            foreground: '', allow_indeterminate: false, visible: true, text: Enabled,
-            font_size: null, font: '', spacing_above: medium, spacing_below: medium,
-            italic: false, background: '', bold: true, checked: false, underline: false}
-          name: check_box_1
-          layout_properties: {grid_position: 'EELVYV,CNJLEL', full_width_row: true}
+        - type: Button
+          properties: {role: secondary-color, align: center, tooltip: '', border: '',
+            enabled: true, foreground: '', visible: true, text: 'On', font_size: null,
+            font: '', spacing_above: small, icon_align: left, spacing_below: small,
+            italic: false, background: 'theme:Green', bold: false, underline: false,
+            icon: ''}
+          name: onOffAutomationBtn
+          layout_properties: {expand: false, width: null, grid_position: 'LBMRYY,MJXGWJ',
+            full_width_row: false}
           data_bindings:
-          - {property: checked, code: 'self.item[''map_enabled'']', writeback: true}
-          event_bindings: {}
+          - {property: tag, code: self.item}
+          - {property: text, code: '"ON" if self.item[''map_enabled''] else "OFF"'}
+          event_bindings: {click: onOffAutomationBtn_click}
+        - type: Label
+          properties: {role: text, align: center, tooltip: '', border: '', foreground: '',
+            visible: true, text: Active, font_size: 10, font: '', spacing_above: medium,
+            icon_align: left, spacing_below: small, italic: false, background: '',
+            bold: false, underline: false, icon: ''}
+          name: onOffAutomationLable
+          layout_properties: {grid_position: 'MGHPQD,MBVOEY'}
+      - type: ColumnPanel
+        properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+          wrap_on: mobile, col_spacing: medium, spacing_above: medium, col_widths: '{}',
+          spacing_below: medium, background: ''}
+        name: column_panel_7_copy
+        layout_properties: {width: null, expand: false}
+        components:
+        - type: Button
+          properties: {role: secondary-color, align: center, tooltip: '', border: '',
+            enabled: true, foreground: '', visible: true, text: Edit, font_size: null,
+            font: '', spacing_above: small, icon_align: left, spacing_below: small,
+            italic: false, background: 'theme:Secondary 500', bold: false, underline: false,
+            icon: 'fa:pencil'}
+          name: editAutomationBtn
+          layout_properties: {expand: false, width: null, grid_position: 'LBMRYY,MJXGWJ',
+            full_width_row: false}
+          data_bindings:
+          - {property: tag, code: self.item}
+          event_bindings: {click: editAutomationBtn_click}
         - type: Label
           properties: {role: text, align: right, tooltip: '', border: '', foreground: '',
-            visible: true, text: Last Executed, font_size: 10, font: '', spacing_above: small,
+            visible: true, text: 'Last Executed :', font_size: 10, font: '', spacing_above: medium,
             icon_align: left, spacing_below: small, italic: false, background: '',
             bold: false, underline: false, icon: ''}
           name: label_14
-          layout_properties: {grid_position: 'KBFEEP,MVMZJO'}
+          layout_properties: {grid_position: 'MGHPQD,MBVOEY'}
       - type: ColumnPanel
         properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
           wrap_on: mobile, col_spacing: medium, spacing_above: medium, col_widths: '{}',
@@ -73,15 +120,16 @@ components:
         components:
         - type: Button
           properties: {role: secondary-color, align: center, tooltip: '', border: '',
-            enabled: true, foreground: '', visible: true, text: Edit, font_size: null,
+            enabled: true, foreground: '', visible: true, text: Run, font_size: null,
             font: '', spacing_above: small, icon_align: left, spacing_below: small,
-            italic: false, background: '', bold: false, underline: false, icon: ''}
-          name: editAutomationBtn
+            italic: false, background: 'theme:Add Map', bold: false, underline: false,
+            icon: 'fa:play'}
+          name: runAutomationBtn
           layout_properties: {expand: false, width: null, grid_position: 'LBMRYY,MJXGWJ',
             full_width_row: false}
           data_bindings:
           - {property: tag, code: self.item}
-          event_bindings: {click: editAutomationBtn_click}
+          event_bindings: {click: runAutomationBtn_click}
         - type: Label
           properties: {role: text, align: left, tooltip: '', border: '', foreground: '',
             visible: true, text: '', font_size: 10, font: '', spacing_above: medium,
