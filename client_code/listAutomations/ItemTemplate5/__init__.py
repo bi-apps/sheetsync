@@ -28,6 +28,59 @@ class ItemTemplate5(ItemTemplate5Template):
         """This method is called when the button is clicked"""
         selected_automation = self.runAutomationBtn.tag
         print(f"Clicked Run Button : {self.editAutomationBtn.tag['map_type']}")
+        if selected_automation['map_type'] == 1:
+            run_test = anvil.server.call('runMappingTest',
+                                                    self.user,
+                                                    selected_automation['src_sheet_id'],
+                                                    selected_automation['src_sheet_col_id'],
+                                                    selected_automation['dest_sheet_id'],
+                                                    selected_automation['dest_sheet_col_id'],
+                                                    selected_automation['dest_sheet_col_type'],
+                                                    selected_automation['dest_sheet_col_validation'])
+
+            if run_test == 0:
+                Notification(f"The automation ran on-demand successfully! Your data has been updated. If you encounter any discrepancies, please review your settings or contact support.", 
+                            title="On-Demand Run Successful ✅", 
+                            style="success", 
+                            timeout=10).show()
+            elif run_test != 0:
+                Notification(f"Oops! The on-demand automation run faced an issue. Please review your settings, or contact support for assistance. Error Code: {do_we_really}", 
+                            title="On-Demand Run Failed ⚠️", 
+                            style="danger", 
+                            timeout=10).show()
+
+        if selected_automation['map_type'] == 2:
+            
+            do_we_really = anvil.server.call('houstonWeHaveAProblem',
+                                            user_id=self.user,
+                                            selected_source_sheet_id=selected_automation['src_sheet_id'],
+                                            selected_source_sheet_column_id=selected_automation['src_sheet_col_id'],
+    
+                                            selected_destination_sheet_id=selected_automation['dest_sheet_id'],
+                                            selected_destination_sheet_column_id=selected_automation['dest_sheet_col_id'],
+    
+                                            selected_destination_column_type_value=selected_automation['dest_sheet_col_type'],
+                                            selected_destination_column_validation=selected_automation['dest_sheet_col_validation'],
+        
+                                            selected_criteria_type=selected_automation['criterion_type'],
+        
+                                            selected_criteria_source_sheet_id=selected_automation['criterion_src_sheet_id'],
+                                            selected_criteria_source_column_id=selected_automation['criterion_src_sheet_col_id'],
+        
+                                            selected_criteria_operator=selected_automation['criterion_operator_type_value'],
+        
+                                            selected_criteria_value=selected_automation['criterion_value'])
+            if do_we_really == 0:
+                Notification(f"The automation ran on-demand successfully! Your data has been updated. If you encounter any discrepancies, please review your settings or contact support.", 
+                            title="On-Demand Run Successful ✅", 
+                            style="success", 
+                            timeout=10).show()
+            elif do_we_really != 0:
+                Notification(f"Oops! The on-demand automation run faced an issue. Please review your settings, or contact support for assistance. Error Code: {do_we_really}", 
+                            title="On-Demand Run Failed ⚠️", 
+                            style="danger", 
+                            timeout=10).show()
+
 
     def editAutomationBtn_click(self, **event_args):
         """This method is called when the button is clicked"""

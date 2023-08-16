@@ -135,7 +135,7 @@ def save_automation(*args, **kwargs):
                 
                 created_date_timestamp=datetime.now(),
 
-                last_executed=None
+                last_executed=datetime.now()
             )
             
             # Increment user Automation Count On Sucessful Saving
@@ -186,7 +186,7 @@ def update_automation(row_id, *args, **kwargs):
             criterion_dest_sheet_col_name=kwargs.get('criterion_dest_sheet_col_name', None),
             criterion_dest_sheet_col_id=kwargs.get('criterion_dest_sheet_col_id', None),
             criterion_value=kwargs.get('criterion_values', None),
-            last_executed=None
+            last_executed=datetime.now()
         )
         return True
     except Exception as e:

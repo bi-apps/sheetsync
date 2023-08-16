@@ -1,0 +1,6 @@
+container:
+  type: DataRowPanel
+  data_bindings:
+  - {property: item, code: 'self.item[''group'']'}
+components: []
+is_package: true

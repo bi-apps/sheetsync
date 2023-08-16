@@ -11,10 +11,11 @@ import anvil.tables.query as q
 from anvil.tables import app_tables
 
 class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
-    def __init__(self, user=None, setup_data=None, **properties):
+    def __init__(self, user=None, setup_data=None, edit_data=None, **properties):
         # Set Form properties and Data Bindings.
         self.init_components(**properties)
         self.setup_data = setup_data
+        self.edit_data = edit_data
         print(f"Setup Data : {self.setup_data}")
         # self.oneToOneCriteriaBasedCriteriaExplainationText.data = { "source_sheet_name": "derick test"}
         if user is None:
@@ -59,8 +60,64 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         self.oneToOneCriteriaBasedOperatorDropDown.items = [
             row['operator_names'] for row in self.db_citeria_operators_data]
 
+        if self.edit_data:
+            self.row_id = self.edit_data['row_id']
+            self.row_data = self.edit_data['row']
+            self.editingAutomationHelper()
+            
         # ------------- Helper Functions --------------- #
-    
+    def editingAutomationHelper(self, **event_args):
+        print(self.row_data)
+        # Automation Name
+        self.oneToOneCriteriaBasedMappingNameTxtBox.text = self.row_data['map_name']
+        # Source Sheet Name
+        self.oneToOneCriteriaBasedSourceSheetDropDown.selected_value = self.row_data['src_sheet_name']
+        self.oneToOneCriteriaBasedSourceSheetDropDown_change()
+        # Source Sheet Colun Name
+        self.oneToOneCriteriaBasedSourceColumnDropDown.selected_value = self.row_data['src_sheet_col_name']
+        self.oneToOneCriteriaBasedSourceColumnDropDown_change()
+        # Destination Sheet Name
+        self.oneToOneCriteriaBasedDestinationSheetDropDown.selected_value = self.row_data['dest_sheet_name']
+        self.oneToOneCriteriaBasedDestinationSheetDropDown_change()
+        # Destination Sheet Column Name
+        self.oneToOneCriteriaBasedDestinationColumnDropDown.selected_value = self.row_data['dest_sheet_col_name']
+        self.oneToOneCriteriaBasedDestinationColumnDropDown_change()
+        # Destination Sheet Column Type
+        self.oneToOneCriteriaBasedDestinationDropdownType.selected_value = self.row_data['dest_sheet_col_type_name']
+        self.oneToOneCriteriaBasedDestinationDropdownType_change()
+        # Criterion Type
+        self.oneToOneCriteriaTypeDropDown.selected_value = self.row_data['criterion_type']
+        self.oneToOneCriteriaTypeDropDown_change()
+        # Criterion Destination Column Name
+        self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value = self.row_data['criterion_src_sheet_col_name']
+        self.oneToOneCriteriaBasedCiteriaColumnDropDown_change()
+        # Criterion Operator Type
+        self.oneToOneCriteriaBasedOperatorDropDown.selected_value = self.row_data['criterion_operator_type_name']
+        self.oneToOneCriteriaBasedOperatorDropDown_change()
+        # Selected Criterion Values
+        # self.selected_criterion_value = self.get_non_empty_values()
+        self.set_criterion_values(self.row_data['criterion_operator_type_value'], self.row_data['criterion_value'])
+
+
+    def set_criterion_values(self, operator, saved_values):
+        print(f'operator : {operator}')
+        print(f'saved_values : {saved_values}')
+        if operator == "==":
+            # Assuming the saved value for this operator is a single string
+            self.oneToOneCriteriaBasedEqualsToDropDown.selected_value = saved_values
+        elif operator == "!=":
+            self.oneToOneCriteriaBasedEqualsToDropDown.selected_value = saved_values
+        elif operator == "contains":
+            self.oneToOneCriteriaContainsValueInput.text = saved_values
+        elif operator == "is_one_of":
+            self.oneToOneCriteriaBasedMultiSelectDropDown.selected_tokens = saved_values
+        elif operator == "is_not_one_of":
+            self.oneToOneCriteriaBasedMultiSelectDropDown.selected_tokens = saved_values
+        elif operator == "between":
+            # Assuming the saved values for this operator are two strings in a list
+            self.oneToOneCriteriaLogicalFromValueInput.text = saved_values[0]
+            self.oneToOneCriteriaLogicalToValueInput.text = saved_values[1]
+
     def update_slot(self, slot_name, value):
         # Ensure the 'data' attribute is not None
         if self.oneToOneCriteriaBasedCriteriaExplainationText.data is None:
@@ -74,7 +131,6 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         self.oneToOneCriteriaBasedCriteriaExplainationText.data = updated_data
 
 
-        
     def update_dynamic_source_sheet_dropdown(self):
         # (Source) This is for The Dynamic Criterion Only, Allows a user to select the source or destination sheet Only
         selected_source_sheet_name = self.oneToOneCriteriaBasedSourceSheetDropDown.selected_value
@@ -394,7 +450,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
 
                 self.logical_criterion_row_values = anvil.server.call(
                     'get_colum_data_for_ui', self.user, self.selected_criteria_source_sheet_id, self.selected_logical_criterion_column_id)
-                self.oneToOneCriteriaBasedMultiSelectDropDown.items = self.logical_criterion_row_values
+                # self.oneToOneCriteriaBasedMultiSelectDropDown.items = self.logical_criterion_row_values
+                self.oneToOneCriteriaBasedMultiSelectDropDown.items = [str(value) for value in self.logical_criterion_row_values]
 
             if self.selected_operator_values in ["==", "!="]:
                 # self.clear_input_values()
@@ -409,7 +466,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                 self.logical_criterion_row_values = anvil.server.call(
                     'get_colum_data_for_ui', self.user, self.selected_criteria_source_sheet_id, self.selected_logical_criterion_column_id)
                 print(self.logical_criterion_row_values)
-                self.oneToOneCriteriaBasedEqualsToDropDown.items = self.logical_criterion_row_values
+                # self.oneToOneCriteriaBasedEqualsToDropDown.items = self.logical_criterion_row_values
+                self.oneToOneCriteriaBasedEqualsToDropDown.items = [str(value) for value in self.logical_criterion_row_values]
 
             if self.selected_operator_values in ["contains"]:
                 # self.clear_input_values()
@@ -437,315 +495,257 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         self.oneToOneCriteriaBasedOperatorDropDown_change()
         self.update_slot("criteria_column_name", self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value)
 
-    # def oneToOneCriteriaBasedRunMappingBtn_click(self, **event_args):
-    #     """This method is called when the button is clicked"""
-    #     # Check if Automation name is Empty
-    #     if self.oneToOneCriteriaBasedMappingNameTxtBox.text:
-    #         # Check if Automation name is Unique
-    #         if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneCriteriaBasedMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
-    #             # Check for Empty Criterion Values
-    #             self.selected_criterion_value = self.get_non_empty_values()
-    #             # if Values are not Empty Continue
-    #             if self.selected_criterion_value:
-                    
-    #                 # If we are using between two values, Check that both is filled, if not Notify user
-    #                 if self.selected_operator_values in ["between"]:
-    #                     # Check if either input box is empty
-    #                     if not self.oneToOneCriteriaLogicalFromValueInput.text or not self.oneToOneCriteriaLogicalToValueInput.text:
-    #                         # Show a notification to the user
-    #                         anvil.Notification("Please provide both 'From' and 'To' values for the 'between' criterion.",
-    #                                             title="Computer Says: No! ", timeout=5).show()
-    #                         return  # Exit the function early
-    #                     else:
-    #                         # If both is present Continue
-    #                         between_value_list = [self.oneToOneCriteriaLogicalFromValueInput.text,
-    #                                                 self.oneToOneCriteriaLogicalToValueInput.text]
-    #                         self.selected_criterion_value = between_value_list
-
-    #                 # Now Run the Tests and Get Results from Test
-    #                 do_we_really = anvil.server.call('houstonWeHaveAProblem',
-    #                                             user_id=self.user,
-    #                                             selected_source_sheet_id=self.selected_criteria_source_sheet_id,
-    #                                             selected_source_sheet_column_id=self.selected_criteria_source_column_id,
-        
-    #                                             selected_destination_sheet_id=self.selected_criteria_destination_sheet_id,
-    #                                             selected_destination_sheet_column_id=self.selected_criteria_destination_column_id,
-        
-    #                                             selected_destination_column_type_value=self.selected_destination_column_type_value,
-    #                                             selected_destination_column_validation=self.selected_destination_column_validation_type,
-            
-    #                                             selected_criteria_type=self.selected_criterion_type,
-            
-    #                                             selected_criteria_source_sheet_id=self.selected_criteria_source_sheet_id,
-    #                                             selected_criteria_source_column_id=self.selected_logical_criterion_column_id,
-            
-    #                                             selected_criteria_operator=self.selected_operator_values,
-            
-    #                                             selected_criteria_value=self.selected_criterion_value)
-                    
-    #                 # Check result of the test run 0 = Sucess and 1 = Failure
-    #                 if do_we_really == 0:
-    #                     user_confirmation = anvil.confirm("Your Automation Test was Sucessful, Would you like to save and activate this automation now?",
-    #                                                      title="Test run was sucessfull! Well Done!",
-    #                                                      large=True,
-    #                                                      dismissible=False)
-    #                     # Check user confirmation Feeback True =  Save and enable, False = Save and dont enable
-    #                     if user_confirmation:
-    #                         # Save and Enabled the automation For the User
-    #                         save_automation = anvil.server.call('save_automation',
-    #                                                            map_type = 2,
-    #                                                            map_enabled = True,
-    #                                                            map_name = self.oneToOneCriteriaBasedMappingNameTxtBox.text,
-    #                                                            user_obj = self.user,
-    #                                                            database=tables.app_tables.tb_automation_type_1_2,
-                                                                
-    #                                                            source_sheet_name = self.selected_criteria_source_sheet_name,
-    #                                                            source_sheet_id = self.selected_criteria_source_sheet_id,
-    #                                                            source_col_name = self.selected_criteria_source_column_name,
-    #                                                            source_col_id = self.selected_criteria_source_column_id,
-                                                                
-    #                                                            dest_sheet_name = self.selected_criteria_destination_sheet_name,
-    #                                                            dest_sheet_id = self.selected_criteria_destination_sheet_id,
-    #                                                            dest_col_name = self.selected_criteria_destination_column_name,
-    #                                                            dest_col_id = self.selected_criteria_destination_column_id,
-    #                                                            dest_col_type_name = self.selected_column_type_name,
-    #                                                            dest_col_type = self.selected_destination_column_type_value,
-    #                                                            dest_col_validation = self.selected_destination_column_validation_type,
-                                                                
-    #                                                            criterion_type = self.selected_criterion_type,
-                                                                
-    #                                                            criterion_source_sheet_name = self.selected_criteria_source_sheet_name if self.selected_criterion_type == "Logical" else selected_dynamic_source_sheet_name,
-    #                                                            criterion_source_sheet_id = self.selected_criteria_source_sheet_id if self.selected_criterion_type == "Logical" else selected_dynamic_source_sheet_id,
-    #                                                            criterion_source_sheet_col_name = self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value if self.selected_criterion_type == "Logical" else selected_dynamic_source_column_name,
-    #                                                            criterion_source_sheet_col_id = self.selected_logical_criterion_column_id if self.selected_criterion_type == "Logical" else self.selected_dynamic_source_column_id,
-
-    #                                                            criterion_operator_name = self.selected_operator_name,
-    #                                                            criterion_operator_value = self.selected_operator_values,
-                                                                
-    #                                                            # criterion_dest_sheet_name = self.selected_dynamic_destination_sheet_name if self.selected_criterion_type == "Dynamic" else None,
-    #                                                            # criterion_dest_sheet_id = self.selected_dynamic_destination_sheet_id if self.selected_criterion_type == "Dynamic" else None,
-    #                                                            # criterion_dest_sheet_col_name = self.selected_dynamic_destination_column_name if self.selected_criterion_type == "Dynamic" else None,
-    #                                                            # criterion_dest_sheet_col_id = self.selected_dynamic_destination_column_id if self.selected_criterion_type == "Dynamic" else None,
-
-    #                                                            criterion_values = self.selected_criterion_value
-    #                                                            )
-    #                         if save_automation:
-    #                             anvil.Notification(f"Your Automation has been saved and activated sucessfully! It will now maintain itself!", 
-    #                                              style="sucess", 
-    #                                              timeout=5, 
-    #                                              title="Automation Was Saved").show()
-    #                             return
-    #                         else:
-    #                             anvil.Notification(f"Your Automation has been NOT been saved and activated sucessfully! It will NOT maintain itself!", 
-    #                                              style="Danger", 
-    #                                              timeout=5, 
-    #                                              title="Automation Was NOT Saved").show()
-    #                             return
-    #                     else:
-    #                         pass
-    #                 else:
-    #                     anvil.Notification(f"Something went wrong with you automation. it gave use {do_we_really} error code.", 
-    #                             style="danger", 
-    #                             timeout=5, 
-    #                             title="Automation Was Tested, But failed").show()
-    #                     return # Exit the function early
-                            
-    #             else:
-    #                 anvil.Notification("Some values are empty in your automation setup.", 
-    #                         style="warning", 
-    #                         timeout=5, 
-    #                         title="Automation Fields Missing").show()
-    #                 return # Exit the function early
-    #         else:
-    #             # Notify user if Automation name is not Unique
-    #             anvil.Notification("Please enter a unique automation name.", 
-    #                     style="warning", 
-    #                     timeout=5, 
-    #                     title="Automation Name already in use").show()
-    #             return # Exit the function early
-    #     else:
-    #         # Notify User When Automation Name is Empty
-    #         anvil.Notification("Please enter a unique and descriptive automation name.", 
-    #                 style="warning", 
-    #                 timeout=5, 
-    #                 title="Missing Automation Name").show()
-    #         return # Exit the function early
-
-
 
     def oneToOneCriteriaBasedRunMappingBtn_click(self, **event_args):
         """This method is called when the button is clicked"""
-        if not self.oneToOneCriteriaBasedMappingNameTxtBox.text:
-            # Notify User When Automation Name is Empty
-            Notification("Please provide a descriptive name for your automation. It'll help you identify it later!", 
-                        title="Automation Name Needed 🏷️", 
-                        style="warning", 
-                        timeout=5).show()
-            return
-    
-        if not anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneCriteriaBasedMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
-            # Notify user if Automation name is not Unique
-            Notification(f"Hold on a second! The name '{self.oneToOneCriteriaBasedMappingNameTxtBox.text}' is already taken. Let's get creative and pick a unique name for this new automation.",
-                         title="Name Duplication Alert 📛",
-                         style="warning",
-                         timeout=10).show()
-            return
-    
-        self.selected_criterion_value = self.get_non_empty_values()
-        if not self.selected_criterion_value:
-            Notification("We noticed some fields in your automation setup are empty. Please ensure all required fields are filled in.", 
-                        title="Incomplete Setup 🛠️", 
-                        style="warning", 
-                        timeout=5).show()
-            return
-    
-        if self.selected_operator_values in ["between"] and (not self.oneToOneCriteriaLogicalFromValueInput.text or not self.oneToOneCriteriaLogicalToValueInput.text):
-            Notification("For the 'between' criterion, both 'From' and 'To' values are required. Please provide them to proceed.", 
-                        title="Value Range Needed 🔢", 
-                        style="warning", 
-                        timeout=5).show()
-            return
-    
-        do_we_really = anvil.server.call('houstonWeHaveAProblem',
-                                                user_id=self.user,
-                                                selected_source_sheet_id=self.selected_criteria_source_sheet_id,
-                                                selected_source_sheet_column_id=self.selected_criteria_source_column_id,
-        
-                                                selected_destination_sheet_id=self.selected_criteria_destination_sheet_id,
-                                                selected_destination_sheet_column_id=self.selected_criteria_destination_column_id,
-        
-                                                selected_destination_column_type_value=self.selected_destination_column_type_value,
-                                                selected_destination_column_validation=self.selected_destination_column_validation_type,
-            
-                                                selected_criteria_type=self.selected_criterion_type,
-            
-                                                selected_criteria_source_sheet_id=self.selected_criteria_source_sheet_id,
-                                                selected_criteria_source_column_id=self.selected_logical_criterion_column_id,
-            
-                                                selected_criteria_operator=self.selected_operator_values,
-            
-                                                selected_criteria_value=self.selected_criterion_value)
-    
-        if do_we_really != 0:
-            Notification(f"The automation test faced an issue. Please review your settings and try again. Error Code: {do_we_really}", 
-                        title="Test Failed ⚠️", 
-                        style="danger", 
-                        timeout=5).show()
-            return
-    
-        user_confirmation = confirm("The test run was a success! Ready to finalize by saving and activating this automation?", 
-                                    title="Test Successful ✅", 
-                                    large=True, 
-                                    dismissible=False)
-    
-        map_activation = True if user_confirmation else False
-        save_automation = anvil.server.call('save_automation',
-                                            map_type = 2,
-                                            map_enabled = True,
-                                            map_name = self.oneToOneCriteriaBasedMappingNameTxtBox.text,
-                                            user_obj = self.user,
-                                            database=tables.app_tables.tb_automation_type_1_2,
-                                            
-                                            source_sheet_name = self.selected_criteria_source_sheet_name,
-                                            source_sheet_id = self.selected_criteria_source_sheet_id,
-                                            source_col_name = self.selected_criteria_source_column_name,
-                                            source_col_id = self.selected_criteria_source_column_id,
-                                            
-                                            dest_sheet_name = self.selected_criteria_destination_sheet_name,
-                                            dest_sheet_id = self.selected_criteria_destination_sheet_id,
-                                            dest_col_name = self.selected_criteria_destination_column_name,
-                                            dest_col_id = self.selected_criteria_destination_column_id,
-                                            dest_col_type_name = self.selected_column_type_name,
-                                            dest_col_type = self.selected_destination_column_type_value,
-                                            dest_col_validation = self.selected_destination_column_validation_type,
-                                            
-                                            criterion_type = self.selected_criterion_type,
-                                            
-                                            criterion_source_sheet_name = self.selected_criteria_source_sheet_name if self.selected_criterion_type == "Logical" else selected_dynamic_source_sheet_name,
-                                            criterion_source_sheet_id = self.selected_criteria_source_sheet_id if self.selected_criterion_type == "Logical" else selected_dynamic_source_sheet_id,
-                                            criterion_source_sheet_col_name = self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value if self.selected_criterion_type == "Logical" else selected_dynamic_source_column_name,
-                                            criterion_source_sheet_col_id = self.selected_logical_criterion_column_id if self.selected_criterion_type == "Logical" else self.selected_dynamic_source_column_id,
-
-                                            criterion_operator_name = self.selected_operator_name,
-                                            criterion_operator_value = self.selected_operator_values,
-                                            
-                                            # criterion_dest_sheet_name = self.selected_dynamic_destination_sheet_name if self.selected_criterion_type == "Dynamic" else None,
-                                            # criterion_dest_sheet_id = self.selected_dynamic_destination_sheet_id if self.selected_criterion_type == "Dynamic" else None,
-                                            # criterion_dest_sheet_col_name = self.selected_dynamic_destination_column_name if self.selected_criterion_type == "Dynamic" else None,
-                                            # criterion_dest_sheet_col_id = self.selected_dynamic_destination_column_id if self.selected_criterion_type == "Dynamic" else None,
-
-                                            criterion_values = self.selected_criterion_value
-                                            )
-    
-        if save_automation:
-            if map_activation:
-                Notification("Your automation is set up, saved, and activated! It's now working behind the scenes for you.", 
-                            title="Automation Activated 🚀", 
-                            style="success", 
+        if self.edit_data is None:
+            if not self.oneToOneCriteriaBasedMappingNameTxtBox.text:
+                # Notify User When Automation Name is Empty
+                Notification("Please provide a descriptive name for your automation. It'll help you identify it later!", 
+                            title="Automation Name Needed 🏷️", 
+                            style="warning", 
                             timeout=5).show()
-                open_form('mapperHome')
-            else:
-                Notification(f"All set! We've saved your automation, but it's currently in standby mode. Activate it when you're ready to unleash its potential!",
-                             title="Automation Saved (Inactive) 🛌",
-                             style="info",
-                             timeout=5).show()
-                open_form('mapperHome')
-                
-        else:
-            Notification("We encountered an issue while saving your automation. Rest assured, we're looking into it!", 
-                        title="Issue Saving Automation 🚫", 
-                        style="danger", 
-                        timeout=5).show()
-    
-    
-    
-
-
+                return
+        
+            if not anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneCriteriaBasedMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
+                # Notify user if Automation name is not Unique
+                Notification(f"Hold on a second! The name '{self.oneToOneCriteriaBasedMappingNameTxtBox.text}' is already taken. Let's get creative and pick a unique name for this new automation.",
+                            title="Name Duplication Alert 📛",
+                            style="warning",
+                            timeout=10).show()
+                return
+        
+            self.selected_criterion_value = self.get_non_empty_values()
+            if not self.selected_criterion_value:
+                Notification("We noticed some fields in your automation setup are empty. Please ensure all required fields are filled in.", 
+                            title="Incomplete Setup 🛠️", 
+                            style="warning", 
+                            timeout=5).show()
+                return
+        
+            if self.selected_operator_values in ["between"] and (not self.oneToOneCriteriaLogicalFromValueInput.text or not self.oneToOneCriteriaLogicalToValueInput.text):
+                Notification("For the 'between' criterion, both 'From' and 'To' values are required. Please provide them to proceed.", 
+                            title="Value Range Needed 🔢", 
+                            style="warning", 
+                            timeout=5).show()
+                return
+        
+            do_we_really = anvil.server.call('houstonWeHaveAProblem',
+                                                    user_id=self.user,
+                                                    selected_source_sheet_id=self.selected_criteria_source_sheet_id,
+                                                    selected_source_sheet_column_id=self.selected_criteria_source_column_id,
             
-
-    # def oneToOneCriteriaBasedRunMappingBtn_click(self, **event_args):
-    #     """This method is called when the button is clicked"""
-    #     """Remember i am focusing on testing the logical criterion first the below is not dynamic nor scalible!!!!"""
-
-    #     self.selected_criterion_value = self.get_non_empty_values()
-
-    #     if self.selected_operator_values in ["between"]:
-    #         # Check if either input box is empty
-    #         if not self.oneToOneCriteriaLogicalFromValueInput.text or not self.oneToOneCriteriaLogicalToValueInput.text:
-    #             # Show a notification to the user
-    #             anvil.Notification("Please provide both 'From' and 'To' values for the 'between' criterion.",
-    #                                title="Computer Says: No! ", timeout=5).show()
-    #             return  # Exit the function early
-    #         else:
-    #             between_value_list = [self.oneToOneCriteriaLogicalFromValueInput.text,
-    #                                   self.oneToOneCriteriaLogicalToValueInput.text]
-    #             print("Between List")
-    #             print(between_value_list)
-    #             self.selected_criterion_value = between_value_list
-
-    #     if self.selected_criterion_value:
-    #         doWe = anvil.server.call('houstonWeHaveAProblem',
-    #                                  user_id=self.user,
-    #                                  selected_source_sheet_id=self.selected_criteria_source_sheet_id,
-    #                                  selected_source_sheet_column_id=self.selected_criteria_source_column_id,
-
-    #                                  selected_destination_sheet_id=self.selected_criteria_destination_sheet_id,
-    #                                  selected_destination_sheet_column_id=self.selected_criteria_destination_column_id,
-
-    #                                  selected_destination_column_type_value=self.selected_destination_column_type_value,
-    #                                  selected_destination_column_validation=self.selected_destination_column_validation_type,
-
-    #                                  selected_criteria_type=self.selected_criterion_type,
-
-    #                                  selected_criteria_source_sheet_id=self.selected_criteria_source_sheet_id,
-    #                                  selected_criteria_source_column_id=self.selected_logical_criterion_column_id,
-
-    #                                  selected_criteria_operator=self.selected_operator_values,
-
-    #                                  selected_criteria_value=self.selected_criterion_value)
-    #         print(doWe)
-    #     else:
-    #         print("all Empty")
+                                                    selected_destination_sheet_id=self.selected_criteria_destination_sheet_id,
+                                                    selected_destination_sheet_column_id=self.selected_criteria_destination_column_id,
+            
+                                                    selected_destination_column_type_value=self.selected_destination_column_type_value,
+                                                    selected_destination_column_validation=self.selected_destination_column_validation_type,
+                
+                                                    selected_criteria_type=self.selected_criterion_type,
+                
+                                                    selected_criteria_source_sheet_id=self.selected_criteria_source_sheet_id,
+                                                    selected_criteria_source_column_id=self.selected_logical_criterion_column_id,
+                
+                                                    selected_criteria_operator=self.selected_operator_values,
+                
+                                                    selected_criteria_value=self.selected_criterion_value)
+        
+            if do_we_really != 0:
+                Notification(f"The automation test faced an issue. Please review your settings and try again. Error Code: {do_we_really}", 
+                            title="Test Failed ⚠️", 
+                            style="danger", 
+                            timeout=5).show()
+                return
+        
+            user_confirmation = confirm("The test run was a success! Ready to finalize by saving and activating this automation?", 
+                                        title="Test Successful ✅", 
+                                        large=True, 
+                                        dismissible=False)
+        
+            map_activation = True if user_confirmation else False
+            save_automation = anvil.server.call('save_automation',
+                                                map_type = 2,
+                                                map_enabled = True,
+                                                map_name = self.oneToOneCriteriaBasedMappingNameTxtBox.text,
+                                                user_obj = self.user,
+                                                database=tables.app_tables.tb_automation_type_1_2,
+                                                
+                                                source_sheet_name = self.selected_criteria_source_sheet_name,
+                                                source_sheet_id = self.selected_criteria_source_sheet_id,
+                                                source_col_name = self.selected_criteria_source_column_name,
+                                                source_col_id = self.selected_criteria_source_column_id,
+                                                
+                                                dest_sheet_name = self.selected_criteria_destination_sheet_name,
+                                                dest_sheet_id = self.selected_criteria_destination_sheet_id,
+                                                dest_col_name = self.selected_criteria_destination_column_name,
+                                                dest_col_id = self.selected_criteria_destination_column_id,
+                                                dest_col_type_name = self.selected_column_type_name,
+                                                dest_col_type = self.selected_destination_column_type_value,
+                                                dest_col_validation = self.selected_destination_column_validation_type,
+                                                
+                                                criterion_type = self.selected_criterion_type,
+                                                
+                                                criterion_source_sheet_name = self.selected_criteria_source_sheet_name if self.selected_criterion_type == "Logical" else selected_dynamic_source_sheet_name,
+                                                criterion_source_sheet_id = self.selected_criteria_source_sheet_id if self.selected_criterion_type == "Logical" else selected_dynamic_source_sheet_id,
+                                                criterion_source_sheet_col_name = self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value if self.selected_criterion_type == "Logical" else selected_dynamic_source_column_name,
+                                                criterion_source_sheet_col_id = self.selected_logical_criterion_column_id if self.selected_criterion_type == "Logical" else self.selected_dynamic_source_column_id,
+    
+                                                criterion_operator_name = self.selected_operator_name,
+                                                criterion_operator_value = self.selected_operator_values,
+                                                
+                                                # criterion_dest_sheet_name = self.selected_dynamic_destination_sheet_name if self.selected_criterion_type == "Dynamic" else None,
+                                                # criterion_dest_sheet_id = self.selected_dynamic_destination_sheet_id if self.selected_criterion_type == "Dynamic" else None,
+                                                # criterion_dest_sheet_col_name = self.selected_dynamic_destination_column_name if self.selected_criterion_type == "Dynamic" else None,
+                                                # criterion_dest_sheet_col_id = self.selected_dynamic_destination_column_id if self.selected_criterion_type == "Dynamic" else None,
+    
+                                                criterion_values = self.selected_criterion_value
+                                                )
+        
+            if save_automation:
+                if map_activation:
+                    Notification("Your automation is set up, saved, and activated! It's now working behind the scenes for you.", 
+                                title="Automation Activated 🚀", 
+                                style="success", 
+                                timeout=5).show()
+                    open_form('mapperHome')
+                else:
+                    Notification(f"All set! We've saved your automation, but it's currently in standby mode. Activate it when you're ready to unleash its potential!",
+                                title="Automation Saved (Inactive) 🛌",
+                                style="info",
+                                timeout=5).show()
+                    open_form('mapperHome')
+                    
+            else:
+                Notification("We encountered an issue while saving your automation. Rest assured, we're looking into it!", 
+                            title="Issue Saving Automation 🚫", 
+                            style="danger", 
+                            timeout=5).show()
+        else:
+            
+            if not self.oneToOneCriteriaBasedMappingNameTxtBox.text:
+                # Notify User When Automation Name is Empty
+                Notification("Please provide a descriptive name for your automation. It'll help you identify it later!", 
+                            title="Automation Name Needed 🏷️", 
+                            style="warning", 
+                            timeout=5).show()
+                return
+        
+            # if not anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneCriteriaBasedMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
+            #     # Notify user if Automation name is not Unique
+            #     Notification(f"Hold on a second! The name '{self.oneToOneCriteriaBasedMappingNameTxtBox.text}' is already taken. Let's get creative and pick a unique name for this new automation.",
+            #                 title="Name Duplication Alert 📛",
+            #                 style="warning",
+            #                 timeout=10).show()
+            #     return
+        
+            self.selected_criterion_value = self.get_non_empty_values()
+            if not self.selected_criterion_value:
+                Notification("We noticed some fields in your automation setup are empty. Please ensure all required fields are filled in.", 
+                            title="Incomplete Setup 🛠️", 
+                            style="warning", 
+                            timeout=5).show()
+                return
+        
+            if self.selected_operator_values in ["between"] and (not self.oneToOneCriteriaLogicalFromValueInput.text or not self.oneToOneCriteriaLogicalToValueInput.text):
+                Notification("For the 'between' criterion, both 'From' and 'To' values are required. Please provide them to proceed.", 
+                            title="Value Range Needed 🔢", 
+                            style="warning", 
+                            timeout=5).show()
+                return
+        
+            do_we_really = anvil.server.call('houstonWeHaveAProblem',
+                                                    user_id=self.user,
+                                                    selected_source_sheet_id=self.selected_criteria_source_sheet_id,
+                                                    selected_source_sheet_column_id=self.selected_criteria_source_column_id,
+            
+                                                    selected_destination_sheet_id=self.selected_criteria_destination_sheet_id,
+                                                    selected_destination_sheet_column_id=self.selected_criteria_destination_column_id,
+            
+                                                    selected_destination_column_type_value=self.selected_destination_column_type_value,
+                                                    selected_destination_column_validation=self.selected_destination_column_validation_type,
+                
+                                                    selected_criteria_type=self.selected_criterion_type,
+                
+                                                    selected_criteria_source_sheet_id=self.selected_criteria_source_sheet_id,
+                                                    selected_criteria_source_column_id=self.selected_logical_criterion_column_id,
+                
+                                                    selected_criteria_operator=self.selected_operator_values,
+                
+                                                    selected_criteria_value=self.selected_criterion_value)
+        
+            if do_we_really != 0:
+                Notification(f"The automation test faced an issue. Please review your settings and try again. Error Code: {do_we_really}", 
+                            title="Test Failed ⚠️", 
+                            style="danger", 
+                            timeout=5).show()
+                return
+        
+            user_confirmation = confirm("The test run was a success! Ready to finalize by saving and activating this automation?", 
+                                        title="Test Successful ✅", 
+                                        large=True, 
+                                        dismissible=False)
+        
+            map_activation = True if user_confirmation else False
+            update_automation = anvil.server.call('update_automation',
+                                                    self.row_id,
+                                                    map_type = 2,
+                                                    map_enabled = True,
+                                                    map_name = self.oneToOneCriteriaBasedMappingNameTxtBox.text,
+                                                    user_obj = self.user,
+                                                    database=tables.app_tables.tb_automation_type_1_2,
+                                                    
+                                                    source_sheet_name = self.selected_criteria_source_sheet_name,
+                                                    source_sheet_id = self.selected_criteria_source_sheet_id,
+                                                    source_col_name = self.selected_criteria_source_column_name,
+                                                    source_col_id = self.selected_criteria_source_column_id,
+                                                    
+                                                    dest_sheet_name = self.selected_criteria_destination_sheet_name,
+                                                    dest_sheet_id = self.selected_criteria_destination_sheet_id,
+                                                    dest_col_name = self.selected_criteria_destination_column_name,
+                                                    dest_col_id = self.selected_criteria_destination_column_id,
+                                                    dest_col_type_name = self.selected_column_type_name,
+                                                    dest_col_type = self.selected_destination_column_type_value,
+                                                    dest_col_validation = self.selected_destination_column_validation_type,
+                                                    
+                                                    criterion_type = self.selected_criterion_type,
+                                                    
+                                                    criterion_source_sheet_name = self.selected_criteria_source_sheet_name if self.selected_criterion_type == "Logical" else selected_dynamic_source_sheet_name,
+                                                    criterion_source_sheet_id = self.selected_criteria_source_sheet_id if self.selected_criterion_type == "Logical" else selected_dynamic_source_sheet_id,
+                                                    criterion_source_sheet_col_name = self.oneToOneCriteriaBasedCiteriaColumnDropDown.selected_value if self.selected_criterion_type == "Logical" else selected_dynamic_source_column_name,
+                                                    criterion_source_sheet_col_id = self.selected_logical_criterion_column_id if self.selected_criterion_type == "Logical" else self.selected_dynamic_source_column_id,
+        
+                                                    criterion_operator_name = self.selected_operator_name,
+                                                    criterion_operator_value = self.selected_operator_values,
+                                                    
+                                                    # criterion_dest_sheet_name = self.selected_dynamic_destination_sheet_name if self.selected_criterion_type == "Dynamic" else None,
+                                                    # criterion_dest_sheet_id = self.selected_dynamic_destination_sheet_id if self.selected_criterion_type == "Dynamic" else None,
+                                                    # criterion_dest_sheet_col_name = self.selected_dynamic_destination_column_name if self.selected_criterion_type == "Dynamic" else None,
+                                                    # criterion_dest_sheet_col_id = self.selected_dynamic_destination_column_id if self.selected_criterion_type == "Dynamic" else None,
+        
+                                                    criterion_values = self.selected_criterion_value
+                                                    )
+        
+            if update_automation:
+                if map_activation:
+                    Notification("Your automation is Updated, saved, and activated! It's now working behind the scenes for you.", 
+                                title="Automation Activated 🚀", 
+                                style="success", 
+                                timeout=5).show()
+                    open_form('mapperHome')
+                else:
+                    Notification(f"All set! We've saved your automation, but it's currently in standby mode. Activate it when you're ready to unleash its potential!",
+                                title="Automation Saved (Inactive) 🛌",
+                                style="info",
+                                timeout=5).show()
+                    open_form('mapperHome')
+                    
+            else:
+                Notification("We encountered an issue while saving your automation. Rest assured, we're looking into it!", 
+                            title="Issue Saving Automation 🚫", 
+                            style="danger", 
+                            timeout=5).show()
+            
+    
 
     def oneToOneCriteriaBasedEqualsToDropDown_change(self, **event_args):
         """This method is called when an item is selected"""

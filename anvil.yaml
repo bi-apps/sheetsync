@@ -22,7 +22,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: homePage}
+startup: {type: form, module: settings}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
@@ -240,6 +240,18 @@ db_schema:
       admin_ui: {order: 3.5, width: 200}
       type: string
     title: tb_automation_type_1_2
+  groups:
+    client: full
+    server: full
+    columns:
+    - name: user
+      admin_ui: {order: 0, width: 200}
+      type: link_single
+      target: users
+    - name: group
+      admin_ui: {order: 1, width: 200}
+      type: string
+    title: groups
 secrets:
   smartsheetsKey:
     value: {UZ77GC6XSOFJWHZW: d8igp1JrC9z+JnxQOmMhHyU1OAf4QVkjLl9K7LuQljR30QXG+Tcq/T8+P5JScn/T9bwJ1hvgzl7yYlr0KhBF6rGh/cQycPDCaes+eBBeZFbW8jJnZzoRu7rCaRNQYBMaHQCehqOPK2yTPnk4sn9gak2vYljCrdgIi1av2fDBYCMUhwL7}
