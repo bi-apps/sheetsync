@@ -98,20 +98,23 @@ components:
       layout_properties: {}
       components:
       - type: FlowPanel
-        properties: {}
+        properties: {role: null, spacing: medium, align: left, tooltip: '', border: '',
+          foreground: '', visible: true, spacing_above: small, spacing_below: small,
+          background: ''}
         name: flow_panel_2
-        layout_properties: {grid_position: 'WMYJOZ,MJJEWF'}
+        layout_properties: {grid_position: 'WMYJOZ,MJJEWF', full_width_row: false}
         components:
         - type: Label
-          properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+          properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
             visible: true, text: Group Name, font_size: null, font: '', spacing_above: small,
             icon_align: left, spacing_below: small, italic: false, background: '',
             bold: false, underline: false, icon: ''}
           name: label_3
           layout_properties: {}
         - type: TextBox
-          properties: {role: null, align: left, hide_text: false, tooltip: '', placeholder: Type your Group Name Here. i.e Head Offices,
-            border: '', enabled: true, foreground: '', visible: true, text: '', font_size: null,
+          properties: {role: modern-inputs, align: left, hide_text: false, tooltip: '',
+            placeholder: Type your Group Name Here. i.e Head Offices, border: '',
+            enabled: true, foreground: '', visible: true, text: '', font_size: null,
             font: '', spacing_above: small, type: text, spacing_below: small, italic: false,
             background: '', bold: false, underline: false}
           name: group_names_txt
@@ -122,8 +125,9 @@ components:
             font: '', spacing_above: small, icon_align: left, spacing_below: small,
             italic: false, background: 'theme:Add Map', bold: false, underline: false,
             icon: 'fa:plus'}
-          name: button_1
+          name: addGroupBtn
           layout_properties: {expand: true, width: null}
+          event_bindings: {click: addGroupBtn_click}
     - type: ColumnPanel
       properties: {col_widths: '{}'}
       name: column_panel_4
@@ -135,7 +139,7 @@ components:
         layout_properties: {grid_position: 'LNGNYF,AUBJDR'}
         components:
         - type: Label
-          properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+          properties: {role: subheading, align: left, tooltip: '', border: '', foreground: '',
             visible: true, text: Groups Added, font_size: null, font: '', spacing_above: small,
             icon_align: left, spacing_below: small, italic: false, background: '',
             bold: false, underline: false, icon: ''}
@@ -145,23 +149,24 @@ components:
           properties:
             role: null
             columns:
-            - {id: RPOZCA, title: Group Names, data_key: group, $$hashKey: 'object:98185',
+            - {id: WHGGZP, title: Group Name, data_key: group, $$hashKey: 'object:10066',
               expand: true}
             auto_header: true
             tooltip: ''
             border: ''
             foreground: ''
-            rows_per_page: 20
+            rows_per_page: 5
             visible: true
             wrap_on: never
             show_page_controls: true
             spacing_above: small
             spacing_below: small
             background: ''
-          name: data_grid_1
-          layout_properties: {width: 369.48}
+          name: groupsDataGrid
+          layout_properties: {width: 543.48, expand: false}
           components:
           - type: RepeatingPanel
-            properties: {spacing_above: none, spacing_below: none, item_template: settings.RowTemplate9}
-            name: repeating_panel_1
+            properties: {spacing_above: none, spacing_below: none, item_template: settings.RowTemplate10}
+            name: groupsRepeatingPanel
             layout_properties: {}
+          data_bindings: []

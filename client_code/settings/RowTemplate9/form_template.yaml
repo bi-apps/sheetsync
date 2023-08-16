@@ -1,6 +1,12 @@
 container:
   type: DataRowPanel
+  data_bindings: []
+components:
+- type: Label
+  properties: {}
+  name: label_1
+  layout_properties: {column: RPOZCA}
   data_bindings:
-  - {property: item, code: 'self.item[''group'']'}
-components: []
+  - {property: text, code: 'self.item[''group'']'}
 is_package: true
+item_type: {table_id: 495183}

@@ -73,6 +73,12 @@ class oneToOneSetup(oneToOneSetupTemplate):
             self.row_id = self.edit_data['row_id']
             self.edit_data = self.edit_data['row']
             self.editingAutomationHelper()
+
+        # Check if null and assigne a default value Derick!
+        groups_for_user = app_tables.groups.search(user=self.user)
+        group_values = [row['group'] for row in groups_for_user]
+        self.groupsDropDown.items = group_values
+        # self.groupsDropDown.items = groups['group']
             
     def editingAutomationHelper(self, **event_args):
         # Automation Name

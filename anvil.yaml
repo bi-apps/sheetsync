@@ -22,7 +22,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: settings}
+startup: {type: form, module: mapperHome.oneToOneSetup}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
@@ -251,6 +251,9 @@ db_schema:
     - name: group
       admin_ui: {order: 1, width: 200}
       type: string
+    - name: automation_count
+      admin_ui: {order: 2, width: 200}
+      type: number
     title: groups
 secrets:
   smartsheetsKey:

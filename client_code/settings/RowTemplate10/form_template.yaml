@@ -1,0 +1,39 @@
+container:
+  type: DataRowPanel
+  data_bindings: []
+  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', auto_display_data: true,
+    visible: true, font_size: null, font: '', spacing_above: medium, spacing_below: medium,
+    italic: false, background: '', bold: false, underline: false}
+components:
+- type: FlowPanel
+  properties: {}
+  name: flow_panel_1
+  layout_properties: {column: WHGGZP}
+  components:
+  - type: Label
+    properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+      visible: true, text: '', font_size: null, font: '', spacing_above: small, icon_align: left,
+      spacing_below: small, italic: false, background: '', bold: false, underline: false,
+      icon: ''}
+    name: label_1
+    layout_properties: {expand: true, width: null}
+    data_bindings:
+    - {property: text, code: 'self.item[''group'']'}
+  - type: Label
+    properties: {}
+    name: label_2
+    layout_properties: {}
+    data_bindings:
+    - {property: text, code: 'self.item[''automation_count'']'}
+  - type: Button
+    properties: {role: null, align: center, tooltip: '', border: '', enabled: true,
+      foreground: 'theme:Reset Form', visible: true, text: '', font_size: null, font: '',
+      spacing_above: small, icon_align: left, spacing_below: small, italic: false,
+      background: '', bold: false, underline: false, icon: 'fa:trash'}
+    name: deleteGroupBtn
+    layout_properties: {}
+    data_bindings:
+    - {property: tag, code: self.item}
+    event_bindings: {click: deleteGroupBtn_click}
+is_package: true
+item_type: {table_id: 495183}
