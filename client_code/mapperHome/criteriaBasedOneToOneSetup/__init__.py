@@ -64,6 +64,12 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
             self.row_id = self.edit_data['row_id']
             self.row_data = self.edit_data['row']
             self.editingAutomationHelper()
+
+        # Check if null and assigne a default value Derick!
+        groups_for_user = app_tables.groups.search(user=self.user)
+        group_values = [row['group'] for row in groups_for_user]
+        self.criteriaGroupsDropDown.items = group_values
+        # self.groupsDropDown.items = groups['group']
             
         # ------------- Helper Functions --------------- #
     def editingAutomationHelper(self, **event_args):
@@ -97,6 +103,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
         # Selected Criterion Values
         # self.selected_criterion_value = self.get_non_empty_values()
         self.set_criterion_values(self.row_data['criterion_operator_type_value'], self.row_data['criterion_value'])
+        # Automation Criteria
+        self.criteriaGroupsDropDown.selected_value = self.row_data['automation_group']
 
 
     def set_criterion_values(self, operator, saved_values):
@@ -598,7 +606,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                                                 # criterion_dest_sheet_col_name = self.selected_dynamic_destination_column_name if self.selected_criterion_type == "Dynamic" else None,
                                                 # criterion_dest_sheet_col_id = self.selected_dynamic_destination_column_id if self.selected_criterion_type == "Dynamic" else None,
     
-                                                criterion_values = self.selected_criterion_value
+                                                criterion_values = self.selected_criterion_value,
+                                                automation_group = self.criteriaGroupsDropDown.selected_value
                                                 )
         
             if save_automation:
@@ -722,7 +731,8 @@ class criteriaBasedOneToOneSetup(criteriaBasedOneToOneSetupTemplate):
                                                     # criterion_dest_sheet_col_name = self.selected_dynamic_destination_column_name if self.selected_criterion_type == "Dynamic" else None,
                                                     # criterion_dest_sheet_col_id = self.selected_dynamic_destination_column_id if self.selected_criterion_type == "Dynamic" else None,
         
-                                                    criterion_values = self.selected_criterion_value
+                                                    criterion_values = self.selected_criterion_value,
+                                                    automation_group = self.criteriaGroupsDropDown.selected_value
                                                     )
         
             if update_automation:

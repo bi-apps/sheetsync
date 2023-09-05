@@ -42,6 +42,7 @@ components:
   layout_properties:
     col_widths: {}
     grid_position: ZAGXXY,AKHPPO
+    full_width_row: false
   components:
   - type: Label
     properties: {role: headline, align: left, tooltip: '', border: '', foreground: '',
@@ -56,8 +57,48 @@ components:
       font: '', spacing_above: medium, type: text, spacing_below: small, italic: false,
       background: '', bold: false, underline: false}
     name: oneToOneCriteriaBasedMappingNameTxtBox
-    layout_properties: {expand: false, width: 400}
+    layout_properties: {expand: false, width: 564}
     event_bindings: {}
+  - type: ColumnPanel
+    properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
+      wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{}',
+      spacing_below: small, background: ''}
+    name: column_panel_1
+    layout_properties:
+      col_widths: {}
+      grid_position: SPAUIE,KYVNJJ
+      width: null
+      expand: true
+    components:
+    - type: Label
+      properties: {role: headline, align: right, tooltip: '', border: '', foreground: '',
+        visible: true, text: Group, font_size: null, font: '', spacing_above: small,
+        icon_align: left, spacing_below: small, italic: false, background: '', bold: true,
+        underline: false, icon: ''}
+      name: label_7_copy_3
+      layout_properties: {grid_position: 'NSDSHA,DTCXBI'}
+    - type: DropDown
+      properties:
+        role: null
+        align: left
+        tooltip: ''
+        placeholder: Select Group
+        border: ''
+        enabled: true
+        foreground: ''
+        items: ['']
+        visible: true
+        font_size: null
+        font: ''
+        spacing_above: small
+        spacing_below: small
+        italic: false
+        background: ''
+        bold: false
+        underline: false
+        include_placeholder: true
+      name: criteriaGroupsDropDown
+      layout_properties: {expand: false, width: null, grid_position: 'NSDSHA,JWLMIR'}
 - type: ColumnPanel
   properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
     wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{}',

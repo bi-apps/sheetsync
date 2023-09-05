@@ -99,6 +99,8 @@ class oneToOneSetup(oneToOneSetupTemplate):
         # Destination Sheet Column Type
         self.oneToOneDestinationDropdownType.selected_value = self.edit_data['dest_sheet_col_type_name']
         self.oneToOneDestinationDropdownType_change()
+        # Automation Group
+        self.groupsDropDown.selected_value = self.edit_data['automation_group']
         
         
         pass
@@ -178,6 +180,7 @@ class oneToOneSetup(oneToOneSetupTemplate):
 
 
     def oneToOneAddMappingAndRunBtn_click(self, **event_args):
+        print(self.groupsDropDown.selected_value)
         if self.edit_data is None:
             if self.oneToOneMappingNameTxtBox.text:
                 if anvil.server.call('is_mapping_name_unique', self.user, str(self.oneToOneMappingNameTxtBox.text), app_tables.tb_automation_type_1_2):
@@ -213,7 +216,8 @@ class oneToOneSetup(oneToOneSetupTemplate):
                                                         dest_col_name=self.selDestColumnName,
                                                         dest_col_type_name=self.selectedColumnTypeName,
                                                         dest_col_type=self.columnTypeValue,
-                                                        dest_col_validation=self.columnTypeValidation)
+                                                        dest_col_validation=self.columnTypeValidation,
+                                                        automation_group=self.groupsDropDown.selected_value)
         
                         if saveMapping:
                             if map_activation:
@@ -266,7 +270,8 @@ class oneToOneSetup(oneToOneSetupTemplate):
                                                     dest_sheet_name=self.selDestSheetName,
                                                     dest_col_name=self.selDestColumnName,
                                                     dest_col_type=self.columnTypeValue,
-                                                    dest_col_validation=self.columnTypeValidation)
+                                                    dest_col_validation=self.columnTypeValidation,
+                                                    automation_group=self.groupsDropDown.selected_value)
     
                     if update_mapping:
                         if map_activation:
