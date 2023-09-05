@@ -13,7 +13,7 @@ import anvil.tables as tables
 import anvil.tables.query as q
 import anvil.js
 from .ItemTemplate5 import ItemTemplate5
-
+ 
 class listAutomations(listAutomationsTemplate):
     def __init__(self, **properties):
         # Set Form properties and Data Bindings.
