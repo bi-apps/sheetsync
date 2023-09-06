@@ -22,7 +22,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: homePage_copy}
+startup: {type: form, module: homePage}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
@@ -36,7 +36,7 @@ runtime_options:
       urllib3==2.0.0a4
 
       cryptography==41.0.2', base: python310-standard}
-metadata: {logo_img: 'asset:189663.png', title: SyncDrop}
+metadata: {logo_img: 'asset:189663.png', title: SheetSync, description: The Most Advanced Smartsheet Dropdown Column Updating System Your Orginization Needs!}
 startup_form: null
 db_schema:
   users:
