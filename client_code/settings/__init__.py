@@ -42,7 +42,7 @@ class settings(settingsTemplate):
 
     def mapperSettingsBtn_click(self, **event_args):
         """This method is called when the button is clicked"""
-        pass
+        open_form('settings')
 
     def addGroupBtn_click(self, **event_args):
         """This method is called when the button is clicked"""
