@@ -106,7 +106,6 @@ class ItemTemplate5(ItemTemplate5Template):
     def onOffAutomationBtn_click(self, **event_args):
         """This method is called when the button is clicked"""
         button = self.onOffAutomationBtn
-        
         # Toggle the state of the button and update the database
         if button.text == "ON":
             button.text = "OFF"

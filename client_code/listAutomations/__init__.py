@@ -32,7 +32,7 @@ class listAutomations(listAutomationsTemplate):
 
     def populate_automation_groups(self):
         # Fetch all the automation records for this user
-        all_automations = app_tables.tb_automation_type_1_2.search(user=self.user)
+        all_automations = self.automations
     
         # Extract unique automation groups
         unique_groups = set()
@@ -48,19 +48,19 @@ class listAutomations(listAutomationsTemplate):
         self.filter_by_group_dropdown.items = dropdown_items
 
     def setup_screen_counters(self, **event_args):
-        automations = app_tables.tb_automation_type_1_2.search(user=self.user)
+        self.automations = app_tables.tb_automation_type_1_2.search(user=self.user)
 
         
         self.totalAutomationsLbl.text = self.user['automation_count']
         # Count the enabled automations
-        count_enabled = sum(1 for automation in automations if automation['map_enabled'])
+        count_enabled = sum(1 for automation in self.automations if automation['map_enabled'])
         print(count_enabled)
         self.activeAutomationsLbl.text = str(count_enabled)
 
-        count_standard = sum(1 for automation in automations if automation['map_type']==1)
+        count_standard = sum(1 for automation in self.automations if automation['map_type']==1)
         self.standardAutomationsLbl.text = count_standard
 
-        count_criteria = sum(1 for automation in automations if automation['map_type']==2)
+        count_criteria = sum(1 for automation in self.automations if automation['map_type']==2)
         self.criteriaAutomationLbl.text = count_criteria
 
 
@@ -71,7 +71,8 @@ class listAutomations(listAutomationsTemplate):
 
     def list_automations_repeating_panel_show(self, **event_args):
         """This method is called when the RepeatingPanel is shown on the screen"""
-        self.list_automations_repeating_panel.items = tables.app_tables.tb_automation_type_1_2.search(user=self.user)
+        # self.automation_list = tables.app_tables.tb_automation_type_1_2.search(user=self.user)
+        self.list_automations_repeating_panel.items = self.automations
 
 
     def searchInputChange(self, **event_args):
@@ -100,8 +101,12 @@ class listAutomations(listAutomationsTemplate):
     def filter_by_group_dropdown_change(self, **event_args):
         """This method is called when an item is selected"""
         selected_group = self.filter_by_group_dropdown.selected_value
-        self.list_automations_repeating_panel.items = tables.app_tables.tb_automation_type_1_2.search(automation_group=q.ilike('%' + selected_group + '%'))
-        return
+        if selected_group is not None:
+            self.list_automations_repeating_panel.items = tables.app_tables.tb_automation_type_1_2.search(automation_group=q.ilike('%' + selected_group + '%'))
+            return
+        else:
+            self.list_automations_repeating_panel.items = self.automations
+            return
 
 
 
