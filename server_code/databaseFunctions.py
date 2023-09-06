@@ -146,6 +146,14 @@ def save_automation(*args, **kwargs):
             automation_count += 1
             kwargs['user_obj'].update(automation_count=automation_count)
             # Return True When Done
+
+            selected_group = kwargs.get('automation_group', None)
+            if selected_group is not None:
+                selected_group_count = app_tables.groups.get(user=kwargs['user_obj'], group=selected_group)
+                group_count = selected_group_count['automation_count']
+                group_count += 1
+                selected_group_count.update(automation_count=group_count)
+            
             return True
         except tables.TableError as saveError:
            return str(saveError)

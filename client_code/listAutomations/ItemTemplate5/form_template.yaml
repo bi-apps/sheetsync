@@ -16,15 +16,15 @@ components:
     layout_properties: {}
     components:
     - type: Label
-      properties: {role: headline, align: left, tooltip: '', border: '', foreground: 'theme:Secondary
-          700', visible: true, text: ':', font_size: null, font: '', spacing_above: small,
+      properties: {role: headline, align: left, tooltip: '', border: '', foreground: '',
+        visible: true, text: ':', font_size: null, font: '', spacing_above: small,
         icon_align: left, spacing_below: small, italic: false, background: '', bold: false,
         underline: false, icon: 'fa:object-group'}
       name: label_16
       layout_properties: {}
     - type: Label
-      properties: {role: headline, align: left, tooltip: '', border: '', foreground: '',
-        visible: true, text: '', font_size: null, font: '', spacing_above: small,
+      properties: {role: headline, align: left, tooltip: '', border: '', foreground: 'theme:Secondary
+          700', visible: true, text: '', font_size: null, font: '', spacing_above: small,
         icon_align: left, spacing_below: small, italic: false, background: '', bold: true,
         underline: false, icon: ''}
       name: label_17

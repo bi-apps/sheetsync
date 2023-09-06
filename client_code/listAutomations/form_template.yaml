@@ -128,22 +128,22 @@ components:
         font: '', spacing_above: small, type: text, spacing_below: small, italic: false,
         background: '', bold: false, underline: false}
       name: searchInput
-      layout_properties: {width: 489.66700000000003, expand: false}
+      layout_properties: {width: 444.66700000000003, expand: false}
       event_bindings: {change: searchInputChange}
     - type: ColumnPanel
       properties: {role: null, tooltip: '', border: '', foreground: '', visible: true,
         wrap_on: mobile, col_spacing: medium, spacing_above: small, col_widths: '{}',
         spacing_below: small, background: ''}
       name: column_panel_1_copy
-      layout_properties: {width: 267.198, expand: false}
+      layout_properties: {width: 319.198, expand: false}
       components:
       - type: Label
-        properties: {role: headline, align: right, tooltip: '', border: '', foreground: '',
-          visible: true, text: Group, font_size: null, font: '', spacing_above: small,
+        properties: {role: input-prompt, align: center, tooltip: '', border: '', foreground: '',
+          visible: true, text: 'Filter by Group :', font_size: null, font: '', spacing_above: small,
           icon_align: left, spacing_below: small, italic: false, background: '', bold: true,
-          underline: false, icon: ''}
-        name: label_7_copy_3
-        layout_properties: {grid_position: 'NSDSHA,DTCXBI'}
+          underline: false, icon: 'fa:object-group'}
+        name: searchLabel_copy
+        layout_properties: {grid_position: 'NSDSHA,LNRJGR'}
       - type: DropDown
         properties:
           role: null
