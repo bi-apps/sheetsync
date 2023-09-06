@@ -26,7 +26,26 @@ class listAutomations(listAutomationsTemplate):
         # Get logged in User Object or return to home if not logged in
         self.user = anvil.users.get_user()
         self.setup_screen_counters()
+        # Populate automation groups dropdown
+        self.populate_automation_groups()
 
+
+    def populate_automation_groups(self):
+        # Fetch all the automation records for this user
+        all_automations = app_tables.tb_automation_type_1_2.search(user=self.user)
+    
+        # Extract unique automation groups
+        unique_groups = set()
+        for automation in all_automations:
+            automation_group = automation['automation_group']
+            if automation_group:  # This checks if automation_group is not None or empty
+                unique_groups.add(automation_group)
+    
+        # Convert the set to a list of tuples (this format is compatible with Anvil dropdown items)
+        dropdown_items = [(group, group) for group in unique_groups]
+    
+        # Set these as the items for the dropdown
+        self.filter_by_group_dropdown.items = dropdown_items
 
     def setup_screen_counters(self, **event_args):
         automations = app_tables.tb_automation_type_1_2.search(user=self.user)
@@ -76,7 +95,14 @@ class listAutomations(listAutomationsTemplate):
 
     def listSettingsBtn_click(self, **event_args):
         """This method is called when the button is clicked"""
-        pass
+        open_form('settings')
+
+    def filter_by_group_dropdown_change(self, **event_args):
+        """This method is called when an item is selected"""
+        selected_group = self.filter_by_group_dropdown.selected_value
+        self.list_automations_repeating_panel.items = tables.app_tables.tb_automation_type_1_2.search(automation_group=q.ilike('%' + selected_group + '%'))
+        return
+
 
 
 

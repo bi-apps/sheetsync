@@ -22,7 +22,7 @@ services:
 - source: /runtime/services/anvil/secrets.yml
   client_config: {}
   server_config: {}
-startup: {type: form, module: homePage}
+startup: {type: form, module: listAutomations}
 package_name: SheetSync
 allow_embedding: false
 name: SheetSync
