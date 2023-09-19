@@ -141,11 +141,11 @@ def oauth_callback(**kwargs):
         # Log the error and then redirect
         print(f"Error during OAuth callback: {e}")
         authenticated = False  
-        return anvil.server.HttpResponse(status=302, headers={'Location': f'https://uz77gc6xsofjwhzw.anvil.app/AMCH7DKKMUWKPUAB7RZCKY3I?authenticated={authenticated}'})
+        return anvil.server.HttpResponse(status=302, headers={'Location': f'https://sheetsync.bi-applications.co.za?authenticated={authenticated}'})
     
     finally:
         # Always redirect, even if there was an error
-        return anvil.server.HttpResponse(status=302, headers={'Location': 'https://uz77gc6xsofjwhzw.anvil.app/AMCH7DKKMUWKPUAB7RZCKY3I'})
+        return anvil.server.HttpResponse(status=302, headers={'Location': 'https://sheetsync.bi-applications.co.za'})
 
 
 def refresh_access_token(user):
