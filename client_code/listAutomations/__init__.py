@@ -78,8 +78,15 @@ class listAutomations(listAutomationsTemplate):
     def searchInputChange(self, **event_args):
         """This method is called when the text in this text box is edited"""
         search_string = self.searchInput.text.lower()
-        self.list_automations_repeating_panel.items = tables.app_tables.tb_automation_type_1_2.search(map_name=q.ilike('%' + search_string + '%'))
+        self.list_automations_repeating_panel.items = []
+        self.list_automations_repeating_panel.items = tables.app_tables.tb_automation_type_1_2.search(map_name=q.full_text_match(search_string))
+        # items = tables.app_tables.tb_automation_type_1_2.search(map_name=q.ilike('%' + search_string + '%'))
+        # items_list = list(items)  # Convert SearchIterator to list
+        # # print("Items returned by query:", items_list)
+        # self.list_automations_repeating_panel.items = []
+        # self.list_automations_repeating_panel.items = items_list
         return
+
 
 
     def listHomeBtn_click(self, **event_args):
